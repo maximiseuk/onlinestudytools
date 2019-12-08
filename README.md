@@ -23,6 +23,3 @@ This is a really quick tutorial on how to set up development on the project:
 -   Now you need to update the online version of the project. To do this, write `git push origin my-feature-name` where `my-feature-name` is the same as it was in the first step. This creates a branch in the online version of the project named `my-feature-name`.
 
 -   Finally, submit a pull request for your changes from the new branch you just created to the master branch. If one other collaborator verifies that the changes are OK, then the changes can be merged into the master branch.
-
-
-.sdfasdf 
