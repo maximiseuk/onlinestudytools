@@ -23,3 +23,5 @@ This is a really quick tutorial on how to set up development on the project:
 -   Now you need to update the online version of the project. To do this, write `git push origin my-feature-name` where `my-feature-name` is the same as it was in the first step. This creates a branch in the online version of the project named `my-feature-name`.
 
 -   Finally, submit a pull request for your changes from the new branch you just created to the master branch. If one other collaborator verifies that the changes are OK, then the changes can be merged into the master branch.
+
+- When you want to make another change, *you need to ensure that your local project is synced with the online version*. You can do this by writing `git fetch origin`, then `git checkout master` and finally `git merge origin master`. This means that you don't need to use `git clone` every time you want to make a change. The rest of the steps above remain the same.
