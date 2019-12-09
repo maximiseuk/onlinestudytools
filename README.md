@@ -1,6 +1,6 @@
 # onlinestudytools
 
-A repository for the online study tools as part of the MAXIMISE revision service.
+A repository for the online study tools web app as part of the MAXIMISE revision service.
 
 ## For collaborators:
 
