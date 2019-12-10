@@ -29,18 +29,18 @@ This is a really quick tutorial on how to set up development on the project:
 ## List of guidelines for code formatting
 
 ### Do:
-> Use double quotes instead os single quotes
-> Use camel case for all variables (First letter capitalised for Components, otherwise uncapitalised)
-> Use desctiptive variable names (e.g. circleRadius instead of size)
-> Comment your code where necessary
-> keep larger components in their own files
-> Use ES6 syntax where possible
-> Compact code nicely (not so its unreadable, but avoid loads of nested for loops or ugly stuff like that)
-> Use const for variables where possible and declare varialbes with one const and then each variable indented on a new line
+ - Use double quotes instead os single quotes
+ - Use camel case for all variables (First letter capitalised for Components, otherwise uncapitalised)
+ - Use desctiptive variable names (e.g. circleRadius instead of size)
+ - Comment your code where necessary
+ - keep larger components in their own files
+ - Use ES6 syntax where possible
+ - Compact code nicely (not so its unreadable, but avoid loads of nested for loops or ugly stuff like that)
+ - Use const for variables where possible and declare varialbes with one const and then each variable indented on a new line
 
 ### Don't:
-> Lines longer than 80 characters
-> Silly comments for obvious things
-> Functions that carry out more than one action
-> Overuse new lines
-> Put spaces at the end of lines
+ - Lines longer than 80 characters
+ - Silly comments for obvious things
+ - Functions that carry out more than one action
+ - Overuse new lines
+ - Put spaces at the end of lines
