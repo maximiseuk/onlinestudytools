@@ -26,6 +26,8 @@ This is a really quick tutorial on how to set up development on the project:
 
 - When you want to make another change, *you need to ensure that your local project is synced with the online version*. You can do this by writing `git fetch origin`, then `git checkout master` and finally `git merge origin master`. This means that you don't need to use `git clone` every time you want to make a change. The rest of the steps above remain the same.
 
+ - Once your pull request has been accepted *please* merge it ASAP, because if you wait too long the next pull request made my someone else may not be able to be merged as it will be made on an out of date version of the project.
+
 ## List of guidelines for code formatting
 
 ### Do:
