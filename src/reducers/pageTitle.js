@@ -1,0 +1,1 @@
+export default (state = "Home", action) => action.type === "CHANGE_PAGE_TITLE" ? action.payload : state;
