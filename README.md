@@ -31,7 +31,7 @@ This is a really quick tutorial on how to set up development on the project:
 ## List of guidelines for code formatting
 
 ### Do:
- - Use double quotes instead os single quotes
+ - Use double quotes instead of single quotes
  - Use camel case for all variables (First letter capitalised for Components, otherwise uncapitalised)
  - Use desctiptive variable names (e.g. circleRadius instead of size)
  - Comment your code where necessary
