@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
 import { useSelector } from "react-redux";
-import Color from "color";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     topBar: {
@@ -25,6 +25,8 @@ const useStyles = makeStyles(theme => ({
                 width: "100%",
             },
         },
+    },
+    homeImg: {
         [theme.breakpoints.down(470)]: {
             position: "absolute",
             top: 0,
@@ -38,13 +40,13 @@ const useStyles = makeStyles(theme => ({
         flex: 1,
         flexDirection: "column",
         zIndex: 1000,
-        margin: 16,
         textAlign: "center",
         borderRadius: 16,
         padding: 16,
         [theme.breakpoints.down("md")]: {
             textAlign: "right",
             alignItems: "flex-end",
+            margin: 16,
         },
         [theme.breakpoints.down(900)]: {
             position: "absolute",
@@ -55,6 +57,8 @@ const useStyles = makeStyles(theme => ({
             alignItems: "center",
             //backgroundColor: Color(theme.palette.primary.main).alpha(0.5).string(),
         },
+    },
+    homeMsg: {
         [theme.breakpoints.down(470)]: {
             position: "static",
             margin: 0,
@@ -74,29 +78,31 @@ export default () => {
         classes = useStyles(),
         [date, setDate] = useState(new Date()),
         { pageTitle } = useSelector(state => state),
+        { pathname } = useLocation(),
+        isHome = pathname === "/home" || pathname === "/",
         message = date.getHours() < 12
         ? "Morning"
         : date.getHours() < 18
             ? "Afternoon"
-            : "Afternoon";
+            : "Evening";
     useEffect(() => {
         const updateDate = setInterval(() => setDate(new Date()), 1000);
         return () => clearInterval(updateDate);
     }, []);
     return (
-        <div className={classes.topBar}>
+        <div className={`${classes.topBar} ${isHome && classes.homeImg}`}>
             <img
                 src="/images/dots.png"
                 alt=""
                 className={classes.img}
             />
-            <div className={classes.messageContainer}>
+            <div className={`${classes.messageContainer} ${isHome && classes.homeMsg}`}>
                 <Typography variant="h2" gutterBottom>
-                    {pageTitle === "Home"
+                    {isHome
                         ? <span>Good {message}, <span className={classes.highlight}>Pratyaksh</span></span>
                     : pageTitle}
                 </Typography>
-                {pageTitle === "Home" &&
+                {isHome &&
                     <Typography variant="h4">
                         {date.toLocaleDateString() + " " + date.toLocaleTimeString()}
                     </Typography>

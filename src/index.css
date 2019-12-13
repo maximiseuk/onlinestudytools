@@ -4,3 +4,36 @@ body, html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+@keyframes fadeup {
+    0% {
+        opacity: 0;
+        transform: translate(0px, 256px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@-webkit-keyframes fadeup {
+    0% {
+        opacity: 0;
+        transform: translate(0px, 256px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@-moz-keyframes fadeup {
+    0% {
+        opacity: 0;
+        transform: translate(0px, 256px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+.fade {
+    animation: fadeup 1s forwards;
+}

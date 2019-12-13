@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useLocation } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
 
 export default () => {
     const
+        location = useLocation(),
         palette = useSelector(state => state.theme),
         theme = {
             palette,
@@ -47,7 +48,12 @@ export default () => {
                         "&:active, &:focus, &:hover": {
                             boxShadow: "none",
                         },
+                        textTransform: "capitalize",
                         borderRadius: 8,
+                    },
+                    label: {
+                        letterSpacing: "initial",
+                        fontWeight: 700,
                     },
                 },
                 MuiTypography: {
@@ -110,8 +116,6 @@ export default () => {
                 />
                 <title>{pageTitle} • Maximise</title>
             </Helmet>
-            <Route
-                render={({ location }) => (
                     <div className={classes.root}>
                         <div className={classes.mainContainer}>
                             <TopBar />
@@ -123,30 +127,28 @@ export default () => {
                                         </div>
                                     }
                                 >
-                                    <Switch location={location}>
-                                        <Route
-                                            component={Home}
-                                            exact
-                                            path="/(home||)/"
-                                        />
-                                        {Object.keys(components).map(component => {
-                                            return (
+                                            <Switch location={location}>
                                                 <Route
-                                                    component={components[component]}
+                                                    component={Home}
                                                     exact
-                                                    path={`/${component.toLowerCase()}/`}
-                                                    key={component}
+                                                    path="/(home||)/"
                                                 />
-                                            );
-                                        })}
-                                        <Route component={Page404} />
-                                    </Switch>
+                                                {Object.keys(components).map(component => {
+                                                    return (
+                                                        <Route
+                                                            component={components[component]}
+                                                            exact
+                                                            path={`/${component.toLowerCase()}/`}
+                                                            key={component}
+                                                        />
+                                                    );
+                                                })}
+                                                <Route component={Page404} />
+                                            </Switch>
                                 </Suspense>
                             </PageLoadError>
                         </div>
                     </div>
-                )}
-            />
         </MuiThemeProvider>
     );
 };

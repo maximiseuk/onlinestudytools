@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import Paper from "@material-ui/core/Paper";
+import { Link } from "react-router-dom";
 
 export default () => {
     const dispatch = useDispatch();
@@ -11,6 +13,8 @@ export default () => {
         });
     }, []);
     return (
-        <div>hello</div>
+        <Paper className="fade">
+            Home <Link to="/login">login</Link>
+        </Paper>
     );
 };
