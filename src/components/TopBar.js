@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
-import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import getCookie from "../api/cookies";
 
 const useStyles = makeStyles(theme => ({
     topBar: {
@@ -11,12 +11,14 @@ const useStyles = makeStyles(theme => ({
         marginBottom: 16,
     },
     img: {
-        width: 360,
         maxWidth: 400,
         [theme.breakpoints.down("md")]: {
             "&:last-child": {
                 right: 0,
-                display: "none"
+                bottom: 0,
+                transform: "rotate(180deg)",
+                position: "absolute",
+                zIndex: 1,
             },
             zIndex: 999,
         },
@@ -27,8 +29,8 @@ const useStyles = makeStyles(theme => ({
         },
     },
     homeImg: {
-        [theme.breakpoints.down(470)]: {
-            position: "absolute",
+        [theme.breakpoints.down(600)]: {
+            position: "absolute !important",
             top: 0,
             left: 0,
         },
@@ -43,6 +45,7 @@ const useStyles = makeStyles(theme => ({
         textAlign: "center",
         borderRadius: 16,
         padding: 16,
+        paddingBottom: 0,
         [theme.breakpoints.down("md")]: {
             textAlign: "right",
             alignItems: "flex-end",
@@ -57,9 +60,10 @@ const useStyles = makeStyles(theme => ({
             alignItems: "center",
             //backgroundColor: Color(theme.palette.primary.main).alpha(0.5).string(),
         },
+        animation: "fadedown 1s forwards",
     },
     homeMsg: {
-        [theme.breakpoints.down(470)]: {
+        [theme.breakpoints.down(600)]: {
             position: "static",
             margin: 0,
             marginTop: 0,
@@ -71,14 +75,19 @@ const useStyles = makeStyles(theme => ({
             color: theme.palette.text.primary,
         },
     },
+    dateTime: {
+        [theme.breakpoints.down(600)]: {
+            display: "none",
+        },
+    },
 }));
 
 export default () => {
     const
         classes = useStyles(),
         [date, setDate] = useState(new Date()),
-        { pageTitle } = useSelector(state => state),
         { pathname } = useLocation(),
+        [email, setEmail] = useState(getCookie("email")),
         isHome = pathname === "/home" || pathname === "/",
         message = date.getHours() < 12
         ? "Morning"
@@ -89,22 +98,38 @@ export default () => {
         const updateDate = setInterval(() => setDate(new Date()), 1000);
         return () => clearInterval(updateDate);
     }, []);
+    useEffect(() => {
+        setEmail(getCookie("email"));
+    }, [document.cookie]);
     return (
-        <div className={`${classes.topBar} ${isHome && classes.homeImg}`}>
+        <div className={classes.topBar} key={pathname}>
             <img
                 src="/images/dots.png"
                 alt=""
-                className={classes.img}
+                className={`${classes.img} ${isHome && classes.homeImg}`}
             />
             <div className={`${classes.messageContainer} ${isHome && classes.homeMsg}`}>
                 <Typography variant="h2" gutterBottom>
                     {isHome
-                        ? <span>Good {message}, <span className={classes.highlight}>Pratyaksh</span></span>
-                    : pageTitle}
+                        ? email !== ""
+                            ? <span>
+                                Good {message},{" "}
+                                <span className={classes.highlight}>
+                                    Pratyaksh
+                                </span>
+                            </span>
+                        : <span>
+                            Welcome to{" "}
+                            <span className={classes.highlight}>
+                                Maximise
+                            </span>
+                        </span>
+                        : window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).substr(1)
+                    }
                 </Typography>
-                {isHome &&
-                    <Typography variant="h4">
-                        {date.toLocaleDateString() + " " + date.toLocaleTimeString()}
+                {isHome && email !== "" &&
+                    <Typography variant="h4" className={classes.dateTime}>
+                        {date.toLocaleDateString() + " " + date.toLocaleTimeString().substring(0, 5)}
                     </Typography>
                 }
             </div>

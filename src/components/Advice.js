@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 export default () => {
     return (
         <Paper className="fade">
-            Settings
+            Advice
         </Paper>
     );
 };

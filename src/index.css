@@ -34,6 +34,60 @@ body, html {
         transform: translate(0px, 0px);
     }
 }
+@keyframes fadedown {
+    0% {
+        opacity: 0;
+        transform: translate(0px, -64px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@-webkit-keyframes fadedown {
+    0% {
+        opacity: 0;
+        transform: translate(0px, -64px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@-moz-keyframes fadedown {
+    0% {
+        opacity: 0;
+        transform: translate(0px, -64px);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-webkit-keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@-moz-keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 .fade {
     animation: fadeup 1s forwards;
 }
