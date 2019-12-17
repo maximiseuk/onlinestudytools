@@ -46,6 +46,11 @@ export default () => {
         palette = useSelector(state => state.theme),
         theme = {
             palette,
+            props: {
+                MuiButton: {
+                    color: "primary",
+                },
+            },
             overrides: {
                 MuiPaper: {
                     root: {

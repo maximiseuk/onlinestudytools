@@ -38,11 +38,28 @@ const useStyles = makeStyles(theme => ({
         borderRadius: 16,
         backgroundColor: theme.palette.background.paper,
         zIndex: 1000,
+        [theme.breakpoints.down(800)]: {
+            display: "none",
+        },
     },
     link: {
         margin: 8,
         marginRight: 0,
         zIndex: 1000,
+    },
+    drawer: {
+        display: "flex",
+        flexDirection: "column",
+        "& a, & button": {
+
+        },
+    },
+    drawerContainer: {
+        [theme.breakpoints.up(800)]: {
+            display: "none",
+        },
+        width: "100%",
+        paddingRight: 16,
     },
 }));
 
@@ -58,7 +75,30 @@ export default () => {
             }
             setOpen(open);
         },
-        links = ["Home", "Settings", "Help", "Goals", "Leaderboard", "Todos", "Timetable"];
+        links = ["Home", "Settings", "Help", "Goals", "Leaderboard", "Todos", "Timetable"],
+        linkBtns = links.map((link, i) => (
+            <Button
+                key={i}
+                variant={"/" + link.toLowerCase() === location.pathname
+                    ? "contained"
+                    : "outlined"
+                }
+                color="primary"
+                className={classes.link}
+                component={"/" + link.toLowerCase() === location.pathname
+                    ? "button"
+                    : Link
+                }
+                style={{
+                    animation: !animated ? "fadein 1s forwards" : "none",
+                    animationDelay: !animated ? (i + 1) / links.length + "s" : "0s",
+                    opacity: !animated ? 0 : 1,
+                }}
+                to={`/${link.toLowerCase()}`}
+            >
+                {link}
+            </Button>
+        ));
     useEffect(() => {
         setTimeout(() => {
             setAnimated(true);
@@ -66,34 +106,10 @@ export default () => {
     }, [])
     return (
         <Fragment>
-            <Hidden smDown>
                 <div className={classes.links}>
-                    {links.map((link, i) => (
-                        <Button
-                            key={i}
-                            variant={"/" + link.toLowerCase() === location.pathname
-                                ? "contained"
-                                : "outlined"
-                            }
-                            color="primary"
-                            className={classes.link}
-                            component={"/" + link.toLowerCase() === location.pathname
-                                ? "button"
-                                : Link
-                            }
-                            style={{
-                                animation: !animated ? "fadein 1s forwards" : "none",
-                                animationDelay: !animated ? (i + 1) / links.length + "s" : "0s",
-                                opacity: !animated ? 0 : 1,
-                            }}
-                            to={`/${link.toLowerCase()}`}
-                        >
-                            {link}
-                        </Button>
-                    ))}
+                    {linkBtns}
                 </div>
-            </Hidden>
-            <Hidden mdUp>
+            <div className={classes.drawerContainer}>
                 <Button
                     onClick={toggleDrawer(true)}
                     variant="contained"
@@ -101,6 +117,7 @@ export default () => {
                     className={classes.link}
                     style={{
                         marginBottom: 16,
+                        width: "calc(100% - 16px)",
                     }}
                 >
                     Links <ArrowUpIcon />
@@ -114,31 +131,15 @@ export default () => {
                     disableSwipeToOpen={true}
                 >
                     <div
-                        className={classes.fullList}
+                        className={classes.drawer}
                         role="presentation"
                         onClick={toggleDrawer(false)}
                         onKeyDown={toggleDrawer(false)}
                     >
-                        <List>
-                            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                                <ListItem button key={text}>
-                                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItem>
-                            ))}
-                        </List>
-                        <Divider />
-                        <List>
-                            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                                <ListItem button key={text}>
-                                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItem>
-                            ))}
-                        </List>
+                        {linkBtns}
                     </div>
                 </SwipeableDrawer>
-            </Hidden>
+                </div>
         </Fragment>
     );
 };
