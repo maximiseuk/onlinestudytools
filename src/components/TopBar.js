@@ -9,6 +9,9 @@ const useStyles = makeStyles(theme => ({
         display: "flex",
         justifyContent: "space-between",
         marginBottom: 16,
+        [theme.breakpoints.down(900)]: {
+            marginBottom: 0,
+        },
     },
     img: {
         maxWidth: 400,
@@ -60,6 +63,10 @@ const useStyles = makeStyles(theme => ({
             alignItems: "center",
             //backgroundColor: Color(theme.palette.primary.main).alpha(0.5).string(),
         },
+        [theme.breakpoints.down(600)]: {
+            padding: 8,
+            paddingBottom: 0,
+        },
         animation: "fadedown 1s forwards",
     },
     homeMsg: {
@@ -80,6 +87,16 @@ const useStyles = makeStyles(theme => ({
             display: "none",
         },
     },
+    desktopMsg: {
+        [theme.breakpoints.down(600)]: {
+            display: "none",
+        },
+    },
+    mobileMsg: {
+        [theme.breakpoints.up(600)]: {
+            display: "none",
+        },
+    }
 }));
 
 export default () => {
@@ -113,7 +130,12 @@ export default () => {
                     {isHome
                         ? email !== ""
                             ? <span>
-                                Good {message},{" "}
+                                <span className={classes.desktopMsg}>
+                                    Good {message},{" "}
+                                </span>
+                                <span className={classes.mobileMsg}>
+                                    Hi,{" "}
+                                </span>
                                 <span className={classes.highlight}>
                                     Pratyaksh
                                 </span>
