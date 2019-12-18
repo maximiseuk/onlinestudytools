@@ -1,10 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Suspense, lazy, useState, useEffect } from "react";
-import { Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch, useLocation, Link } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import SettingsIcon from "@material-ui/icons/Settings";
+import Tooltip from "@material-ui/core/Tooltip";
 import PageLoadError from "./PageLoadError";
 import Page404 from "./Page404";
 import TopBar from "./TopBar";
@@ -38,6 +42,15 @@ const useStyles = makeStyles(theme => ({
         animation: "fadein 1s forwards",
         opacity: 0,
         margin: "8px 4px",
+    },
+    floating: {
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 1000,
+        "& > :first-child": {
+            marginRight: 8,
+        }
     },
 }));
 
@@ -216,6 +229,33 @@ export default () => {
                         </div>
                     </PageLoadError>
                     {email !== "" && location.pathname !== "/" && location.pathname !== "/home" && <Navigation />}
+                    {(location.pathname === "/" || location.pathname === "/home") &&
+                        <div className={classes.floating}>
+                            <Button
+                                variant="contained"
+                                component={Link}
+                                to="/help"
+                            >
+                                Ask a question
+                            </Button>
+                            <Tooltip title="Settings" placement="top">
+                                <IconButton
+                                    color="default"
+                                    component={Link}
+                                    to="/settings"
+                                    size="large"
+                                >
+                                    <SettingsIcon
+                                        style={{
+                                            height: 36,
+                                            width: 36,
+                                            color: palette.type === "light" ? "black" : "white"
+                                        }}
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    }
                 </div>
             </div>
         </MuiThemeProvider>

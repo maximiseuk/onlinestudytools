@@ -19,22 +19,23 @@ const useStyles = makeStyles(theme => ({
         margin: 8,
         minWidth: 280,
         [theme.breakpoints.down(1024)]: {
-            minWidth: "initial",
-        },
+            minWidth: "initial"
+        }
     },
     swiper: {
         "& > div > div > .MuiPaper-root": {
-            height: "calc(100% - 48px)",
+            height: "calc(100% - 48px)"
         },
         [theme.breakpoints.up(1024)]: {
-            display: "none",
-        },
+            display: "none"
+        }
     },
     views: {
         [theme.breakpoints.down(1024)]: {
-            display: "none",
+            display: "none"
         },
         display: "flex",
+        margin: "0 auto"
     },
     stepper: {
         [theme.breakpoints.up(1024)]: {
@@ -46,40 +47,48 @@ const useStyles = makeStyles(theme => ({
         overflow: "hidden",
         textOverflow: "ellipsis",
     },
+    emphasis: {
+        fontWeight: 500,
+    },
 }));
 
 export default () => {
-    const
-        classes = useStyles(),
+    const classes = useStyles(),
         [activeStep, setActiveStep] = useState(0),
         exams = [
             {
                 subject: "Maths",
                 topics: ["Quadratics", "graph sketching"],
-                date: "13/12/19",
+                date: "13/12/19"
             },
             {
                 subject: "Physics",
                 topics: ["Circuit diagrams", "I-V characteristics"],
-                date: "14/12/19",
-            },
+                date: "14/12/19"
+            }
         ],
         agenda = [
             {
                 todo: "Revise Maths",
                 notes: "Do practice questions",
-                date: "14/12/19",
-            },
+                date: "14/12/19"
+            }
         ],
         advice = [
             {
                 title: "Stay hydrated",
-                notes: "Keeps brain healthy",
+                notes: "Keeps brain healthy"
             },
             {
                 title: "Think positively",
-                notes: "Being rained on is good",
-            },
+                notes: "Being rained on is good"
+            }
+        ],
+        goals = [
+            {
+                subject: "Maths",
+                desc: "Beat Pratyaksh"
+            }
         ],
         examView = (
             <Paper className={classes.item}>
@@ -87,16 +96,22 @@ export default () => {
                     Upcoming <span className="highlight">Exams</span>
                 </Typography>
                 {exams.map((exam, i) => (
-                    <Card key={i} style={{ marginBottom: i !== exams.length - 1 ? 8 : 0, }}>
+                    <Card
+                        key={i}
+                        style={{ marginBottom: i !== exams.length - 1 ? 8 : 0 }}
+                    >
                         <CardContent>
-                            <Typography variant="h5" className="highlight">
+                            <Typography variant="h5" className={classes.emphasis}>
                                 {exam.subject}
-                                <span style={{ float: "right", fontSize: 16, }}>
+                                <span style={{ float: "right", fontSize: 16 }}>
                                     {exam.date}
                                 </span>
                             </Typography>
                             <Typography className={classes.info}>
-                                {exam.topics.map((topic, i) => topic + (i !== exam.topics.length - 1 ? ", " : ""))}
+                                {exam.topics.map(
+                                    (topic, i) =>
+                                        topic + (i !== exam.topics.length - 1 ? ", " : "")
+                                )}
                             </Typography>
                         </CardContent>
                     </Card>
@@ -106,10 +121,10 @@ export default () => {
                     to="/timetable"
                     variant="contained"
                     color="primary"
-                    style={{marginTop: 16}}
+                    style={{ marginTop: 16 }}
                 >
                     View Timetable
-                </Button>
+        </Button>
             </Paper>
         ),
         todosView = (
@@ -118,17 +133,34 @@ export default () => {
                     Your <span className="highlight">Agenda</span>
                 </Typography>
                 {agenda.map((todo, i) => (
-                    <Card key={i} style={{ marginBottom: i !== agenda.length - 1 ? 8 : 0, }}>
+                    <Card
+                        key={i}
+                        style={{ marginBottom: i !== agenda.length - 1 ? 8 : 0 }}
+                    >
                         <CardContent>
-                            <Typography variant="h5" className="highlight">
+                            <Typography variant="h5" className={classes.emphasis}>
                                 {todo.todo}
-                                <span style={{ float: "right", fontSize: 16, }}>
+                                <span style={{ float: "right", fontSize: 16 }}>
                                     {todo.date}
                                 </span>
                             </Typography>
-                            <Typography className={classes.info}>
-                                {todo.notes}
+                            <Typography className={classes.info}>{todo.notes}</Typography>
+                        </CardContent>
+                    </Card>
+                ))}
+                <Typography variant="h4" gutterBottom style={{ marginTop: 8 }}>
+                    Your <span className="highlight">Goals</span>
+                </Typography>
+                {goals.map((goal, i) => (
+                    <Card
+                        key={i}
+                        style={{ marginBottom: i !== agenda.length - 1 ? 8 : 0 }}
+                    >
+                        <CardContent>
+                            <Typography variant="h5" className={classes.emphasis}>
+                                {goal.subject}
                             </Typography>
+                            <Typography className={classes.info}>{goal.desc}</Typography>
                         </CardContent>
                     </Card>
                 ))}
@@ -137,26 +169,36 @@ export default () => {
                     to="/todos"
                     variant="contained"
                     color="primary"
-                    style={{marginTop: 16}}
+                    style={{ marginTop: 16, marginRight: 8 }}
                 >
                     Go To Todos
+                </Button>
+                <Button
+                    component={Link}
+                    to="/goals"
+                    variant="contained"
+                    color="primary"
+                    style={{ marginTop: 16, }}
+                >
+                    Go To Goals
                 </Button>
             </Paper>
         ),
         adviceView = (
             <Paper className={classes.item}>
                 <Typography variant="h4" gutterBottom>
-                    Wellbeing <span className="highlight">Advice</span>
+                    <span className="highlight">Advice</span>
                 </Typography>
                 {advice.map((tip, i) => (
-                    <Card key={i} style={{ marginBottom: i !== advice.length - 1 ? 8 : 0, }}>
+                    <Card
+                        key={i}
+                        style={{ marginBottom: i !== advice.length - 1 ? 8 : 0 }}
+                    >
                         <CardContent>
-                            <Typography variant="h5" className="highlight">
+                            <Typography variant="h5" className={classes.emphasis}>
                                 {tip.title}
                             </Typography>
-                            <Typography className={classes.info}>
-                                {tip.notes}
-                            </Typography>
+                            <Typography className={classes.info}>{tip.notes}</Typography>
                         </CardContent>
                     </Card>
                 ))}
@@ -165,48 +207,53 @@ export default () => {
                     to="/advice"
                     variant="contained"
                     color="primary"
-                    style={{marginTop: 16}}
+                    style={{ marginTop: 16 }}
                 >
                     Go To Advice
-                </Button>
+        </Button>
             </Paper>
         );
     return (
         <div className="fade">
-                <SwipeableViews
-                    index={activeStep}
-                    onChangeIndex={step => setActiveStep(step)}
-                    enableMouseEvents
-                    className={classes.swiper}
-                >
-                    {examView}
-                    {todosView}
-                    {adviceView}
-                </SwipeableViews>
-                <MobileStepper
-                    variant="dots"
-                    className={classes.stepper}
-                    steps={3}
-                    position="static"
-                    activeStep={activeStep}
-                    nextButton={
-                        <IconButton size="small" onClick={() => setActiveStep(activeStep + 1)} disabled={activeStep === 2}>
-                            <KeyboardArrowRightIcon />
-                        </IconButton>
-                    }
-                    backButton={
-                        <IconButton size="small" onClick={() => setActiveStep(activeStep - 1)} disabled={activeStep === 0}>
-                            <KeyboardArrowLeftIcon />
-                        </IconButton>
-                    }
-                />
-                <div className={classes.views}>
-                    {examView}
-                    {todosView}
-                    {adviceView}
-                </div>
-            <div>
-
+            <SwipeableViews
+                index={activeStep}
+                onChangeIndex={step => setActiveStep(step)}
+                enableMouseEvents
+                className={classes.swiper}
+            >
+                {examView}
+                {todosView}
+                {adviceView}
+            </SwipeableViews>
+            <MobileStepper
+                variant="dots"
+                className={classes.stepper}
+                steps={3}
+                position="static"
+                activeStep={activeStep}
+                nextButton={
+                    <IconButton
+                        size="small"
+                        onClick={() => setActiveStep(activeStep + 1)}
+                        disabled={activeStep === 2}
+                    >
+                        <KeyboardArrowRightIcon />
+                    </IconButton>
+                }
+                backButton={
+                    <IconButton
+                        size="small"
+                        onClick={() => setActiveStep(activeStep - 1)}
+                        disabled={activeStep === 0}
+                    >
+                        <KeyboardArrowLeftIcon />
+                    </IconButton>
+                }
+            />
+            <div className={classes.views}>
+                {examView}
+                {todosView}
+                {adviceView}
             </div>
         </div>
     );
