@@ -144,7 +144,7 @@ export default () => {
   return (
     <div className={classes.topBar} key={pathname}>
       <img
-        src="/images/dots.png"
+        src="/dots.png"
         alt=""
         className={`${classes.img} ${isHome && classes.homeImg}`}
       />
