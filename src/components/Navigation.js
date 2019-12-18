@@ -1,37 +1,11 @@
 import React, { useState, Fragment, useEffect } from "react";
 import Button from "@material-ui/core/Button";
-import Hidden from "@material-ui/core/Hidden";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import { Link, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        height: "100vh",
-        width: "100vw",
-    },
-    loadingContainer: {
-        height: "100%",
-        width: "100%",
-        paddingTop: "40%",
-        textAlign: "center",
-    },
-    mainContainer: {
-        maxWidth: 2048,
-        margin: "0 auto",
-        padding: "0 16px",
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-    },
     links: {
         display: "flex",
         marginBottom: 8,
@@ -50,9 +24,6 @@ const useStyles = makeStyles(theme => ({
     drawer: {
         display: "flex",
         flexDirection: "column",
-        "& a, & button": {
-
-        },
     },
     drawerContainer: {
         [theme.breakpoints.up(800)]: {
@@ -106,9 +77,9 @@ export default () => {
     }, [])
     return (
         <Fragment>
-                <div className={classes.links}>
-                    {linkBtns}
-                </div>
+            <div className={classes.links}>
+                {linkBtns}
+            </div>
             <div className={classes.drawerContainer}>
                 <Button
                     onClick={toggleDrawer(true)}
@@ -139,7 +110,7 @@ export default () => {
                         {linkBtns}
                     </div>
                 </SwipeableDrawer>
-                </div>
+            </div>
         </Fragment>
     );
 };

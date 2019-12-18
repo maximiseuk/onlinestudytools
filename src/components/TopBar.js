@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
@@ -28,6 +29,13 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down(800)]: {
             "&:first-child": {
                 width: "100%",
+            },
+        },
+        [theme.breakpoints.down(600)]: {
+            position: "absolute !important",
+            "&:first-child": {
+                top: 0,
+                left: 0,
             },
         },
     },
@@ -66,6 +74,9 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down(600)]: {
             padding: 8,
             paddingBottom: 0,
+            position: "static",
+            margin: 0,
+            marginTop: 0,
         },
         animation: "fadedown 1s forwards",
     },
@@ -106,6 +117,7 @@ export default () => {
         { pathname } = useLocation(),
         [email, setEmail] = useState(getCookie("email")),
         isHome = pathname === "/home" || pathname === "/",
+        routes = ["/home", "/settings", "/help", "/goals", "/leaderboard", "/todos", "/timetable", "/signup", "/login", "/"],
         message = date.getHours() < 12
         ? "Morning"
         : date.getHours() < 18
@@ -146,7 +158,9 @@ export default () => {
                                 Maximise
                             </span>
                         </span>
-                        : window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).substr(1)
+                        : routes.includes(pathname)
+                            ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).substr(1)
+                            : "Page Not Found"
                     }
                 </Typography>
                 {isHome && email !== "" &&

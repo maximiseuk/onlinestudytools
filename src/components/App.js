@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Suspense, lazy, useState, useEffect } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from "react-redux";
@@ -44,6 +45,7 @@ export default () => {
     const
         location = useLocation(),
         palette = useSelector(state => state.theme),
+        [email, setEmail] = useState(getCookie("email")),
         theme = {
             palette,
             props: {
@@ -55,7 +57,7 @@ export default () => {
                 MuiPaper: {
                     root: {
                         padding: 16,
-                        boxShadow: "none",
+                        boxShadow: "none !important",
                     },
                     rounded: {
                         borderRadius: 16,
@@ -72,7 +74,7 @@ export default () => {
                 MuiButton: {
                     root: {
                         "&:active, &:focus, &:hover": {
-                            boxShadow: "none",
+                            boxShadow: "none !important",
                         },
                         textTransform: "capitalize",
                         borderRadius: 8,
@@ -115,7 +117,9 @@ export default () => {
             Signup: lazy(() => import("./Signup")),
             Login : lazy(() => import("./Login")),
         };
-        
+    useEffect(() => {
+        setEmail(getCookie("email"));
+    }, [document.cookie]);
     return (
         <MuiThemeProvider theme={muiTheme}>
             <Helmet
@@ -210,7 +214,7 @@ export default () => {
                             </Suspense>
                         </div>
                     </PageLoadError>
-                    <Navigation />
+                    {email !== "" && location.pathname !== "/" && location.pathname !== "/home" && <Navigation />}
                 </div>
             </div>
         </MuiThemeProvider>

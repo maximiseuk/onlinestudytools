@@ -27,7 +27,7 @@ const
     };
 export default (state = darkTheme, action) => {
     if (action.type === "TOGGLE_THEME_TYPE") {
-        return state === darkTheme ? lightTheme : darkTheme;
+        return action.payload ? lightTheme : darkTheme;
     } else {
         return state;
     }

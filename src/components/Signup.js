@@ -46,7 +46,7 @@ export default () => {
                         const d = new Date();
                         localStorage.setItem("email", values.email);
                         document.cookie = `email=${values.email}; expires ${d.getTime() + 4e12}; path=/`;
-                        history.push("/home");
+                        history.replace("/home");
                     /*}
                 })
                 .catch(() => {
