@@ -15,7 +15,7 @@ export default () => {
         });
     }, []);
     return (
-        <Paper>
+        <Paper className="fade">
             <Typography variant="h4" gutterBottom>
                 Uh oh...
             </Typography>

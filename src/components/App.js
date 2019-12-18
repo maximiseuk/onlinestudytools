@@ -1,12 +1,20 @@
-import React, { Suspense, lazy } from "react";
-import { Route, Switch } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { Suspense, lazy, useState, useEffect } from "react";
+import { Route, Switch, useLocation, Link } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import SettingsIcon from "@material-ui/icons/Settings";
+import Tooltip from "@material-ui/core/Tooltip";
 import PageLoadError from "./PageLoadError";
 import Page404 from "./Page404";
 import TopBar from "./TopBar";
+import Navigation from "./Navigation";
+import SnackbarError from "./SnackbarError";
+import getCookie from "../api/cookies";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -23,31 +31,74 @@ const useStyles = makeStyles(theme => ({
         maxWidth: 2048,
         margin: "0 auto",
         padding: "0 16px",
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+    },
+    links: {
+        display: "flex",
+    },
+    link: {
+        animation: "fadein 1s forwards",
+        opacity: 0,
+        margin: "8px 4px",
+    },
+    floating: {
+        position: "absolute",
+        bottom: 16,
+        right: 16,
+        zIndex: 1000,
+        "& > :first-child": {
+            marginRight: 8,
+        }
     },
 }));
 
 export default () => {
     const
+        location = useLocation(),
         palette = useSelector(state => state.theme),
+        [email, setEmail] = useState(getCookie("email")),
         theme = {
             palette,
+            props: {
+                MuiButton: {
+                    color: "primary",
+                },
+            },
             overrides: {
                 MuiPaper: {
                     root: {
-                        borderRadius: 16,
                         padding: 16,
-                        boxShadow: "none",
+                        boxShadow: "none !important",
                     },
                     rounded: {
                         borderRadius: 16,
                     },
                 },
+                MuiCard: {
+                    root: {
+                        borderRadius: 8,
+                        padding: 0,
+                        boxShadow: "none",
+                        backgroundColor: palette.background.default,
+                    },
+                },
                 MuiButton: {
                     root: {
                         "&:active, &:focus, &:hover": {
-                            boxShadow: "none",
+                            boxShadow: "none !important",
                         },
+                        boxShadow: "none !important",
+                        textTransform: "capitalize",
                         borderRadius: 8,
+                    },
+                    label: {
+                        letterSpacing: "initial",
+                        fontWeight: 700,
+                    },
+                    outlined: {
+                        borderWidth: "2px !important",
                     },
                 },
                 MuiTypography: {
@@ -55,23 +106,34 @@ export default () => {
                         color: createMuiTheme({ palette }).palette.text.primary,
                     },
                 },
+                MuiFilledInput: {
+                    root: {
+                        borderTopLeftRadius: 8,
+                        borderTopRightRadius: 8,
+                    },
+                },
             },
         },
-        { pageTitle } = useSelector(state => state),
         classes = useStyles(),
         muiTheme = createMuiTheme(theme),
-        Home = lazy(() => import("./Home")),
-        components = {
-            Signup: lazy(() => import("./Signup")),
-            Login : lazy(() => import("./Login")),
+        Home = getCookie("email") !== "" ? lazy(() => import("./Home")) : lazy(() => import("./LandingPage")),
+        components = getCookie("email") !== "" ? {
+            Advice: lazy(() => import("./Advice")),
             Settings: lazy(() => import("./Settings")),
             Help: lazy(() => import("./Help")),
             Goals: lazy(() => import("./Goals")),
             Leaderboard: lazy(() => import("./Leaderboard")),
             Todos: lazy(() => import("./Todos")),
             Timetable: lazy(() => import("./Timetable")),
+            Signup: lazy(() => import("./Signup")),
+            Login : lazy(() => import("./Login")),
+        } : {
+            Signup: lazy(() => import("./Signup")),
+            Login : lazy(() => import("./Login")),
         };
-        
+    useEffect(() => {
+        setEmail(getCookie("email"));
+    }, [document.cookie]);
     return (
         <MuiThemeProvider theme={muiTheme}>
             <Helmet
@@ -92,6 +154,28 @@ export default () => {
                                 color: ${muiTheme.palette.getContrastText(theme.palette.secondary.main)};
                                 background: ${muiTheme.palette.secondary.main};
                             }
+                            .highlight {
+                                color: ${palette.primary.main};
+                            }
+                            input:-webkit-autofill,
+                            input:-webkit-autofill:hover,
+                            input:-webkit-autofill:focus,
+                            input:-webkit-autofill,
+                            textarea:-webkit-autofill,
+                            textarea:-webkit-autofill:hover,
+                            textarea:-webkit-autofill:focus,
+                            select:-webkit-autofill,
+                            select:-webkit-autofill:hover,
+                            select:-webkit-autofill:focus {
+                                -webkit-box-shadow: 0 0 0px 1000px ${palette.background.default} inset !important;
+                                box-shadow: 0 0 0px 1000px ${palette.background.default} inset !important;
+                                background-color: ${palette.background.default} !important;
+                                -webkit-text-fill-color: ${muiTheme.palette.text.primary} !important;
+                                transition: background-color 1000s ease-in-out 0s !important;
+                                border-top-left-radius: 8px !important;
+                                border-top-right-radius: 8px !important;
+                                font-size: 1rem !important;
+                            }
                         `
                     }
                 ]}
@@ -108,45 +192,72 @@ export default () => {
                     name="apple-mobile-web-app-status-bar-style"
                     content={theme.palette.type === "dark" ? "black" : "default"}
                 />
-                <title>{pageTitle} • Maximise</title>
+                <title>{window.location.pathname !== "/" ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).substr(1) : "Home"} • Maximise</title>
             </Helmet>
-            <Route
-                render={({ location }) => (
-                    <div className={classes.root}>
-                        <div className={classes.mainContainer}>
-                            <TopBar />
-                            <PageLoadError>
-                                <Suspense
-                                    fallback={
-                                        <div className={classes.loadingContainer}>
-                                            <CircularProgress />
-                                        </div>
-                                    }
-                                >
-                                    <Switch location={location}>
-                                        <Route
-                                            component={Home}
-                                            exact
-                                            path="/(home||)/"
-                                        />
-                                        {Object.keys(components).map(component => {
-                                            return (
-                                                <Route
-                                                    component={components[component]}
-                                                    exact
-                                                    path={`/${component.toLowerCase()}/`}
-                                                    key={component}
-                                                />
-                                            );
-                                        })}
-                                        <Route component={Page404} />
-                                    </Switch>
-                                </Suspense>
-                            </PageLoadError>
+            <SnackbarError />
+            <div className={classes.root}>
+                <div className={classes.mainContainer}>
+                    <TopBar />
+                    <PageLoadError>
+                        <div style={{flex: 1, overflow: "auto", zIndex: 1000, }}>
+                            <Suspense
+                                fallback={
+                                    <div className={classes.loadingContainer}>
+                                        <CircularProgress />
+                                    </div>
+                                }
+                            >
+                                <Switch location={location}>
+                                    <Route
+                                        component={Home}
+                                        exact
+                                        path="/(home||)/"
+                                    />
+                                    {Object.keys(components).map(component => {
+                                        return (
+                                            <Route
+                                                component={components[component]}
+                                                exact
+                                                path={`/${component.toLowerCase()}`}
+                                                key={component}
+                                            />
+                                        );
+                                    })}
+                                    <Route component={Page404} />
+                                </Switch>
+                            </Suspense>
                         </div>
-                    </div>
-                )}
-            />
+                    </PageLoadError>
+                    {email !== "" && location.pathname !== "/" && location.pathname !== "/home" && <Navigation />}
+                    {(location.pathname === "/" || location.pathname === "/home") &&
+                        <div className={classes.floating}>
+                            <Button
+                                variant="contained"
+                                component={Link}
+                                to="/help"
+                            >
+                                Ask a question
+                            </Button>
+                            <Tooltip title="Settings" placement="top">
+                                <IconButton
+                                    color="default"
+                                    component={Link}
+                                    to="/settings"
+                                    size="large"
+                                >
+                                    <SettingsIcon
+                                        style={{
+                                            height: 36,
+                                            width: 36,
+                                            color: palette.type === "light" ? "black" : "white"
+                                        }}
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    }
+                </div>
+            </div>
         </MuiThemeProvider>
     );
 };
