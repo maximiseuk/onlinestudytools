@@ -39,6 +39,7 @@ This is a really quick tutorial on how to set up development on the project:
  - Use ES6 syntax where possible
  - Compact code nicely (not so its unreadable, but avoid loads of nested for loops or ugly stuff like that)
  - Use const for variables where possible and declare varialbes with one const and then each variable indented on a new line
+ - Put commas at the end of objects
 
 ### Don't:
  - Lines longer than 80 characters
