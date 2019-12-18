@@ -109,24 +109,27 @@ const
             },
         },
         cup: {
-            position: "absolute",
             top: -60,
             left: 48,
             height: 250,
         },
         calc: {
-            position: "absolute",
             top: -84,
             right: 0,
             height: 300,
         },
         pen: {
-            position: "absolute",
             bottom: 0,
             left: 0,
             height: 150,
             transform: "translate(-32px, 32px)",
         },
+        object: {
+            position: "absolute",
+            [theme.breakpoints.down("md")]: {
+                display: "none",
+            },
+        }
     }));
 
 localStorage.quote = localStorage.quote === undefined
@@ -192,17 +195,17 @@ export default () => {
             <img
                 src="/images/cup.png"
                 alt=""
-                className={classes.cup}
+                className={`${classes.cup} ${classes.object}`}
             />
             <img
                 src="/images/calc.png"
                 alt=""
-                className={classes.calc}
+                className={`${classes.calc} ${classes.object}`}
             />
             <img
                 src="/images/pen.png"
                 alt=""
-                className={classes.pen}
+                className={`${classes.pen} ${classes.object}`}
             />
             <div
                 className={`${classes.messageContainer} ${isHome && classes.homeMsg}`}
