@@ -5,21 +5,12 @@ import Typography from "@material-ui/core/Typography";
 import { useLocation } from "react-router-dom";
 import getCookie from "../api/cookies";
 
-const
-    quotes = [
-        "Do well",
-        "Git gud",
-        "Git hub",
-        "Git scm",
-        "Get a life",
-        "Be smart",
-        "Get a 9",
-    ],
+const quotes = ["Do well", "Git gud", "Git hub", "Git scm", "Get a life", "Be smart", "Get a 9"],
     { random, floor } = Math,
     useStyles = makeStyles(theme => ({
         topBar: {
-            display: "flex",
-            justifyContent: "space-between",
+            display: "grid",
+            gridTemplateColumns: "[first] 20% auto [last] 20%",
             marginBottom: 16,
             [theme.breakpoints.down(900)]: {
                 marginBottom: 0
@@ -38,7 +29,7 @@ const
                 zIndex: 999
             },
             [theme.breakpoints.down(900)]: {
-                position: "absolute",
+                position: "absolute"
             },
             [theme.breakpoints.down(600)]: {
                 position: "absolute !important",
@@ -72,7 +63,6 @@ const
                 margin: 16
             },
             [theme.breakpoints.down(900)]: {
-                width: "calc(100% - 64px)",
                 textAlign: "center",
                 alignItems: "center"
                 //backgroundColor: Color(theme.palette.primary.main).alpha(0.5).string(),
@@ -82,100 +72,80 @@ const
                 paddingBottom: 0,
                 position: "static",
                 margin: 0,
-                marginTop: 0,
+                marginTop: 0
             },
             animation: "fadedown 1s forwards"
         },
         highlight: {
             color: theme.palette.primary.main,
             [theme.breakpoints.down(900)]: {
-                color: theme.palette.text.primary,
-            },
+                color: theme.palette.text.primary
+            }
         },
         quote: {
             color: theme.palette.text.hint,
             [theme.breakpoints.down(600)]: {
-                display: "none",
-            },
+                display: "none"
+            }
         },
         desktopMsg: {
             [theme.breakpoints.down(600)]: {
-                display: "none",
-            },
+                display: "none"
+            }
         },
         mobileMsg: {
             [theme.breakpoints.up(600)]: {
-                display: "none",
-            },
+                display: "none"
+            }
         },
         cup: {
             top: -60,
             left: 48,
-            height: 250,
+            height: 250
         },
         calc: {
             top: -84,
             right: 0,
-            height: 300,
+            height: 300
         },
         pen: {
             bottom: 0,
             left: 0,
             height: 150,
-            transform: "translate(-32px, 32px)",
+            transform: "translate(-32px, 32px)"
         },
         object: {
             position: "absolute",
             [theme.breakpoints.down("md")]: {
-                display: "none",
-            },
+                display: "none"
+            }
         }
     }));
 
-localStorage.quote = localStorage.quote === undefined
-    ? quotes[floor(random() * quotes.length)]
-    : localStorage.quote;
+localStorage.quote = localStorage.quote === undefined ? quotes[floor(random() * quotes.length)] : localStorage.quote;
 
 export default () => {
-    const
-        classes = useStyles(),
+    const classes = useStyles(),
         [quote, setQuote] = useState({
             quote: localStorage.quote,
-            date: new Date(),
+            date: new Date()
         }),
         [date, setDate] = useState(new Date()),
         { pathname } = useLocation(),
         [email, setEmail] = useState(getCookie("email")),
         isHome = pathname === "/home" || pathname === "/",
-        routes = [
-            "/home",
-            "/settings",
-            "/help",
-            "/goals",
-            "/leaderboard",
-            "/todos",
-            "/timetable",
-            "/signup",
-            "/login",
-            "/"
-        ],
-        message =
-            date.getHours() < 12
-                ? "Morning"
-                : date.getHours() < 18
-                    ? "Afternoon"
-                    : "Evening";
+        routes = ["/home", "/settings", "/help", "/goals", "/leaderboard", "/todos", "/timetable", "/signup", "/login", "/"],
+        message = date.getHours() < 12 ? "Morning" : date.getHours() < 18 ? "Afternoon" : "Evening";
     useEffect(() => {
         const updateDate = setInterval(() => {
-            const
-                now = new Date(),
+            const now = new Date(),
                 { date } = quote;
             setDate(now);
             if (!(now.getDate() === date.getDate() && now.getMonth() === date.getMonth() && now.getFullYear() === date.getFullYear())) {
                 const index = floor(random() * quotes.length);
                 setQuote({
                     quote: quotes[index],
-                    date: now,
+                    date: now
                 });
                 localStorage.quote = quotes[index];
             }
@@ -187,29 +157,11 @@ export default () => {
     }, [document.cookie]);
     return (
         <div className={classes.topBar} key={pathname}>
-            <img
-                src="/images/dots.png"
-                alt=""
-                className={`${classes.img} ${isHome && classes.homeImg}`}
-            />
-            <img
-                src="/images/cup.png"
-                alt=""
-                className={`${classes.cup} ${classes.object}`}
-            />
-            <img
-                src="/images/calc.png"
-                alt=""
-                className={`${classes.calc} ${classes.object}`}
-            />
-            <img
-                src="/images/pen.png"
-                alt=""
-                className={`${classes.pen} ${classes.object}`}
-            />
-            <div
-                className={`${classes.messageContainer} ${isHome && classes.homeMsg}`}
-            >
+            <img src="/images/dots.png" alt="" className={`${classes.img} ${isHome && classes.homeImg}`} />
+            <img src="/images/cup.png" alt="" className={`${classes.cup} ${classes.object}`} />
+            <img src="/images/calc.png" alt="" className={`${classes.calc} ${classes.object}`} />
+            <img src="/images/pen.png" alt="" className={`${classes.pen} ${classes.object}`} />
+            <div className={`${classes.messageContainer} ${isHome && classes.homeMsg}`}>
                 <Typography variant="h3" gutterBottom>
                     {isHome ? (
                         email !== "" ? (
@@ -224,9 +176,7 @@ export default () => {
                             </span>
                         )
                     ) : routes.includes(pathname) ? (
-                        window.location.pathname
-                            .replace(/\b\w/g, l => l.toUpperCase())
-                            .substr(1)
+                        window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).substr(1)
                     ) : (
                         "Page Not Found"
                     )}
