@@ -76,6 +76,7 @@ export default () => {
                         "&:active, &:focus, &:hover": {
                             boxShadow: "none !important",
                         },
+                        boxShadow: "none !important",
                         textTransform: "capitalize",
                         borderRadius: 8,
                     },
