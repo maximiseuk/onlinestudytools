@@ -16,43 +16,55 @@ import Navigation from "./Navigation";
 import SnackbarError from "./SnackbarError";
 import getCookie from "../api/cookies";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        height: "100vh",
-        width: "100vw",
-    },
-    loadingContainer: {
-        height: "100%",
-        width: "100%",
-        paddingTop: "40%",
-        textAlign: "center",
-    },
-    mainContainer: {
-        maxWidth: 2048,
-        margin: "0 auto",
-        padding: "0 16px",
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-    },
-    links: {
-        display: "flex",
-    },
-    link: {
-        animation: "fadein 1s forwards",
-        opacity: 0,
-        margin: "8px 4px",
-    },
-    floating: {
-        position: "absolute",
-        bottom: 16,
-        right: 16,
-        zIndex: 1000,
-        "& > :first-child": {
-            marginRight: 8,
-        }
-    },
-}));
+const
+    useStyles = makeStyles(theme => ({
+        root: {
+            height: "100vh",
+            width: "100vw",
+        },
+        loadingContainer: {
+            height: "100%",
+            width: "100%",
+            paddingTop: "40%",
+            textAlign: "center",
+        },
+        mainContainer: {
+            maxWidth: 2048,
+            margin: "0 auto",
+            padding: "0 16px",
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+        },
+        links: {
+            display: "flex",
+        },
+        link: {
+            animation: "fadein 1s forwards",
+            opacity: 0,
+            margin: "8px 4px",
+        },
+        floating: {
+            position: "absolute",
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+            "& > :first-child": {
+                marginRight: 8,
+            }
+        },
+    })),
+    components = {
+        Advice: lazy(() => import("./Advice")),
+        Settings: lazy(() => import("./Settings")),
+        Help: lazy(() => import("./Help")),
+        Goals: lazy(() => import("./Goals")),
+        Leaderboard: lazy(() => import("./Leaderboard")),
+        Todos: lazy(() => import("./Todos")),
+        Timetable: lazy(() => import("./Timetable")),
+        Signup: lazy(() => import("./Signup")),
+        Login : lazy(() => import("./Login")),
+    };
 
 export default () => {
     const
@@ -116,21 +128,7 @@ export default () => {
         },
         classes = useStyles(),
         muiTheme = createMuiTheme(theme),
-        Home = getCookie("email") !== "" ? lazy(() => import("./Home")) : lazy(() => import("./LandingPage")),
-        components = getCookie("email") !== "" ? {
-            Advice: lazy(() => import("./Advice")),
-            Settings: lazy(() => import("./Settings")),
-            Help: lazy(() => import("./Help")),
-            Goals: lazy(() => import("./Goals")),
-            Leaderboard: lazy(() => import("./Leaderboard")),
-            Todos: lazy(() => import("./Todos")),
-            Timetable: lazy(() => import("./Timetable")),
-            Signup: lazy(() => import("./Signup")),
-            Login : lazy(() => import("./Login")),
-        } : {
-            Signup: lazy(() => import("./Signup")),
-            Login : lazy(() => import("./Login")),
-        };
+        Home = getCookie("email") !== "" ? lazy(() => import("./Home")) : lazy(() => import("./LandingPage"));
     useEffect(() => {
         setEmail(getCookie("email"));
     }, [document.cookie]);
@@ -243,7 +241,6 @@ export default () => {
                                     color="default"
                                     component={Link}
                                     to="/settings"
-                                    size="large"
                                 >
                                     <SettingsIcon
                                         style={{

@@ -22,21 +22,26 @@ const
             justifyContent: "space-between",
             marginBottom: 16,
             [theme.breakpoints.down(900)]: {
-                marginBottom: 0
-            }
-        },
-        img: {
-            maxHeight: 200,
+                marginBottom: 0,
+            },
+            [theme.breakpoints.up("md")]: {
+                "& > div:first-child": {
+                    flexBasis: 300,
+                },
+            },
             [theme.breakpoints.down("md")]: {
-                "&:last-child": {
+                "& > img:last-child": {
                     right: 0,
                     bottom: 0,
                     transform: "rotate(180deg)",
                     position: "absolute",
-                    zIndex: 1
+                    zIndex: 1,
                 },
-                zIndex: 999
             },
+        },
+        img: {
+            maxHeight: 200,
+            zIndex: 999,
             [theme.breakpoints.down(900)]: {
                 position: "absolute",
             },
@@ -44,16 +49,16 @@ const
                 position: "absolute !important",
                 "&:first-child": {
                     top: 0,
-                    left: 0
-                }
-            }
+                    left: 0,
+                },
+            },
         },
         homeImg: {
             [theme.breakpoints.down(600)]: {
                 position: "absolute !important",
                 top: 0,
-                left: 0
-            }
+                left: 0,
+            },
         },
         messageContainer: {
             display: "flex",
@@ -187,11 +192,13 @@ export default () => {
     }, [document.cookie]);
     return (
         <div className={classes.topBar} key={pathname}>
+            <div>
             <img
                 src="/images/dots.png"
                 alt=""
                 className={`${classes.img} ${isHome && classes.homeImg}`}
             />
+            </div>
             <img
                 src="/images/cup.png"
                 alt=""
@@ -237,7 +244,11 @@ export default () => {
                     </Typography>
                 )}
             </div>
-            <img src="/images/lines.png" alt="" className={classes.img} />
+            <img
+                src="/images/lines.png"
+                alt=""
+                className={classes.img}
+            />
         </div>
     );
 };
