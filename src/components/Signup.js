@@ -46,7 +46,7 @@ export default () => {
         history = useHistory(),
         login = e => {
             e.preventDefault();
-                /*fetch("http://someurl", {
+                /*fetch("/signup", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

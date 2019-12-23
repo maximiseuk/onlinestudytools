@@ -26,7 +26,7 @@ export default () => {
                 setPasswordHelper("Please enter your password");
             }
             if (email !== "" && password !== "") {
-                /*fetch("http://someurl", {
+                /*fetch("/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

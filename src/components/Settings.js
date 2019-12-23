@@ -26,8 +26,8 @@ export default () => {
         classes = useStyles(),
         dispatch = useDispatch(),
         history = useHistory(),
-        { type } = useSelector(state => state.theme),
-        [lightTheme, setLightTheme] = useState(type === "light"),
+        isLight = useSelector(state => state.lightTheme),
+        [lightTheme, setLightTheme] = useState(isLight),
         initialState = {
             oldPassword: "",
             newPassword: "",
@@ -36,13 +36,51 @@ export default () => {
         [values, setValues] = useState(initialState),
         [helpers, setHelpers] = useState(initialState),
         save = () => {
-            dispatch({
-                type: "TOGGLE_THEME_TYPE",
-                payload: lightTheme,
-            });
+            const passwordData = helpers.repeatPassword === "" && helpers.password === "" && helpers.oldPassword === "" ? {
+                oldPassword: values.oldPassword,
+                newPassword: values.newPassword,
+            } : {};
+            /*fetch("/updateSettings", {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({
+                    lightTheme,
+                    ...passwordData,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data === "success") {*/
+                    dispatch({
+                        type: "TOGGLE_THEME_TYPE",
+                        payload: lightTheme,
+                    });
+                    const d = new Date();
+                    document.cookie = `theme=${lightTheme ? "light" : ""}; expires ${d.getTime() + 4e12}; path=/`;
+                /*} else {
+                    dispatch({
+                        type: "NEW_ERROR",
+                        payload: "There was an error updating your settings",
+                    });
+                }
+            })
+            .catch(() => {
+                dispatch({
+                    type: "NEW_ERROR",
+                    payload: "There was an error updating your settings",
+                });
+            });*/
         },
         logout = () => {
             document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            dispatch({
+                type: "TOGGLE_THEME_TYPE",
+                payload: false,
+            });
             history.replace("/");
         },
         handleChange = field => e => {

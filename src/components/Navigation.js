@@ -30,7 +30,6 @@ const useStyles = makeStyles(theme => ({
             display: "none",
         },
         width: "100%",
-        paddingRight: 16,
     },
 }));
 
@@ -46,7 +45,7 @@ export default () => {
             }
             setOpen(open);
         },
-        links = ["Home", "Settings", "Help", "Goals", "Leaderboard", "Todos", "Timetable"],
+        links = ["Home", "Settings", "Advice", "Help", "Goals", "Leaderboard", "Todos", "Timetable"],
         linkBtns = links.map((link, i) => (
             <Button
                 key={i}

@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     },
     swiper: {
         borderRadius: "8px 8px 0 0",
-    }
+    },
 }));
 
 export default () => {
@@ -118,6 +118,7 @@ export default () => {
                             marginBottom: type === "Wellbeing"
                                 ? 16
                                 : 0,
+                            borderRadius: "0 0 8px 8px",
                         }}
                         steps={advice[type].length}
                         position="static"
