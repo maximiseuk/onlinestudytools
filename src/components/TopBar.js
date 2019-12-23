@@ -131,6 +131,7 @@ const
         },
         object: {
             position: "absolute",
+            zIndex: 1000,
             [theme.breakpoints.down("md")]: {
                 display: "none",
             },
@@ -154,6 +155,7 @@ export default () => {
         isHome = pathname === "/home" || pathname === "/",
         routes = [
             "/home",
+            "/advice",
             "/settings",
             "/help",
             "/goals",
@@ -230,10 +232,11 @@ export default () => {
                                 Welcome to <span className={classes.highlight}>Maximise</span>
                             </span>
                         )
-                    ) : routes.includes(pathname) ? (
+                    ) : routes.includes("/" + pathname.split("/")[1]) ? (
                         window.location.pathname
                             .replace(/\b\w/g, l => l.toUpperCase())
                             .substr(1)
+                            .split("/")[0]
                     ) : (
                         "Page Not Found"
                     )}

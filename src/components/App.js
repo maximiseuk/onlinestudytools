@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Suspense, lazy, useState, useEffect } from "react";
-import { Route, Switch, useLocation, Link } from "react-router-dom";
+import { Route, Switch, useLocation, Link, Redirect } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
@@ -31,7 +31,7 @@ const
         mainContainer: {
             maxWidth: 2048,
             margin: "0 auto",
-            padding: "0 16px",
+            padding: "0 8px",
             display: "flex",
             flexDirection: "column",
             height: "100vh",
@@ -51,9 +51,20 @@ const
             zIndex: 1000,
             "& > :first-child": {
                 marginRight: 8,
-            }
+            },
+            [theme.breakpoints.down(800)]: {
+                position: "static",
+            },
+        },
+        pageContainer: {
+            flex: 1,
+            overflow: "auto",
+            zIndex: 1000, 
+            paddingBottom: 8,
         },
     })),
+    Home = lazy(() => import("./Home")),
+    LandingPage = lazy(() => import("./LandingPage")),
     components = {
         Advice: lazy(() => import("./Advice")),
         Settings: lazy(() => import("./Settings")),
@@ -63,12 +74,14 @@ const
         Todos: lazy(() => import("./Todos")),
         Timetable: lazy(() => import("./Timetable")),
         Signup: lazy(() => import("./Signup")),
-        Login : lazy(() => import("./Login")),
+        Login: lazy(() => import("./Login")),
     };
 
 export default () => {
     const
         location = useLocation(),
+        isHome = location.pathname.split("/")[1] === ""
+            || location.pathname.split("/")[1] === "home",
         palette = useSelector(state => state.theme),
         [email, setEmail] = useState(getCookie("email")),
         theme = {
@@ -127,8 +140,7 @@ export default () => {
             },
         },
         classes = useStyles(),
-        muiTheme = createMuiTheme(theme),
-        Home = getCookie("email") !== "" ? lazy(() => import("./Home")) : lazy(() => import("./LandingPage"));
+        muiTheme = createMuiTheme(theme);
     useEffect(() => {
         setEmail(getCookie("email"));
     }, [document.cookie]);
@@ -190,14 +202,14 @@ export default () => {
                     name="apple-mobile-web-app-status-bar-style"
                     content={theme.palette.type === "dark" ? "black" : "default"}
                 />
-                <title>{window.location.pathname !== "/" ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).substr(1) : "Home"} • Maximise</title>
+                <title>{window.location.pathname !== "/" ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).split("/")[1] : "Home"} • Maximise</title>
             </Helmet>
             <SnackbarError />
             <div className={classes.root}>
                 <div className={classes.mainContainer}>
-                    <TopBar />
+                    {(email !== "" || !isHome) && <TopBar />}
                     <PageLoadError>
-                        <div style={{flex: 1, overflow: "auto", zIndex: 1000, }}>
+                        <div className={classes.pageContainer}>
                             <Suspense
                                 fallback={
                                     <div className={classes.loadingContainer}>
@@ -207,14 +219,20 @@ export default () => {
                             >
                                 <Switch location={location}>
                                     <Route
-                                        component={Home}
+                                        component={getCookie("email") !== "" ? Home : LandingPage}
                                         exact
                                         path="/(home||)/"
                                     />
                                     {Object.keys(components).map(component => {
                                         return (
                                             <Route
-                                                component={components[component]}
+                                                render={() => {
+                                                    if (component !== "Login" && component !== "Signup" && email === "") {
+                                                        return <Redirect to="/login" />;
+                                                    }
+                                                    const Comp = components[component];
+                                                    return <Comp />;
+                                                }}
                                                 exact
                                                 path={`/${component.toLowerCase()}`}
                                                 key={component}
@@ -226,8 +244,8 @@ export default () => {
                             </Suspense>
                         </div>
                     </PageLoadError>
-                    {email !== "" && location.pathname !== "/" && location.pathname !== "/home" && <Navigation />}
-                    {(location.pathname === "/" || location.pathname === "/home") &&
+                    {email !== "" && !isHome && <Navigation />}
+                    {email !== "" && isHome &&
                         <div className={classes.floating}>
                             <Button
                                 variant="contained"

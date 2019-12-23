@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import { Link, useHistory } from "react-router-dom";
+import getCookie from "../api/cookies";
 
 export default () => {
     const
@@ -63,13 +64,16 @@ export default () => {
             setPasswordHelper(" ");
         };
     useEffect(() => {
+        if (getCookie("email") !== "") {
+            history.replace("/home");
+        }
     }, []);
     return (
         <Paper className="fade" style={{maxWidth: 600, margin: "0 auto", }}>
             <Typography variant="h4" gutterBottom>
                 Login to {" "}
                 <span className="highlight">
-                     Maximise
+                    Maximise
                 </span>
             </Typography>
             <form onSubmit={login}>

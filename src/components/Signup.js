@@ -8,6 +8,25 @@ import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import { Link, useHistory } from "react-router-dom";
 import { startCase } from "lodash";
+import { makeStyles } from "@material-ui/core/styles";
+import getCookie from "../api/cookies";
+
+const useStyles = makeStyles(theme => ({
+    password: {
+        width: "calc(50% - 4px)",
+    },
+    repeatPassword: {
+        width: "calc(50% - 4px)",
+        marginLeft: 8,
+    },
+    firstName: {
+        width: "calc(50% - 4px)",
+    },
+    lastName: {
+        width: "calc(50% - 4px)",
+        marginLeft: 8,
+    },
+}));
 
 export default () => {
     const
@@ -21,6 +40,7 @@ export default () => {
             repeatPassword: "",
         },
         dispatch = useDispatch(),
+        classes = useStyles(),
         [values, setValues] = useState(initialState),
         [helpers, setHelpers] = useState(initialState),
         history = useHistory(),
@@ -33,15 +53,15 @@ export default () => {
                     },
                     credentials: "include",
                     body: stringify({
-                        email,
+                        email: values.email,
+                        firstName: values.email,
                         password,
                     }),
                 })
                 .then(res => res.json())
                 .then(data => {
                     if (data.errors !== undefined) {
-                        setEmailHelper(data.errors.email);
-                        setPasswordHelper(data.error.password);
+                        set
                     } else {*/
                         const d = new Date();
                         localStorage.setItem("email", values.email);
@@ -127,6 +147,9 @@ export default () => {
             }
         };
     useEffect(() => {
+        if (getCookie("email") !== "") {
+            history.replace("/home");
+        }
     }, []);
     return (
         <Paper className="fade" style={{maxWidth: 600, margin: "0 auto", }}>
@@ -140,7 +163,11 @@ export default () => {
                 {Object.keys(initialState).map(field => (
                     <TextField
                         label={startCase(field)}
-                        placeholder={field === "code" ? "Product code found on revision pack" : ""}
+                        placeholder={
+                            field === "code"
+                                ? "Product code found on revision pack"
+                                : ""
+                        }
                         value={values[field]}
                         onChange={handleChange(field)}
                         margin="normal"
@@ -150,6 +177,7 @@ export default () => {
                         key={field}
                         type={field.includes("assword") ? "password" : "text"}
                         fullWidth
+                        className={classes[field]}
                     />
                 ))}
                 <div style={{ display: "flex", marginTop: 8, marginBottom: 16, }}>
