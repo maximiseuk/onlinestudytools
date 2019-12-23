@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -41,56 +41,7 @@ export default () => {
             Revision: 0,
         }),
         classes = useStyles(),
-        advice = {
-            Wellbeing: [
-                {
-                    title: "Give to {others}",
-                    content: [
-                        "Acts of {giving} can help {giving} your mental health and by:",
-                        "- creating {positive} feelings and a sense of reward - giving you a feeling of purpose and {self-worth}.",
-                        "- They will often be {returned} in kind actions",
-                    ],
-                },
-                {
-                    title: "{Connect} with others",
-                    content: [
-                        "{Healthy relationships} are crucial for your {mental health}. They can contribute to:",
-                        "- Helping you to build {confidence}",
-                        "- Giving you an opportunity to relate {positive} events in your life",
-                        "- Providing emotional {support} for yourself and others",
-                    ],
-                },
-                {
-                    title: "Be physically {active}",
-                    content: [
-                        "Being {active} is not only great for your physical {health} and {fitness}. Evidence also shows it can contribute to  mental wellbeing by:",
-                        "- Allowing you to {connect} to others",
-                        "- Helping you aim high and set {goals}",
-                        "- Release {endorphins} causing improved mood",
-                    ],
-                },
-                {
-                    title: "{Learn} new skills",
-                    content: [
-                        "{Learning} new skills can improve your mental wellbeing by:",
-                        "- {Boosting} confidence and sense of purpose",
-                        "- Helping you {achieve} future {goals}",
-                        "- Allowing you to {broaden} your skill set",
-                    ],
-                },
-            ],
-            Revision: [
-                {
-                    title: "Revise... Test... {Rest}",
-                    content: [
-                        "Here's our {3 step} plan for {success}:",
-                        "1. {Revise} for about {35 minutes}. This could be active revision, instead of just making notes",
-                        "2. {Test} yourself for about {15 minutes}. You could use Quizlet for this, ask a friend or find some exam questions online",
-                        "3. Take a {rest} for about {10 minutes} - do whatever you want!"
-                    ],
-                },
-            ],
-        },
+        [advice, setAdvice] = useState(false),
         isSmall = useMediaQuery("(min-width: 960px)"),
         Container = isSmall
             ? Grid
@@ -112,14 +63,18 @@ export default () => {
                 enableMouseEvents: true,
                 className: classes.swiper,
             });
+    useEffect(() => {
+        fetch("/advice.json")
+        .then(res => res.json())
+        .then(data => setAdvice(data));
+    }, []);
     return (
         <Paper className="fade">
-            {Object.keys(advice).map(type => (
+            {advice && Object.keys(advice).map(type => (
                 <Fragment key={type}>
                     <Typography variant="h4" gutterBottom>
                         {type}
                     </Typography>
-                        {console.log(containerProps(type))}
                     <Container {...containerProps(type)}>
                         {advice[type].map(item => (
                             <Grid
