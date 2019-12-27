@@ -18,6 +18,11 @@ import MobileStepper from "@material-ui/core/MobileStepper";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const useStyles = makeStyles(theme => ({
     loadingContainer: {
@@ -51,6 +56,10 @@ export default () => {
             Current: 0,
             Completed: 0,
         }),
+        [currentGoal, setCurrentGoal] = useState({
+            i: 0,
+            type: "Current",
+        }),
         isSmall = useMediaQuery("(min-width: 600px)"),
         Container = isSmall
             ? Grid
@@ -72,6 +81,26 @@ export default () => {
                 enableMouseEvents: true,
                 className: classes.swiper,
             }),
+        [dialogs, setDialogs] = useState({
+            delete: false,
+            edit: false,
+        }),
+        close = dialog => () => {
+            setDialogs({
+                ...dialogs,
+                [dialog]: false,
+            });
+        },
+        open = (dialog, i, type) => () => {
+            setCurrentGoal({
+                i,
+                type,
+            });
+            setDialogs({
+                ...dialogs,
+                [dialog]: true,
+            });
+        },
         goalDone = i => () => {
             const goal = goals.Current[i];
             goal.completed = true;
@@ -82,12 +111,16 @@ export default () => {
                 Completed: [goal, ...goals.Completed],
             });
         },
-        deleteGoal = (i, type) => () => {
-            let newGoals = goals[type];
-            newGoals.splice(i, 1);
+        deleteGoal = () => {
+            let newGoals = goals[currentGoal.type];
+            newGoals.splice(currentGoal.i, 1);
             setGoals({
                 ...goals,
-                [type]: newGoals,
+                [currentGoal.type]: newGoals,
+            });
+            setDialogs({
+                ...dialogs,
+                delete: false,
             });
         },
         redoGoal = i => () => {
@@ -140,7 +173,7 @@ export default () => {
                                                     <IconButton
                                                         color="primary"
                                                         className={classes.iconBtn}
-                                                        onClick={deleteGoal(i, type)}
+                                                        onClick={open("delete", i, type)}
                                                     >
                                                         <DeleteIcon />
                                                     </IconButton>
@@ -216,6 +249,57 @@ export default () => {
                     }
                 </Fragment>
             ))}
+            <Dialog
+                open={dialogs.delete}
+                onClose={close("delete")}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">Confirm action</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Are you sure you want to delete this goal?
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button
+                    onClick={close("delete")}
+                    color="primary"
+                    variant="outlined"
+                >
+                    Cancel
+                </Button>
+                <Button
+                    onClick={deleteGoal}
+                    color="primary"
+                    autoFocus
+                >
+                    Delete
+                </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog
+                open={dialogs.edit}
+                onClose={close("edit")}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">Change goal description</DialogTitle>
+                <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Let Google help apps determine location. This means sending anonymous location data to
+                    Google, even when no apps are running.
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={close("edit")} color="primary">
+                    Disagree
+                </Button>
+                <Button onClick={close("edit")} color="primary" autoFocus>
+                    Agree
+                </Button>
+                </DialogActions>
+            </Dialog>
         </Paper>
         : <div className={classes.loadingContainer}>
             <CircularProgress />

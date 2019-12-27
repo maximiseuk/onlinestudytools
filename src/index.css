@@ -105,3 +105,7 @@ html {
 .fade {
     animation: fadeup 1s forwards;
 }
+ul {
+    padding-left: 16px;
+    margin-bottom: 0;
+}

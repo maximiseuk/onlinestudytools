@@ -23,6 +23,17 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down(960)]: {
             height: "100%",
         },
+        "& a": {
+            color: theme.palette.text.primary,
+            textDecoration: "none",
+            "&:visited": {
+                color: theme.palette.text.primary,
+                textDecoration: "none",
+            },
+        },
+        "& p p:last-child": {
+            marginBottom: 0,
+        }
     },
     container: {
         "&:first-of-type": {
@@ -97,16 +108,19 @@ export default () => {
                                                     .replace(/}/g, "</span>")
                                             }}
                                         />
-                                        {item.content.map(line => (
-                                            <Typography
-                                                key={line}
-                                                dangerouslySetInnerHTML={{
-                                                    __html: line
-                                                        .replace(/{/g, "<span class='highlight'>")
-                                                        .replace(/}/g, "</span>")
-                                                }}
-                                            />
-                                        ))}
+                                        <Typography
+                                            dangerouslySetInnerHTML={{
+                                                __html: item.content
+                                                    .replace(/{/g, "<span class='highlight'>")
+                                                    .replace(/}/g, "</span>")
+                                                    .replace(":--", "<ul><li>")
+                                                    .replace("--:", "</li></ul>")
+                                                    .replace("1--", "<ol><li>")
+                                                    .replace("--1", "</li></ol>")
+                                                    .replace(/--/g, "</li><li>")
+                                                    .replace(/href='www/g, "href='https://www")
+                                            }}
+                                        />
                                     </CardContent>
                                 </Card>
                             </Grid>

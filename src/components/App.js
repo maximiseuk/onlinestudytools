@@ -115,6 +115,7 @@ export default () => {
             props: {
                 MuiButton: {
                     color: "primary",
+                    variant: "contained",
                 },
             },
             overrides: {
@@ -133,6 +134,11 @@ export default () => {
                         padding: 0,
                         boxShadow: "none",
                         backgroundColor: palette.background.default,
+                    },
+                },
+                MuiCardContent: {
+                    root: {
+                        padding: "16px !important",
                     },
                 },
                 MuiButton: {
@@ -161,6 +167,11 @@ export default () => {
                     root: {
                         borderTopLeftRadius: 8,
                         borderTopRightRadius: 8,
+                    },
+                },
+                MuiDialog: {
+                    paper: {
+                        padding: 0,
                     },
                 },
             },

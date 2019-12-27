@@ -34,7 +34,7 @@ const
                     right: 0,
                     bottom: 0,
                     transform: "rotate(180deg)",
-                    position: "absolute",
+                    position: "fixed",
                     zIndex: 1,
                 },
             },
@@ -43,10 +43,10 @@ const
             maxHeight: 200,
             zIndex: 999,
             [theme.breakpoints.down(900)]: {
-                position: "absolute",
+                position: "fixed",
             },
             [theme.breakpoints.down(600)]: {
-                position: "absolute !important",
+                position: "fixed !important",
                 "&:first-child": {
                     top: 0,
                     left: 0,
@@ -55,7 +55,7 @@ const
         },
         homeImg: {
             [theme.breakpoints.down(600)]: {
-                position: "absolute !important",
+                position: "fixed !important",
                 top: 0,
                 left: 0,
             },
@@ -130,7 +130,7 @@ const
             transform: "translate(-32px, 32px)",
         },
         object: {
-            position: "absolute",
+            position: "fixed",
             zIndex: 1000,
             [theme.breakpoints.down("md")]: {
                 display: "none",
