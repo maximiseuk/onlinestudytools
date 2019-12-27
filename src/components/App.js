@@ -174,6 +174,31 @@ export default () => {
                         padding: 0,
                     },
                 },
+                MuiExpansionPanel: {
+                    root: {
+                        backgroundColor: palette.background.default,
+                        borderRadius: "8px !important",
+                        marginBottom: 16,
+                        padding: "0 16px",
+                        border: "none !important",
+                        "&:before": {
+                            display: "none",
+                        },
+                        "&:last-child": {
+                            marginBottom: 0,
+                        },
+                    },
+                },
+                MuiExpansionPanelSummary: {
+                    root: {
+                        paddingLeft: 0,
+                    },
+                },
+                MuiExpansionPanelDetails: {
+                    root: {
+                        paddingLeft: 8,
+                    },
+                },
             },
         },
         classes = useStyles(),
