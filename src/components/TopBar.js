@@ -138,7 +138,7 @@ const
         }
     }));
 
-localStorage.quote = localStorage.quote === undefined
+localStorage.quote = localStorage.quote === null
     ? quotes[floor(random() * quotes.length)]
     : localStorage.quote;
 
@@ -159,8 +159,7 @@ export default () => {
             "/settings",
             "/help",
             "/goals",
-            "/leaderboard",
-            "/todos",
+            "/agenda",
             "/timetable",
             "/signup",
             "/login",
@@ -174,11 +173,9 @@ export default () => {
                     : "Evening";
     useEffect(() => {
         const updateDate = setInterval(() => {
-            const
-                now = new Date(),
-                { date } = quote;
-            setDate(now);
-            if (!(now.getDate() === date.getDate() && now.getMonth() === date.getMonth() && now.getFullYear() === date.getFullYear())) {
+            const now = new Date();
+            setDate(now)
+            if (!(now.getDate() === quote.date.getDate() && now.getMonth() === quote.date.getMonth() && now.getFullYear() === quote.date.getFullYear())) {
                 const index = floor(random() * quotes.length);
                 setQuote({
                     quote: quotes[index],

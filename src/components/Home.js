@@ -127,7 +127,7 @@ export default () => {
         </Button>
             </Paper>
         ),
-        todosView = (
+        agendaView = (
             <Paper className={classes.item}>
                 <Typography variant="h4" gutterBottom>
                     Your <span className="highlight">Agenda</span>
@@ -166,12 +166,12 @@ export default () => {
                 ))}
                 <Button
                     component={Link}
-                    to="/todos"
+                    to="/agenda"
                     variant="contained"
                     color="primary"
                     style={{ marginTop: 16, marginRight: 8 }}
                 >
-                    Go To Todos
+                    Go To Agenda
                 </Button>
                 <Button
                     component={Link}
@@ -222,7 +222,7 @@ export default () => {
                 className={classes.swiper}
             >
                 {examView}
-                {todosView}
+                {agendaView}
                 {adviceView}
             </SwipeableViews>
             <MobileStepper
@@ -252,7 +252,7 @@ export default () => {
             />
             <div className={classes.views}>
                 {examView}
-                {todosView}
+                {agendaView}
                 {adviceView}
             </div>
         </div>

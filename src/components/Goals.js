@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, Fragment } from "react";
 import Paper from "@material-ui/core/Paper";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -7,7 +8,7 @@ import Divider from "@material-ui/core/Divider";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
-import { IconButton, Grid } from "@material-ui/core";
+import { IconButton, Grid, TextField } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import DoneIcon from "@material-ui/icons/Done";
 import RedoIcon from "@material-ui/icons/Refresh";
@@ -23,6 +24,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
     loadingContainer: {
@@ -50,15 +52,27 @@ const useStyles = makeStyles(theme => ({
 
 export default () => {
     const
+        dispatch = useDispatch(),
         classes = useStyles(),
         [goals, setGoals] = useState(false),
+        [clientGoals, setClientGoals] = useState(false),
         [activeStep, setActiveStep] = useState({
             Current: 0,
             Completed: 0,
         }),
+        [values, setValues] = useState({
+            desc: "",
+            newTitle: "",
+            newDesc: "",
+        }),
         [currentGoal, setCurrentGoal] = useState({
             i: 0,
             type: "Current",
+        }),
+        [dialogs, setDialogs] = useState({
+            delete: false,
+            edit: false,
+            newGoal: false,
         }),
         isSmall = useMediaQuery("(min-width: 600px)"),
         Container = isSmall
@@ -81,10 +95,6 @@ export default () => {
                 enableMouseEvents: true,
                 className: classes.swiper,
             }),
-        [dialogs, setDialogs] = useState({
-            delete: false,
-            edit: false,
-        }),
         close = dialog => () => {
             setDialogs({
                 ...dialogs,
@@ -96,27 +106,35 @@ export default () => {
                 i,
                 type,
             });
+            if (dialog === "edit") {
+                setValues({
+                    ...values,
+                    desc: goals[type][i].desc,
+                });
+            }
             setDialogs({
                 ...dialogs,
                 [dialog]: true,
             });
         },
+        handleChange = name => e => {
+            setValues({
+                ...values,
+                [name]: e.target.value,
+            });
+        },
         goalDone = i => () => {
             const goal = goals.Current[i];
             goal.completed = true;
-            let newGoals = goals.Current;
-            newGoals.splice(i, 1);
-            setGoals({
-                Current: newGoals,
+            setClientGoals({
+                Current: goals.Current.filter((x, j) => j !== i),
                 Completed: [goal, ...goals.Completed],
             });
         },
         deleteGoal = () => {
-            let newGoals = goals[currentGoal.type];
-            newGoals.splice(currentGoal.i, 1);
-            setGoals({
+            setClientGoals({
                 ...goals,
-                [currentGoal.type]: newGoals,
+                [currentGoal.type]: goals[currentGoal.type].filter((x, i) => i !== currentGoal.i),
             });
             setDialogs({
                 ...dialogs,
@@ -126,15 +144,41 @@ export default () => {
         redoGoal = i => () => {
             const goal = goals.Completed[i];
             goal.completed = false;
-            let newGoals = goals.Completed;
-            newGoals.splice(i, 1);
-            setGoals({
+            setClientGoals({
                 Current: [goal, ...goals.Current],
-                Completed: newGoals,
+                Completed: goals.Completed.filter((x, j) => j !== i),
             });
         },
-        editGoal = i => () => {
-            
+        changeDesc = e => {
+            e.preventDefault();
+            setClientGoals({
+                ...goals,
+                Current: goals.Current.map((x, i) => i === currentGoal.i ? {
+                    ...x,
+                    desc: values.desc,
+                } : x),
+            });
+            close("edit")();
+        },
+        createGoal = e => {
+            e.preventDefault();
+            setClientGoals({
+                Current: [
+                    {
+                        subject: values.newTitle,
+                        desc: values.newDesc,
+                        completed: false,
+                    },
+                    ...goals.Current,
+                ],
+                Completed: goals.Completed,
+            });
+            close("newGoal")();
+            setValues({
+                desc: "",
+                newTitle: "",
+                newDesc: "",
+            });
         };
     useEffect(() => {
         fetch("/goals.json")
@@ -144,10 +188,49 @@ export default () => {
                 Current: data.filter(goal => !goal.completed),
                 Completed: data.filter(goal => goal.completed),
             });
+            setClientGoals({
+                Current: data.filter(goal => !goal.completed),
+                Completed: data.filter(goal => goal.completed),
+            });
+        })
+        .catch(() => {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error loading your goals",
+            });
         });
     }, []);
+    useEffect(() => {
+        setGoals(clientGoals);
+        fetch("/updateGoals", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(clientGoals),
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data === "failed") {
+                dispatch({
+                    type: "NEW_ERROR",
+                    payload: "There was an error updating your goals",
+                });
+            } else {
+                setGoals(clientGoals);
+            }
+        })
+        .catch(() => {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error updating your goals",
+            });
+        });
+    }, [clientGoals]);
+    
     return (
-        goals ? <Paper className="fade">
+        goals ? <Paper className="fade padding">
             {Object.keys(goals).map(type => (
                 <Fragment key={type}>
                     <Typography variant="h4" gutterBottom>
@@ -183,7 +266,7 @@ export default () => {
                                                         <IconButton
                                                             color="primary"
                                                             className={classes.iconBtn}
-                                                            onClick={editGoal(i)}
+                                                            onClick={open("edit", i, type)}
                                                         >
                                                             <EditIcon />
                                                         </IconButton>
@@ -206,7 +289,7 @@ export default () => {
                             </Grid>
                         ))}
                     </Container>
-                    {!isSmall && <MobileStepper
+                    {goals[type].length > 0 ? !isSmall && <MobileStepper
                         variant="dots"
                         style={{
                             marginBottom: type === "Wellbeing"
@@ -235,12 +318,13 @@ export default () => {
                                 <KeyboardArrowLeftIcon />
                             </IconButton>
                         }
-                    />}
+                    /> : `You don't have any ${type.toLowerCase()} goals yet`}
                     {type === "Current" &&
                         <>
                             <Button
                                 variant="contained"
                                 className={classes.newGoal}
+                                onClick={open("newGoal", 0, "Current")}
                             >
                                 New Goal
                             </Button>
@@ -283,22 +367,76 @@ export default () => {
                 onClose={close("edit")}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                fullWidth
             >
-                <DialogTitle id="alert-dialog-title">Change goal description</DialogTitle>
-                <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Let Google help apps determine location. This means sending anonymous location data to
-                    Google, even when no apps are running.
-                </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                <Button onClick={close("edit")} color="primary">
-                    Disagree
-                </Button>
-                <Button onClick={close("edit")} color="primary" autoFocus>
-                    Agree
-                </Button>
-                </DialogActions>
+                <form onSubmit={changeDesc}>
+                    <DialogTitle id="alert-dialog-title">Change goal description</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            onChange={handleChange("desc")}
+                            value={values.desc}
+                            variant="filled"
+                            label="Enter the new goal description"
+                            autoFocus
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={close("edit")} color="primary">
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            disabled={values.desc === ""}
+                        >
+                            Change
+                        </Button>
+                    </DialogActions>
+                </form>
+            </Dialog>
+            <Dialog
+                open={dialogs.newGoal}
+                onClose={close("newGoal")}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                fullWidth
+            >
+                <form onSubmit={createGoal}>
+                    <DialogTitle id="alert-dialog-title">Create a new goal</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            onChange={handleChange("newTitle")}
+                            value={values.newTitle}
+                            variant="filled"
+                            label="Enter the new goal's title"
+                            autoFocus
+                            fullWidth
+                            style={{
+                                marginBottom: 16,
+                            }}
+                        />
+                        <TextField
+                            onChange={handleChange("newDesc")}
+                            value={values.newDesc}
+                            variant="filled"
+                            label="Enter the new goal's description"
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={close("edit")} color="primary">
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            color="primary"
+                            disabled={values.newTitle === "" || values.newDesc === ""}
+                        >
+                            Create
+                        </Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </Paper>
         : <div className={classes.loadingContainer}>

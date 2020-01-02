@@ -1,5 +1,4 @@
-body,
-html {
+body, html {
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
@@ -104,8 +103,10 @@ html {
 }
 .fade {
     animation: fadeup 1s forwards;
+    overflow: auto;
+    max-height: 100%;
 }
-ul {
+ul, ol {
     padding-left: 16px;
     margin-bottom: 0;
 }

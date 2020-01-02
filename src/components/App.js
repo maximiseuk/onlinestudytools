@@ -57,10 +57,12 @@ const
             },
         },
         pageContainer: {
-            flex: 1,
-            overflow: "auto",
+            height: "calc(100% - 64px)",
+            //flex: 1,
+            //overflow: "auto",
             zIndex: 1000, 
             paddingBottom: 8,
+            marginBottom: 16,
         },
     })),
     Home = lazy(() => import("./Home")),
@@ -70,8 +72,7 @@ const
         Settings: lazy(() => import("./Settings")),
         Help: lazy(() => import("./Help")),
         Goals: lazy(() => import("./Goals")),
-        Leaderboard: lazy(() => import("./Leaderboard")),
-        Todos: lazy(() => import("./Todos")),
+        Agenda: lazy(() => import("./Agenda")),
         Timetable: lazy(() => import("./Timetable")),
         Signup: lazy(() => import("./Signup")),
         Login: lazy(() => import("./Login")),
@@ -116,6 +117,9 @@ export default () => {
                 MuiButton: {
                     color: "primary",
                     variant: "contained",
+                },
+                MuiDialog: {
+                    fullWidth: true,
                 },
             },
             overrides: {
@@ -172,6 +176,8 @@ export default () => {
                 MuiDialog: {
                     paper: {
                         padding: 0,
+                        margin: 8,
+                        width: "calc(100% - 16px) !important",
                     },
                 },
                 MuiExpansionPanel: {
@@ -248,6 +254,10 @@ export default () => {
                                 border-top-right-radius: 8px !important;
                                 font-size: 1rem !important;
                             }
+                            .padding {
+                                box-shadow: 0px 16px ${theme.palette.background.paper}, 0px -16px ${theme.palette.background.paper} !important;
+                                padding: 0 16px;
+                            }
                         `
                     }
                 ]}
@@ -314,7 +324,7 @@ export default () => {
                                 component={Link}
                                 to="/help"
                             >
-                                Ask a question
+                                Help
                             </Button>
                             <Tooltip title="Settings" placement="top">
                                 <IconButton

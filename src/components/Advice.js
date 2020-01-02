@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment } from "react";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -11,6 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import advice from "../api/advice.json";
 
 const useStyles = makeStyles(theme => ({
     grid: {
@@ -52,7 +53,6 @@ export default () => {
             Revision: 0,
         }),
         classes = useStyles(),
-        [advice, setAdvice] = useState(false),
         isSmall = useMediaQuery("(min-width: 960px)"),
         Container = isSmall
             ? Grid
@@ -74,13 +74,8 @@ export default () => {
                 enableMouseEvents: true,
                 className: classes.swiper,
             });
-    useEffect(() => {
-        fetch("/advice.json")
-        .then(res => res.json())
-        .then(data => setAdvice(data));
-    }, []);
     return (
-        <Paper className="fade">
+        <Paper className="fade padding">
             {advice && Object.keys(advice).map(type => (
                 <Fragment key={type}>
                     <Typography variant="h4" gutterBottom>
