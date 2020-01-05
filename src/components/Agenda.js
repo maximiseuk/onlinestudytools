@@ -111,6 +111,8 @@ export default () => {
         },
         open = (dialog, i) => () => {
             setCurrentTodo(i);
+            handleDateChange(new Date());
+            handleTimeChange(new Date());
             if (dialog === "edit") {
                 setValues({
                     ...values,
@@ -141,9 +143,21 @@ export default () => {
         },
         changeDesc = e => {
             e.preventDefault();
+            const
+                todoTime = new Date(selectedTime),
+                date = new Date(selectedDate);
+            if (allDay) {
+                date.setHours(23);
+                date.setMinutes(59);
+            } else {
+                date.setHours(todoTime.getHours());
+                date.setMinutes(todoTime.getMinutes());
+            }
             setClientAgenda(agenda.map((x, i) => i === currentTodo ? {
                 ...x,
                 desc: values.desc,
+                date,
+                time: allDay ? "All Day" : false,
             } : x));
             close("edit")();
         },
@@ -153,8 +167,9 @@ export default () => {
         },
         createTodo = e => {
             e.preventDefault();
-            const todoTime = new Date(selectedTime)
-            const date = new Date(selectedDate);
+            const
+                todoTime = new Date(selectedTime),
+                date = new Date(selectedDate);
             if (allDay) {
                 date.setHours(23);
                 date.setMinutes(59);
@@ -194,7 +209,7 @@ export default () => {
     }, []);
     useEffect(() => {
         setAgenda(clientAgenda);
-        fetch("/updateAgenda", {
+        /*fetch("/updateAgenda", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -218,7 +233,7 @@ export default () => {
                 type: "NEW_ERROR",
                 payload: "There was an error updating your agenda",
             });
-        });
+        });*/
     }, [clientAgenda]);
     return (
         agenda ? <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -362,6 +377,50 @@ export default () => {
                             autoFocus
                             fullWidth
                         />
+                        <KeyboardDatePicker
+                            clearable
+                            value={selectedDate}
+                            placeholder="10/10/2018"
+                            onChange={date => handleDateChange(date)}
+                            style={{
+                                marginTop: 16,
+                            }}
+                            minDate={new Date()}
+                            label="Date"
+                            format="dd/MM/yyyy"
+                            fullWidth
+                            DialogProps={{
+                                fullWidth: false,
+                                maxWidth: "xs",
+                            }}
+                        />
+                        <KeyboardTimePicker
+                            label="Time"
+                            placeholder="08:00"
+                            mask="__:__"
+                            value={selectedTime}
+                            onChange={date => handleTimeChange(date)}
+                            ampm={false}
+                            style={{
+                                marginTop: 16,
+                            }}
+                            disabled={allDay}
+                            fullWidth
+                        />
+                        <FormControlLabel
+                            style={{
+                                marginTop: 16,
+                            }}
+                            control={
+                                <Switch
+                                    checked={allDay}
+                                    onChange={e => setAllDay(e.target.checked)}
+                                    value="All Day"
+                                    inputProps={{ "aria-label": "all day", }}
+                                />
+                            }
+                            label="All Day"
+                        />
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={close("edit")} color="primary">
@@ -432,10 +491,6 @@ export default () => {
                             style={{
                                 marginTop: 16,
                             }}
-                            DialogProps={{
-                                fullWidth: false,
-                                maxWidth: "xs",
-                            }}
                             disabled={allDay}
                             fullWidth
                         />
@@ -453,7 +508,6 @@ export default () => {
                             }
                             label="All Day"
                         />
-                        
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={close("newTodo")} color="primary">
@@ -464,7 +518,7 @@ export default () => {
                             color="primary"
                             disabled={values.newTitle === "" || values.newDesc === ""}
                         >
-                            Change
+                            Create
                         </Button>
                     </DialogActions>
                 </form>
@@ -479,7 +533,7 @@ export default () => {
             autoHideDuration={5000}
             onClose={() => setDoneTodo([])}
             style={{
-                zIndex: 5000,
+                zIndex:1000000000,
             }}
         >
             <SnackbarContent

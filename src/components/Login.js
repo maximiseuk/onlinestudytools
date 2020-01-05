@@ -20,13 +20,13 @@ export default () => {
         login = e => {
             e.preventDefault();
             if (email === "") {
-                setEmailHelper("Please enter your email");
+                setEmailHelper("Please enter your username");
             }
             if (password === "") {
                 setPasswordHelper("Please enter your password");
             }
             if (email !== "" && password !== "") {
-                /*fetch("/login", {
+                /*fetch("/users/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -78,7 +78,7 @@ export default () => {
             </Typography>
             <form onSubmit={login}>
                 <TextField
-                    label="Your Email"
+                    label="Your Username"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     margin="normal"

@@ -35,7 +35,7 @@ export default () => {
             style={{
                 display: "block",
             }}
-            autoHideDuration={5000}
+            autoHideDuration={6000}
             className={classes.root}
             onClose={() => setState({error: ""})}
         >

@@ -425,7 +425,7 @@ export default () => {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={close("edit")} color="primary">
+                        <Button onClick={close("newGoal")} color="primary">
                             Cancel
                         </Button>
                         <Button

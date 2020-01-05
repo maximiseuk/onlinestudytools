@@ -40,7 +40,13 @@ export default () => {
                 oldPassword: values.oldPassword,
                 newPassword: values.newPassword,
             } : {};
-            /*fetch("/updateSettings", {
+            dispatch({
+                type: "TOGGLE_THEME_TYPE",
+                payload: lightTheme,
+            });
+            const d = new Date();
+            document.cookie = `theme=${lightTheme ? "light" : ""}; expires ${d.getTime() + 4e12}; path=/`;
+            /*fetch("/users/update_password", {
                 method: "POST",
                 credentials: "include",
                 body: JSON.stringify({
@@ -54,12 +60,7 @@ export default () => {
             .then(res => res.json())
             .then(data => {
                 if (data === "success") {*/
-                    dispatch({
-                        type: "TOGGLE_THEME_TYPE",
-                        payload: lightTheme,
-                    });
-                    const d = new Date();
-                    document.cookie = `theme=${lightTheme ? "light" : ""}; expires ${d.getTime() + 4e12}; path=/`;
+                    
                 /*} else {
                     dispatch({
                         type: "NEW_ERROR",
@@ -75,13 +76,33 @@ export default () => {
             });*/
         },
         logout = () => {
-            document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            document.cookie = "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            dispatch({
-                type: "TOGGLE_THEME_TYPE",
-                payload: false,
-            });
-            history.replace("/");
+            /*fetch("/users/logout", {
+                method: "POST",
+            })
+            .then(res => res.text())
+            .then(data => {
+                if (data === "success") {*/
+                    document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    dispatch({
+                        type: "TOGGLE_THEME_TYPE",
+                        payload: false,
+                    });
+                    history.replace("/");/*
+                } else {
+                    dispatch({
+                        type: "NEW_ERROR",
+                        payload: "There was an error logging you out",
+                    });
+                }
+            })
+            
+            .catch(() => {
+                dispatch({
+                    type: "NEW_ERROR",
+                    payload: "There was an error logging you out",
+                });
+            });*/
         },
         handleChange = field => e => {
             setValues({

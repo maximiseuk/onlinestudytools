@@ -4,33 +4,50 @@ import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import { Link, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles(theme => ({
-    links: {
-        display: "flex",
-        marginBottom: 8,
-        borderRadius: 16,
-        backgroundColor: theme.palette.background.paper,
-        zIndex: 1000,
-        [theme.breakpoints.down(800)]: {
-            display: "none",
+    toggle: {
+        [theme.breakpoints.down(512)]: {
+            flex: 1,
         },
-    },
-    link: {
-        margin: 8,
-        marginRight: 0,
         zIndex: 1000,
     },
     drawer: {
         display: "flex",
         flexDirection: "column",
     },
-    drawerContainer: {
-        [theme.breakpoints.up(800)]: {
-            display: "none",
-        },
-        width: "100%",
+    link: {
+        marginBottom: 8,
+        "&:last-child": {
+            marginBottom: 0,
+        }
     },
+    drawerContainer: {
+        [theme.breakpoints.up(512)]: {
+            justifyContent: "flex-end",
+        },
+        display: "flex",
+        width: "100%",
+        marginBottom: 8,
+    },
+    drawerPaper: {
+        width: 464,
+        marginLeft: "auto",
+        position: "absolute",
+        bottom: 8,
+        right: 8,
+        borderRadius: 16,
+        outline: "none",
+        [theme.breakpoints.down(512)]: {
+            width: "calc(100% - 48px)",
+            left: 8,
+        },
+        border: `2px solid ${theme.palette.primary.main}`,
+    },
+    backdrop: {
+        backgroundColor: "transparent",
+    }
 }));
 
 export default () => {
@@ -39,6 +56,7 @@ export default () => {
         classes = useStyles(),
         [open, setOpen] = useState(false),
         [animated, setAnimated] = useState(false),
+        isBig = useMediaQuery("(min-width: 512px"),
         toggleDrawer = open => e => {
             if (e && e.type === "keydown" && (e.key === "Tab" || e.key === "Shift")) {
                 return;
@@ -75,41 +93,40 @@ export default () => {
         }, 1500);
     }, [])
     return (
-        <Fragment>
-            <div className={classes.links}>
-                {linkBtns}
-            </div>
-            <div className={classes.drawerContainer}>
-                <Button
-                    onClick={toggleDrawer(true)}
-                    variant="contained"
-                    color="primary"
-                    className={classes.link}
-                    style={{
-                        marginBottom: 16,
-                        width: "calc(100% - 16px)",
-                    }}
+        <div className={classes.drawerContainer}>
+            <Button
+                onClick={toggleDrawer(true)}
+                variant="contained"
+                color="primary"
+                className={classes.toggle}
+            >
+                Links <ArrowUpIcon />
+            </Button>
+            <SwipeableDrawer
+                anchor="bottom"
+                open={open}
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)}
+                disableDiscovery={true}
+                disableSwipeToOpen={true}
+                PaperProps={{
+                    className: classes.drawerPaper,
+                }}
+                ModalProps={{
+                    BackdropProps: {
+                        className: isBig ? classes.backdrop : null,
+                    }
+                }}
+            >
+                <div
+                    className={classes.drawer}
+                    role="presentation"
+                    onClick={toggleDrawer(false)}
+                    onKeyDown={toggleDrawer(false)}
                 >
-                    Links <ArrowUpIcon />
-                </Button>
-                <SwipeableDrawer
-                    anchor="bottom"
-                    open={open}
-                    onClose={toggleDrawer(false)}
-                    onOpen={toggleDrawer(true)}
-                    disableDiscovery={true}
-                    disableSwipeToOpen={true}
-                >
-                    <div
-                        className={classes.drawer}
-                        role="presentation"
-                        onClick={toggleDrawer(false)}
-                        onKeyDown={toggleDrawer(false)}
-                    >
-                        {linkBtns}
-                    </div>
-                </SwipeableDrawer>
-            </div>
-        </Fragment>
+                    {linkBtns}
+                </div>
+            </SwipeableDrawer>
+        </div>
     );
 };

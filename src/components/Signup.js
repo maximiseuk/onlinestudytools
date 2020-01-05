@@ -33,6 +33,7 @@ export default () => {
         { stringify } = JSON,
         initialState = {
             email: "",
+            username: "",
             firstName: "",
             lastName: "",
             code: "",
@@ -46,7 +47,7 @@ export default () => {
         history = useHistory(),
         login = e => {
             e.preventDefault();
-                /*fetch("/signup", {
+                /*fetch("/users/create", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -54,8 +55,10 @@ export default () => {
                     credentials: "include",
                     body: stringify({
                         email: values.email,
-                        firstName: values.email,
-                        password,
+                        username: values.username,
+                        firstName: values.firstName,
+                        lastName: values.lastName,
+                        password: values.password,
                     }),
                 })
                 .then(res => res.json())

@@ -57,12 +57,16 @@ const
             },
         },
         pageContainer: {
-            height: "calc(100% - 64px)",
-            //flex: 1,
-            //overflow: "auto",
+            flex: 1,
+            overflow: "auto",
             zIndex: 1000, 
-            paddingBottom: 8,
+            paddingBottom: 16,
+            paddingTop: 16,
             marginBottom: 16,
+            borderRadius: 16,
+            "& > div": {
+                maxHeight: "100%",
+            }
         },
     })),
     Home = lazy(() => import("./Home")),
@@ -117,9 +121,6 @@ export default () => {
                 MuiButton: {
                     color: "primary",
                     variant: "contained",
-                },
-                MuiDialog: {
-                    fullWidth: true,
                 },
             },
             overrides: {
@@ -177,7 +178,7 @@ export default () => {
                     paper: {
                         padding: 0,
                         margin: 8,
-                        width: "calc(100% - 16px) !important",
+                        //width: "calc(100% - 16px) !important",
                     },
                 },
                 MuiExpansionPanel: {

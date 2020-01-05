@@ -84,8 +84,7 @@ const
             },
             [theme.breakpoints.down(600)]: {
                 padding: 8,
-                paddingBottom: 0,
-                position: "static",
+                paddingBottom: 8,
                 margin: 0,
                 marginTop: 0,
             },
