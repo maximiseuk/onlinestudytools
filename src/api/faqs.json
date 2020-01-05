@@ -9,7 +9,7 @@
     },
     {
         "q": "Why should I set {goals}?",
-        "a": "<p>We found that during our GCSEs, giving ourselves goals helped to {focus} our revision, rather than just revising because we are told to. This isn’t just a {hunch}, though: an article from the {University of Maryland} read '... goals and intentions are the most immediate motivational determinants of task performance ...'. The article also went on to state that 'In nearly all cases the correlations [between {goal setting} and {performance}] were both high and/or significant.' (Source: <a href='https://www.sciencedirect.com/science/article/pii/0030507370900115'>www.sciencedirect.com/science/article/pii/0030507370900115</a>)</p>"
+        "a": "<p>We found that during our GCSEs, giving ourselves goals helped to {focus} our revision, rather than just revising because we are told to. This isn’t just a {hunch}, though: an article from the {University of Maryland} read '... goals and intentions are the most immediate motivational determinants of task performance ...'. The article also went on to state that 'In nearly all cases the correlations [between {goal setting} and {performance}] were both high and/or significant.' (Source: <a href='https://www.sciencedirect.com/science/article/pii/0030507370900115'>sciencedirect.com</a>)</p>"
     },
     {
         "q": "How does the {agenda} section help me?",

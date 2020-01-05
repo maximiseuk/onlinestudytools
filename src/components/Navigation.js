@@ -5,6 +5,8 @@ import { Link, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles(theme => ({
     toggle: {
@@ -125,6 +127,11 @@ export default () => {
                     onKeyDown={toggleDrawer(false)}
                 >
                     {linkBtns}
+                    <div style={{textAlign: "right"}}>
+                        <IconButton color="primary">
+                            <CloseIcon />
+                        </IconButton>
+                    </div>
                 </div>
             </SwipeableDrawer>
         </div>
