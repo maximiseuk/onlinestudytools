@@ -59,14 +59,11 @@ const
         pageContainer: {
             flex: 1,
             overflow: "auto",
-            zIndex: 1000, 
+            zIndex: 1000,
             paddingBottom: 16,
             paddingTop: 16,
             marginBottom: 16,
             borderRadius: 16,
-            "& > div": {
-                maxHeight: "100%",
-            }
         },
     })),
     Home = lazy(() => import("./Home")),
@@ -258,6 +255,8 @@ export default () => {
                             .padding {
                                 box-shadow: 0px 16px ${theme.palette.background.paper}, 0px -16px ${theme.palette.background.paper} !important;
                                 padding: 0 16px;
+                                margin-top: 16px;
+                                max-height: calc(100% - 16px);
                             }
                         `
                     }
@@ -282,7 +281,7 @@ export default () => {
                 <div className={classes.mainContainer}>
                     {(email !== "" || !isHome) && <TopBar />}
                     <PageLoadError>
-                        <div className={classes.pageContainer}>
+                        <div className={classes.pageContainer} style={{marginBottom: isHome ? 0 : 16, paddingBottom: isHome ? 0 : 16,}}>
                             <Suspense
                                 fallback={
                                     <div className={classes.loadingContainer}>

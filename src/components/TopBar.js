@@ -84,7 +84,7 @@ const
             },
             [theme.breakpoints.down(600)]: {
                 padding: 8,
-                paddingBottom: 8,
+                paddingBottom: 0,
                 margin: 0,
                 marginTop: 0,
             },
@@ -215,7 +215,7 @@ export default () => {
             <div
                 className={`${classes.messageContainer} ${isHome && classes.homeMsg}`}
             >
-                <Typography variant="h3" gutterBottom>
+                <Typography variant="h3">
                     {isHome ? (
                         email !== "" ? (
                             <span>

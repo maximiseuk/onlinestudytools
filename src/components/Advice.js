@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
         "& > *": {
             height: "100%",
             [theme.breakpoints.down(960)]: {
-                borderRadius: "8px 8px 0 0"
+                borderRadius: 0,
             },
         },
         [theme.breakpoints.down(960)]: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
         },
     },
     swiper: {
-        borderRadius: "8px 8px 0 0",
+        borderRadius: "8px 8px 0px 0px",
     },
 }));
 

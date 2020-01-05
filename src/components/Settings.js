@@ -164,7 +164,7 @@ export default () => {
             });
         };
     return (
-        <Paper className="fade">
+        <Paper className="fade padding">
             <Card className={classes.card}>
                 <CardContent>
                     <Typography variant="h4" gutterBottom>

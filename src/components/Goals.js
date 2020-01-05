@@ -42,11 +42,12 @@ const useStyles = makeStyles(theme => ({
     },
     card: {
         [theme.breakpoints.down(600)]: {
-            borderRadius: "8px 8px 0 0",
+            borderRadius: 0,
         },
         [theme.breakpoints.up(600)]: {
             height: "100%",
         },
+        height: "100%",
     },
 }));
 

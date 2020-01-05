@@ -52,11 +52,12 @@ const useStyles = makeStyles(theme => ({
     },
     card: {
         [theme.breakpoints.down(600)]: {
-            borderRadius: "8px 8px 0 0",
+            borderRadius: "0px",
         },
         [theme.breakpoints.up(600)]: {
             height: "100%",
         },
+        height: "100%",
     },
     late: {
         color: theme.palette.error.main,
@@ -247,6 +248,7 @@ export default () => {
                         md={4}
                         lg={3}
                         key={i}
+                        style={{height: Container === SwipeableViews && "100%"}}
                     >
                         <Card className={classes.card}>
                             <CardContent>

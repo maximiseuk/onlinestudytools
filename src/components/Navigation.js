@@ -63,7 +63,7 @@ export default () => {
             }
             setOpen(open);
         },
-        links = ["Home", "Settings", "Advice", "Help", "Goals", "Agenda", "Timetable"],
+        links = ["Home", "Advice", "Agenda", "Goals", "Timetable", "Help", "Settings"],
         linkBtns = links.map((link, i) => (
             <Button
                 key={i}

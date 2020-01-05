@@ -11,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     item: {
@@ -20,7 +20,8 @@ const useStyles = makeStyles(theme => ({
         minWidth: 280,
         [theme.breakpoints.down(1024)]: {
             minWidth: "initial"
-        }
+        },
+        cursor: "pointer",
     },
     swiper: {
         "& > div > div > .MuiPaper-root": {
@@ -53,7 +54,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
-    const classes = useStyles(),
+    const
+        classes = useStyles(),
+        history = useHistory(),
         [activeStep, setActiveStep] = useState(0),
         exams = [
             {
@@ -91,7 +94,7 @@ export default () => {
             }
         ],
         examView = (
-            <Paper className={classes.item}>
+            <Paper className={classes.item} onClick={() => history.push("/timetable")}>
                 <Typography variant="h4" gutterBottom>
                     Upcoming <span className="highlight">Exams</span>
                 </Typography>
@@ -128,7 +131,7 @@ export default () => {
             </Paper>
         ),
         agendaView = (
-            <Paper className={classes.item}>
+            <Paper className={classes.item} onClick={() => history.push("/agenda")}>
                 <Typography variant="h4" gutterBottom>
                     Your <span className="highlight">Agenda</span>
                 </Typography>
@@ -185,7 +188,7 @@ export default () => {
             </Paper>
         ),
         adviceView = (
-            <Paper className={classes.item}>
+            <Paper className={classes.item} onClick={() => history.push("/advice")}>
                 <Typography variant="h4" gutterBottom>
                     <span className="highlight">Advice</span>
                 </Typography>
@@ -214,7 +217,7 @@ export default () => {
             </Paper>
         );
     return (
-        <div className="fade">
+        <div className="fade" style={{margin: "-8px 0", height: "100%", marginBottom: "-240px"}}>
             <SwipeableViews
                 index={activeStep}
                 onChangeIndex={step => setActiveStep(step)}

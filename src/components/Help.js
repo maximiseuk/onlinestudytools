@@ -33,7 +33,7 @@ export default () => {
             setExpanded(isExpanded ? panel : false);
         };
     return (
-        <Paper className="fade">
+        <Paper className="fade padding">
             {faqs.map((faq, i) => (
                 <ExpansionPanel
                     expanded={expanded === i}
