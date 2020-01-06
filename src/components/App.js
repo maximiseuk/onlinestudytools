@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Suspense, lazy, useState, useEffect } from "react";
-import { Route, Switch, useLocation, Link, Redirect } from "react-router-dom";
+import { Route, Switch, useLocation, Link, Redirect, useHistory } from "react-router-dom";
 import { createMuiTheme, MuiThemeProvider, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
@@ -15,6 +15,10 @@ import TopBar from "./TopBar";
 import Navigation from "./Navigation";
 import SnackbarError from "./SnackbarError";
 import getCookie from "../api/cookies";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const
     useStyles = makeStyles(theme => ({
@@ -82,6 +86,7 @@ const
 export default () => {
     const
         location = useLocation(),
+        history = useHistory(),
         isHome = location.pathname.split("/")[1] === ""
             || location.pathname.split("/")[1] === "home",
         palette = useSelector(state => state.lightTheme)
@@ -128,6 +133,11 @@ export default () => {
                     },
                     rounded: {
                         borderRadius: 16,
+                    },
+                },
+                MuiToolbar: {
+                    root: {
+                        borderRadius: 8,
                     },
                 },
                 MuiCard: {
@@ -206,145 +216,202 @@ export default () => {
             },
         },
         classes = useStyles(),
-        muiTheme = createMuiTheme(theme);
+        muiTheme = createMuiTheme(theme),
+        [mouse, setMouse] = useState([null, null]),
+        closeMenu = () => {
+            setMouse([null, null]);
+        },
+        contextMenu = e => {
+            e.preventDefault();
+            setMouse([e.clientX - 2, e.clientY - 4]);
+        },
+        back = () => {
+            closeMenu();
+            window.history.back();
+        },
+        forward = () => {
+            closeMenu();
+            window.history.forward();
+        },
+        reload = () => {
+            closeMenu();
+            window.history.reload();
+        },
+        copy = () => {
+            closeMenu();
+            document.execCommand("copy");
+        },
+        go = route => () => {
+            closeMenu();
+            history.push("/" + route.toLowerCase());
+        };
     useEffect(() => {
         setEmail(getCookie("email"));
     }, [document.cookie]);
     return (
         <MuiThemeProvider theme={muiTheme}>
-            <Helmet
-                style={[
-                    {
-                        cssText: `
-                            body, html {
-                                background-color: ${muiTheme.palette.background.default};
-                            }
-                            * {
-                                caret-color: ${muiTheme.palette.primary.main};
-                            }
-                            ::-moz-selection {
-                                color: ${muiTheme.palette.getContrastText(theme.palette.secondary.main)};
-                                background: ${muiTheme.palette.secondary.main};
-                            }
-                            ::selection {
-                                color: ${muiTheme.palette.getContrastText(theme.palette.secondary.main)};
-                                background: ${muiTheme.palette.secondary.main};
-                            }
-                            .highlight {
-                                color: ${palette.primary.main};
-                            }
-                            input:-webkit-autofill,
-                            input:-webkit-autofill:hover,
-                            input:-webkit-autofill:focus,
-                            input:-webkit-autofill,
-                            textarea:-webkit-autofill,
-                            textarea:-webkit-autofill:hover,
-                            textarea:-webkit-autofill:focus,
-                            select:-webkit-autofill,
-                            select:-webkit-autofill:hover,
-                            select:-webkit-autofill:focus {
-                                -webkit-box-shadow: 0 0 0px 1000px ${palette.background.default} inset !important;
-                                box-shadow: 0 0 0px 1000px ${palette.background.default} inset !important;
-                                background-color: ${palette.background.default} !important;
-                                -webkit-text-fill-color: ${muiTheme.palette.text.primary} !important;
-                                transition: background-color 1000s ease-in-out 0s !important;
-                                border-top-left-radius: 8px !important;
-                                border-top-right-radius: 8px !important;
-                                font-size: 1rem !important;
-                            }
-                            .padding {
-                                box-shadow: 0px 16px ${theme.palette.background.paper}, 0px -16px ${theme.palette.background.paper} !important;
-                                padding: 0 16px;
-                                margin-top: 16px;
-                                max-height: calc(100% - 16px);
-                            }
-                        `
-                    }
-                ]}
-            >
-                <meta
-                    name="theme-color"
-                    content={theme.palette.primary.main}
-                />
-                <meta
-                    name="msapplication-navbutton-color"
-                    content={theme.palette.primary.main}
-                />
-                <meta
-                    name="apple-mobile-web-app-status-bar-style"
-                    content={theme.palette.type === "dark" ? "black" : "default"}
-                />
-                <title>{window.location.pathname !== "/" ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).split("/")[1] : "Home"} • Maximise</title>
-            </Helmet>
-            <SnackbarError />
-            <div className={classes.root}>
-                <div className={classes.mainContainer}>
-                    {(email !== "" || !isHome) && <TopBar />}
-                    <PageLoadError>
-                        <div className={classes.pageContainer} style={{marginBottom: isHome ? 0 : 16, paddingBottom: isHome ? 0 : 16,}}>
-                            <Suspense
-                                fallback={
-                                    <div className={classes.loadingContainer}>
-                                        <CircularProgress />
-                                    </div>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <Helmet
+                    style={[
+                        {
+                            cssText: `
+                                body, html {
+                                    background-color: ${muiTheme.palette.background.default};
                                 }
-                            >
-                                <Switch location={location}>
-                                    <Route
-                                        component={getCookie("email") !== "" ? Home : LandingPage}
-                                        exact
-                                        path="/(home||)/"
-                                    />
-                                    {Object.keys(components).map(component => {
-                                        return (
-                                            <Route
-                                                render={() => {
-                                                    if (component !== "Login" && component !== "Signup" && email === "") {
-                                                        return <Redirect to="/login" />;
-                                                    }
-                                                    const Comp = components[component];
-                                                    return <Comp />;
-                                                }}
-                                                exact
-                                                path={`/${component.toLowerCase()}`}
-                                                key={component}
-                                            />
-                                        );
-                                    })}
-                                    <Route component={Page404} />
-                                </Switch>
-                            </Suspense>
-                        </div>
-                    </PageLoadError>
-                    {email !== "" && !isHome && <Navigation />}
-                    {email !== "" && isHome &&
-                        <div className={classes.floating}>
-                            <Button
-                                variant="contained"
-                                component={Link}
-                                to="/help"
-                            >
-                                Help
-                            </Button>
-                            <Tooltip title="Settings" placement="top">
-                                <IconButton
-                                    color="default"
-                                    component={Link}
-                                    to="/settings"
-                                >
-                                    <SettingsIcon
-                                        style={{
-                                            height: 36,
-                                            width: 36,
-                                            color: palette.type === "light" ? "black" : "white"
-                                        }}
-                                    />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
+                                * {
+                                    caret-color: ${muiTheme.palette.primary.main};
+                                }
+                                ::-moz-selection {
+                                    color: ${muiTheme.palette.getContrastText(theme.palette.secondary.main)};
+                                    background: ${muiTheme.palette.secondary.main};
+                                }
+                                ::selection {
+                                    color: ${muiTheme.palette.getContrastText(theme.palette.secondary.main)};
+                                    background: ${muiTheme.palette.secondary.main};
+                                }
+                                .highlight {
+                                    color: ${palette.primary.main};
+                                }
+                                input:-webkit-autofill,
+                                input:-webkit-autofill:hover,
+                                input:-webkit-autofill:focus,
+                                input:-webkit-autofill,
+                                textarea:-webkit-autofill,
+                                textarea:-webkit-autofill:hover,
+                                textarea:-webkit-autofill:focus,
+                                select:-webkit-autofill,
+                                select:-webkit-autofill:hover,
+                                select:-webkit-autofill:focus {
+                                    -webkit-box-shadow: 0 0 0px 1000px ${palette.background.default} inset !important;
+                                    box-shadow: 0 0 0px 1000px ${palette.background.default} inset !important;
+                                    background-color: ${palette.background.default} !important;
+                                    -webkit-text-fill-color: ${muiTheme.palette.text.primary} !important;
+                                    transition: background-color 1000s ease-in-out 0s !important;
+                                    border-top-left-radius: 8px !important;
+                                    border-top-right-radius: 8px !important;
+                                    font-size: 1rem !important;
+                                }
+                                .padding {
+                                    box-shadow: 0px 16px ${theme.palette.background.paper}, 0px -16px ${theme.palette.background.paper} !important;
+                                    padding: 0 16px;
+                                    margin-top: 16px;
+                                    max-height: calc(100% - 16px);
+                                }
+                                .contextMenu {
+                                    padding: 0;
+                                    border: 2px solid ${theme.palette.primary.main};
+                                    width: 128px;
+                                }
+                            `
+                        }
+                    ]}
+                >
+                    <meta
+                        name="theme-color"
+                        content={theme.palette.primary.main}
+                    />
+                    <meta
+                        name="msapplication-navbutton-color"
+                        content={theme.palette.primary.main}
+                    />
+                    <meta
+                        name="apple-mobile-web-app-status-bar-style"
+                        content={theme.palette.type === "dark" ? "black" : "default"}
+                    />
+                    <title>{window.location.pathname !== "/" ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).split("/")[1] : "Home"} • Maximise</title>
+                </Helmet>
+                <div className={classes.root} onContextMenu={contextMenu}>
+                <Menu
+                    keepMounted
+                    open={mouse[0] !== null}
+                    onClose={closeMenu}
+                    anchorReference="anchorPosition"
+                    anchorPosition={
+                        mouse[0] !== null && mouse[1] !== null
+                            ? { top: mouse[1], left: mouse[0] }
+                            : undefined
                     }
+                    PaperProps={{
+                        className: "contextMenu",
+                    }}
+                >
+                    <MenuItem onClick={back}>Back</MenuItem>
+                    <MenuItem onClick={forward}>Forward</MenuItem>
+                    <MenuItem onClick={reload}>Reload</MenuItem>
+                    <MenuItem onClick={copy}>Copy</MenuItem>
+                    {Object.keys(components).filter(x => x !== "Signup" && x !== "Login").map(component => (
+                        <MenuItem onClick={go(component)}>{component}</MenuItem>
+                    ))}
+                </Menu>
+                    <SnackbarError />
+                    <div className={classes.mainContainer}>
+                        {(email !== "" || !isHome) && <TopBar />}
+                            <div className={classes.pageContainer} style={{marginBottom: isHome ? 0 : 16, paddingBottom: isHome ? 0 : 16,}}>
+                        <PageLoadError>
+                                <Suspense
+                                    fallback={
+                                        <div className={classes.loadingContainer}>
+                                            <CircularProgress />
+                                        </div>
+                                    }
+                                >
+                                    <Switch location={location}>
+                                        <Route
+                                            component={getCookie("email") !== "" ? Home : LandingPage}
+                                            exact
+                                            path="/(home||)/"
+                                        />
+                                        {Object.keys(components).map(component => {
+                                            return (
+                                                <Route
+                                                    render={() => {
+                                                        if (component !== "Login" && component !== "Signup" && email === "") {
+                                                            return <Redirect to="/login" />;
+                                                        }
+                                                        const Comp = components[component];
+                                                        return <Comp />;
+                                                    }}
+                                                    exact
+                                                    path={`/${component.toLowerCase()}`}
+                                                    key={component}
+                                                />
+                                            );
+                                        })}
+                                        <Route component={Page404} />
+                                    </Switch>
+                                </Suspense>
+                        </PageLoadError>
+                            </div>
+                        {email !== "" && !isHome && <Navigation />}
+                        {email !== "" && isHome &&
+                            <div className={classes.floating}>
+                                <Button
+                                    variant="contained"
+                                    component={Link}
+                                    to="/help"
+                                >
+                                    Help
+                                </Button>
+                                <Tooltip title="Settings" placement="top">
+                                    <IconButton
+                                        color="default"
+                                        component={Link}
+                                        to="/settings"
+                                    >
+                                        <SettingsIcon
+                                            style={{
+                                                height: 36,
+                                                width: 36,
+                                                color: palette.type === "light" ? "black" : "white"
+                                            }}
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </div>
+            </MuiPickersUtilsProvider>
         </MuiThemeProvider>
     );
 };

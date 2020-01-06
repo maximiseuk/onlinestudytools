@@ -29,12 +29,8 @@ import LateIcon from "@material-ui/icons/AssignmentLate";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import { useDispatch } from "react-redux";
-import {
-    KeyboardDatePicker,
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker
-} from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import { KeyboardDatePicker, KeyboardTimePicker } from "@material-ui/pickers";
+import Portal from "@material-ui/core/Portal";
 
 const useStyles = makeStyles(theme => ({
     loadingContainer: {
@@ -237,7 +233,8 @@ export default () => {
         });*/
     }, [clientAgenda]);
     return (
-        agenda ? <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        agenda ? 
+        <>
             <Paper className="fade padding">
             <Container {...containerProps()}>
                 {agenda.map((todo, i) => (
@@ -526,24 +523,32 @@ export default () => {
                 </form>
             </Dialog>
         </Paper>
-        <Snackbar
-            anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-            }}
-            open={doneTodo.length !== 0}
-            autoHideDuration={5000}
-            onClose={() => setDoneTodo([])}
-            style={{
-                zIndex:1000000000,
-            }}
-        >
-            <SnackbarContent
-                message="Todo completed"
-                action={<Button color="primary" onClick={undo}>Undo</Button>}
-            />
-        </Snackbar>
-        </MuiPickersUtilsProvider>
+        <Portal container={document.getElementById("root")}>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                }}
+                style={{
+                    position: "absolute",
+                    bottom: 8,
+                    zIndex:1000000000,
+                    left: 8,
+                }}
+                open={doneTodo.length !== 0}
+                autoHideDuration={5000}
+                onClose={() => setDoneTodo([])}
+            >
+                <SnackbarContent
+                    message="Todo completed"
+                    style={{
+                        borderRadius: 8,
+                    }}
+                    action={<Button color="primary" onClick={undo}>Undo</Button>}
+                />
+            </Snackbar>
+        </Portal>
+    </>
         : <div className={classes.loadingContainer}>
             <CircularProgress />
         </div>

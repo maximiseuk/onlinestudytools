@@ -6,9 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import { withRouter } from "react-router-dom";
 
 const styles = theme => ({
-    error: {
-        backgroundColor: theme.palette.background.default,
-    },
+   
 });
 
 class Error extends React.Component {
