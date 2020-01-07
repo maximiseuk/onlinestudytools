@@ -9,7 +9,14 @@ import Divider from '@material-ui/core/Divider';
 import { Link, useHistory } from "react-router-dom";
 import { startCase } from "lodash";
 import { makeStyles } from "@material-ui/core/styles";
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import getCookie from "../api/cookies";
+
 
 const useStyles = makeStyles(theme => ({
     password: {
@@ -40,7 +47,43 @@ export default () => {
             password: "",
             repeatPassword: "",
         },
+        subjects = [
+            "Maths",
+            "Chemistry",
+            "Physics",
+            "Biology",
+            "Computing",
+            "Astronomy",
+            "Greek",
+            "Latin",
+            "English literature",
+            "English language",
+            "Art",
+            "Technology",
+            "French",
+            "Further maths",
+            "German",
+            "Spanish",
+            "Business",
+            "Mandarin",
+            "Drama",
+            "Economics",
+            "Food tech",
+            "Politics",
+            "History",
+            "Geography",
+            "Italian",
+            "Religious studies",
+            "Music",
+            "Psychology",
+            "Statistics",
+            "Sociology",
+            "Citizenship",
+            "Urdu",
+            "Underwater basket weaving"
+        ],
         dispatch = useDispatch(),
+        [welcomeOpen, setWelcomeOpen] = useState(false),
         classes = useStyles(),
         [values, setValues] = useState(initialState),
         [helpers, setHelpers] = useState(initialState),
@@ -66,10 +109,7 @@ export default () => {
                     if (data.errors !== undefined) {
                         set
                     } else {*/
-                        const d = new Date();
-                        localStorage.setItem("email", values.email);
-                        document.cookie = `email=${values.email}; expires ${d.getTime() + 4e12}; path=/`;
-                        history.replace("/home");
+                        setWelcomeOpen(true);
                     /*}
                 })
                 .catch(() => {
@@ -79,6 +119,12 @@ export default () => {
                     });
                 })
             }*/
+        },
+        finish = () => {
+            const d = new Date();
+            localStorage.setItem("email", values.email);
+            document.cookie = `email=${values.email}; expires ${d.getTime() + 4e12}; path=/`;
+            history.replace("/home");
         },
         clear = () => {
             setValues(initialState);
@@ -156,6 +202,29 @@ export default () => {
     }, []);
     return (
         <Paper className="fade" style={{maxWidth: 600, margin: "0 auto", }}>
+            <Dialog open={welcomeOpen}>
+        <DialogTitle>Welcome to Maximise Online Study Tools!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            To help us make your experience amazing, please enter the subjects you're taking below:
+          </DialogContentText>
+          <Autocomplete
+          multiple
+                freeSolo
+                PopperComponent="div"
+                options={subjects}
+                onChange={(event, value) => {console.log(event);console.log(value)}}
+                renderInput={params => (
+                <TextField {...params} label="Enter your subjects" margin="normal" variant="outlined" fullWidth />
+                )}
+            />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={finish} color="primary" autoFocus>
+            Go
+          </Button>
+        </DialogActions>
+      </Dialog>
             <Typography variant="h4" gutterBottom>
                 Login to {" "}
                 <span className="highlight">
@@ -188,7 +257,7 @@ export default () => {
                         variant="contained"
                         color="primary"
                         type="submit"
-                        disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0}
+                        //disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0}
                     >
                         Sign up
                     </Button>

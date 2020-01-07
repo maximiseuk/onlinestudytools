@@ -302,6 +302,9 @@ export default () => {
                                     border: 2px solid ${theme.palette.primary.main};
                                     width: 128px;
                                 }
+                                .popover {
+                                    z-index: 1000000 !important;
+                                }
                             `
                         }
                     ]}
@@ -334,13 +337,17 @@ export default () => {
                     PaperProps={{
                         className: "contextMenu",
                     }}
+                    PopoverClasses={{
+                        root: "popover"
+                    }}
                 >
                     <MenuItem onClick={back}>Back</MenuItem>
                     <MenuItem onClick={forward}>Forward</MenuItem>
                     <MenuItem onClick={reload}>Reload</MenuItem>
                     <MenuItem onClick={copy}>Copy</MenuItem>
+                    <MenuItem onClick={go("Home")}>Home</MenuItem>
                     {Object.keys(components).filter(x => x !== "Signup" && x !== "Login").map(component => (
-                        <MenuItem onClick={go(component)}>{component}</MenuItem>
+                        <MenuItem onClick={go(component)} key={component}>{component}</MenuItem>
                     ))}
                 </Menu>
                     <SnackbarError />

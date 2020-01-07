@@ -30,6 +30,7 @@ const useStyles = makeStyles(theme => ({
     loadingContainer: {
         textAlign: "center",
         margin: "0 auto",
+        paddingTop: "40%",
     },
     newGoal: {
         marginTop: 16,
@@ -182,7 +183,7 @@ export default () => {
             });
         };
     useEffect(() => {
-        fetch("/goals.json")
+        fetch("/goals.json"/*"/get_data"*/)
         .then(res => res.json())
         .then(data => {
             setGoals({
@@ -203,7 +204,7 @@ export default () => {
     }, []);
     useEffect(() => {
         setGoals(clientGoals);
-        fetch("/updateGoals", {
+        fetch("/update_data", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

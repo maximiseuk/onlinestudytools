@@ -127,11 +127,9 @@ export default () => {
                     onKeyDown={toggleDrawer(false)}
                 >
                     {linkBtns}
-                    <div style={{textAlign: "right"}}>
-                        <IconButton color="primary">
-                            <CloseIcon />
-                        </IconButton>
-                    </div>
+                    <Button variant="outlined" color="default">
+                        Close
+                    </Button>
                 </div>
             </SwipeableDrawer>
         </div>

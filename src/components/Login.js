@@ -86,7 +86,6 @@ export default () => {
                     fullWidth
                     helperText={emailHelper}
                     error={emailHelper !== " "}
-                    type="email"
                 />
                 <TextField
                     label="Your Password"

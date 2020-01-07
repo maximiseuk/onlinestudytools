@@ -26,10 +26,10 @@ class Error extends React.Component {
         console.error(error + info)
     }
     componentDidMount() {
-        this.props.history.listen((location) => {
+        this.props.history.listen(() => {
             this.setState({
-                hasError: false
-            })
+                hasError: false,
+            });
         });
     }
     render() {
@@ -37,6 +37,7 @@ class Error extends React.Component {
         if (this.state.hasError) {
             return (
                 <Paper className={classes.error}>
+                    <img src="/images/error.jpeg" alt="Error" style={{width: "100%", maxWidth: 512, margin: "0 auto"}} />
                     <Typography variant="h4" component="h4">
                         Oh dear! Sorry, something went wrong loading this page.
                     </Typography>

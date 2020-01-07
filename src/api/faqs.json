@@ -17,7 +17,7 @@
     },
     {
         "q": "What’s the difference between {Agenda} and {Timetable}?",
-        "a": "<p>Your {agenda} is a place where you plan out what you are going to do and when for each subject, while your {timetable} shows when you have the actual tests for the subjects.</p>"
+        "a": "<p>The {agenda} shows you the {deadlines} for when you need to get work done by, but the {timetable} shows you when you {plan} on doing the work required.</p>"
     },
     {
         "q": "Why use the {tools}?",

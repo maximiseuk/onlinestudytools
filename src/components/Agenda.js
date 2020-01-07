@@ -36,6 +36,7 @@ const useStyles = makeStyles(theme => ({
     loadingContainer: {
         textAlign: "center",
         margin: "0 auto",
+        paddingTop: "40%",
     },
     newTodo: {
         marginTop: 16,
@@ -58,6 +59,12 @@ const useStyles = makeStyles(theme => ({
     late: {
         color: theme.palette.error.main,
     },
+    snackbar: {
+        backgroundColor: theme.palette.background.paper,
+        border: `2px solid ${theme.palette.primary.main}`,
+        borderRadius: 16,
+        color: theme.palette.text.primary,
+    }
 }));
 
 export default () => {
@@ -191,7 +198,7 @@ export default () => {
             });
         };
     useEffect(() => {
-        fetch("/agenda.json")
+        fetch("/agenda.json"/*"/get_data"*/)
         .then(res => res.json())
         .then(data => {
             setAgenda(data);
@@ -206,7 +213,7 @@ export default () => {
     }, []);
     useEffect(() => {
         setAgenda(clientAgenda);
-        /*fetch("/updateAgenda", {
+        /*fetch("/update_data", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -544,6 +551,7 @@ export default () => {
                     style={{
                         borderRadius: 8,
                     }}
+                    className={classes.snackbar}
                     action={<Button color="primary" onClick={undo}>Undo</Button>}
                 />
             </Snackbar>

@@ -1,67 +1,51 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import { DatePicker } from "@material-ui/pickers";
-import { Card, CardContent, useMediaQuery, Typography, makeStyles, InputBase } from "@material-ui/core";
+import { Card, CardContent, useMediaQuery, Typography, makeStyles, InputBase, IconButton } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import DotsIcon from "@material-ui/icons/MoreVert";
+import { useDispatch } from "react-redux";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { omit } from "lodash";
+import { setHours } from "date-fns";
 
 const useStyles = makeStyles(theme => ({
     paper: {
         padding: 0,
         border: `2px solid ${theme.palette.primary.main}`,
-    }
+    },
+    input: {
+        color: theme.palette.primary.main
+    },
+    loadingContainer: {
+        textAlign: "center",
+        margin: "0 auto",
+        paddingTop: "40%",
+    },
 }));
 
 export default () => {
-    const sample = {
-        "6/1/2020": {
-            "9:00 - 10:00": {
-                type: "exam",
-                title: "Maths - Surds"
-            },
-            "13:00 - 14:00": {
-                type: "revision",
-                title: "Biology - cells"
-            },
-            "14:00 - 15:00": {
-                type: "break",
-                title: "Football"
-            }
-        },
-        "9/1/2020": {
-            "10:00 - 11:00": {
-                type: "exam",
-                title: "Maths - Surds"
-            },
-            "14:00 - 15:00": {
-                type: "revision",
-                title: "Biology - stem cells"
-            },
-            "16:00 - 17:00": {
-                type: "break",
-                title: "Tenns"
-            }
-        },
-    }
     const
         classes = useStyles(),
+        dispatch = useDispatch(),
         minDate = new Date(),
         maxDate = new Date(),
         [selectedDate, setSelectedDate] = useState(minDate),
+        [currentHour, setHour] = useState(""),
+        [anchorEl, setAnchorEl] = useState(null),
         [open, setOpen] = useState(false),
         formatDate = selectedDate.getDate() + "/" + (selectedDate.getMonth() + 1) + "/" + selectedDate.getFullYear(),
         isSmall = useMediaQuery("(max-width: 800px)"),
-        [timetable, setTimetable] = useState(sample),
-        [clientTimetable, setClientTimetable] = useState(sample),
+        [timetable, setTimetable] = useState(false),
+        [clientTimetable, setClientTimetable] = useState(false),
         hours = [
             "7:00 - 8:00",
             "8:00 - 9:00",
@@ -76,7 +60,9 @@ export default () => {
             "17:00 - 18:00",
             "18:00 - 19:00",
         ],
-        changeType = (date, hour) => e => {
+        changeType = (date, hour, title) => e => {
+            
+            hour = isSmall ? currentHour : hour;
             const
                 restOfDate = timetable[date] === undefined
                     ? {}
@@ -91,13 +77,13 @@ export default () => {
                 [date]: {
                     ...restOfDate,
                     [hour]: {
-                        ...restOfHour,
+                        title,
                         type: e.target.value,
                     },
                 },
             });
         },
-        changeTitle = (date, hour) => e => {
+        changeTitle = (date, hour, type) => e => {
             const
                 restOfDate = timetable[date] === undefined
                     ? {}
@@ -105,14 +91,14 @@ export default () => {
                 restOfHour = timetable[date] === undefined
                 ? {}
                 : timetable[date][hour] !== undefined
-                    ? timetable[date]
+                    ? timetable[date][hour]
                     : {};
             setClientTimetable({
                 ...timetable,
                 [date]: {
                     ...restOfDate,
                     [hour]: {
-                        ...restOfHour,
+                        type,
                         title: e.target.value,
                     },
                 },
@@ -122,12 +108,76 @@ export default () => {
             if (e.key === "Enter") {
                 e.target.blur();
             }
+        },
+        setRepeat = (mode, date, hour, type, title, repeatType) => () => {
+            const
+                restOfWeekRepeats = timetable[mode + "repeats"]
+                    ? mode !== "week"
+                        ? omit(timetable.weekrepeats, currentHour)
+                        : timetable.weekrepeats
+                    : {},
+                restOfRepeatType = timetable[mode + "repeats"] ? timetable[mode + "repeats"] : {},
+                splitted = date.split("/"),
+                day = mode === "week" ? {
+                    day: new Date(splitted[2], splitted[1] - 1, splitted[0]).getDay(),
+                } : {};
+            if (mode === "day" || mode === "week") {
+                setClientTimetable({
+                    ...timetable,
+                    ...restOfWeekRepeats,
+                    [mode + "repeats"]: {
+                        ...restOfRepeatType,
+                        [currentHour]: {
+                            type,
+                            title,
+                            ...day,
+                        }
+                    }
+                });
+            } else {
+                if (repeatType !== "") {
+                    if (timetable[repeatType + "repeats"][currentHour].title === title && timetable[repeatType + "repeats"][currentHour].type === type) {
+                        setClientTimetable({
+                            ...timetable,
+                            [repeatType + "repeats"]: omit(timetable[repeatType + "repeats"], currentHour),
+                        });
+                    }
+                } else if (timetable.weekrepeats && timetable.weekrepeats[currentHour] && timetable.weekrepeats[currentHour].title === title && timetable.weekrepeats[currentHour].type === type) {
+                    setClientTimetable({
+                        ...timetable,
+                        weekrepeats: omit(timetable.weekrepeats, currentHour),
+                    });
+                } else if (timetable.dayrepeats && timetable.dayrepeats[currentHour] && timetable.dayrepeats[currentHour].title === title && timetable.dayrepeats[currentHour].type === type) {
+                    setClientTimetable({
+                        ...timetable,
+                        dayrepeats: omit(timetable.dayrepeats, currentHour),
+                    });
+                }
+            }
+            setAnchorEl(null);
         };
     maxDate.setMonth(maxDate.getMonth() + 2);
     useEffect(() => {
         setTimetable(clientTimetable);
+        console.log(clientTimetable);
+        
     }, [clientTimetable]);
+    useEffect(() => {
+        fetch("/timetable.json"/*"/get_data"*/)
+        .then(res => res.json())
+        .then(data => {
+            setTimetable(data);
+            setClientTimetable(data);
+        })
+        .catch(() => {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error loading your goals",
+            });
+        });
+    }, []);
     return (
+        timetable ? (
         <Paper className="fade padding">
 <Typography variant="h4" gutterBottom>Date: {formatDate}</Typography>
             <Button onClick={() => setOpen(true)}>Change Date</Button>
@@ -153,56 +203,102 @@ export default () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            Close
+            OK
           </Button>
         </DialogActions>
       </Dialog>
-            {hours.map(hour => (
+            {hours.map(hour => {
+            let root = false;
+            let repeatType = "";
+            if (timetable[formatDate] && timetable[formatDate][hour] && timetable[formatDate][hour].title !== "") {
+                root = timetable[formatDate];
+            } else if (timetable.weekrepeats) {
+                if (timetable.weekrepeats[hour] && new Date(formatDate.split("/")[2], formatDate.split("/")[1] - 1,formatDate.split("/")[0]).getDay() === timetable.weekrepeats[hour].day) {
+                    root = timetable.weekrepeats;
+                    repeatType = "week";
+                } else if (timetable.dayrepeats && timetable.dayrepeats[hour]) {
+                    root = timetable.dayrepeats;
+                    repeatType = "day";
+                }
+            } else if (timetable.dayrepeats && timetable.dayrepeats[hour]) {
+                root = timetable.dayrepeats;
+                repeatType = "day";
+            }
+            
+            const select = root[isSmall ? currentHour : hour] && root[isSmall ? currentHour : hour].title !== "" && <Select
+            value={
+                root && root[isSmall ? currentHour : hour]
+                    ? root[isSmall ? currentHour : hour].type
+                    : "revision"
+            }
+            onChange={changeType(formatDate, hour, root[isSmall ? currentHour : hour].title )}
+            style={{marginLeft: isSmall ? 16 : "auto"}}
+            MenuProps={{
+                PaperProps: {
+                    className: classes.paper,
+                }
+            }}
+        >
+            <MenuItem value="exam">Exam</MenuItem>
+            <MenuItem value="revision">Revision</MenuItem>
+            <MenuItem value="break">Break</MenuItem>
+        </Select>;
+                return (
                 <div style={{display: "flex"}} key={hour}>
                     <Card style={{marginTop: 8, width: isSmall ? 72 : 144, display: "flex", alignItems: "center"}}>
                         <CardContent>
-                            <span className="highlight">{isSmall ? hour.split(" -")[0] : hour}</span>
+                            <Typography className="highlight">{isSmall ? hour.split(" -")[0] : hour}</Typography>
                         </CardContent>
                     </Card>
                     <Card style={{marginTop: 8, flex: 1, marginLeft: 8,}}>
                         <CardContent>
                             <div style={{display: "flex", alignItems: "center"}}>
                                 <InputBase
-                                    value={
-                                        timetable[formatDate] !== undefined && timetable[formatDate][hour] !== undefined && timetable[formatDate][hour].title !== ""
-                                            ? timetable[formatDate][hour].title
-                                            : ""
-                                    }
+                                    value={root && root[hour] ? root[hour].title : ""}
                                     placeholder="Topic of the hour"
-                                    onChange={changeTitle(formatDate, hour)}
-                                    style={{flex: 1,}}
+                                    onChange={changeTitle(formatDate, hour, root && root[hour] ? root[hour].type : "revision")}
+                                    style={{flex: 1,marginRight: 8,}}
+                                    className={root && root[hour] && root[hour].type === "exam" ? classes.input : ""}
                                     onKeyDown={keyDown}
+                                    inputProps={{
+                                        maxLength: "64"
+                                    }}
                                 />
-                                {timetable[formatDate] !== undefined && timetable[formatDate][hour] !== undefined && timetable[formatDate][hour].title !== "" && 
-                                    <Select
-                                        value={
-                                            timetable[formatDate] !== undefined && timetable[formatDate][hour] !== undefined && timetable[formatDate][hour].type !== undefined
-                                                ? timetable[formatDate][hour].type
-                                                : "revision"
-                                        }
-                                        onChange={changeType(formatDate, hour)}
-                                        style={{marginLeft: "auto"}}
-                                        MenuProps={{
-                                            PaperProps: {
-                                                className: classes.paper,
-                                            }
+                                {root && root[hour].title !== "" &&
+                                    <>
+                                    {!isSmall && select}
+                                    <IconButton onClick={e => {
+                                        setAnchorEl(e.currentTarget);
+                                        setHour(hour);
+                                    }} size="small">
+                                        <DotsIcon />
+                                    </IconButton>
+                                    {root[currentHour] && <Menu
+                                        anchorEl={anchorEl}
+                                        keepMounted
+                                        open={Boolean(anchorEl)}
+                                        onClose={() => setAnchorEl(null)}
+                                        PaperProps={{
+                                            className: classes.paper,
                                         }}
                                     >
-                                        <MenuItem value="exam">Exam</MenuItem>
-                                        <MenuItem value="revision">Revision</MenuItem>
-                                        <MenuItem value="break">Break</MenuItem>
-                                    </Select>
+                                        <MenuItem onClick={setRepeat("none", formatDate, hour, root[currentHour].type, root[currentHour].title, repeatType)}>Doesn't repeat</MenuItem>
+                                        <MenuItem onClick={setRepeat("day", formatDate, hour, root[currentHour].type, root[currentHour].title)}>Repeat daily</MenuItem>
+                                        <MenuItem onClick={setRepeat("week", formatDate, hour, root[currentHour].type, root[currentHour].title)}>Repeat weekly</MenuItem>
+                                        {isSmall && select}
+                                    </Menu>}
+                                    </>
                                 }
                             </div>
                         </CardContent>
                     </Card>
                 </div>
-            ))}
+                )
+})}
         </Paper>
+        )
+        : <div className={classes.loadingContainer}>
+        <CircularProgress />
+    </div>
     );
 };
