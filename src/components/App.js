@@ -308,9 +308,12 @@ export default () => {
                                 }
                                 .padding {
                                     box-shadow: 0px 16px ${theme.palette.background.paper}, 0px -16px ${theme.palette.background.paper} !important;
-                                    padding: 0 16px;
                                     margin-top: 16px !important;
                                     max-height: calc(100% - 16px);
+                                    padding-top: 0px;
+                                    padding-bottom: 0px;
+                                    border-radius: 16px;
+                                    background-color: ${theme.palette.background.paper};
                                 }
                                 .contextMenu {
                                     padding: 0;
@@ -338,7 +341,7 @@ export default () => {
                     />
                     <title>{window.location.pathname !== "/" ? window.location.pathname.replace(/\b\w/g, l => l.toUpperCase()).split("/")[1] : "Home"} • Maximise</title>
                 </Helmet>
-                <div className={classes.root} onContextMenu={contextMenu}>
+                <div className={classes.root}>
                 <Menu
                     keepMounted
                     open={mouse[0] !== null}
@@ -368,7 +371,7 @@ export default () => {
                     <SnackbarError />
                     <div className={classes.mainContainer}>
                         {(email !== "" || !isHome) && <TopBar />}
-                            <div className={classes.pageContainer} style={{marginBottom: isHome ? 0 : 16, paddingBottom: isHome ? 0 : 16,}}>
+                            <div className={classes.pageContainer} style={{marginBottom: isHome ? 0 : 0, paddingBottom: isHome ? 0 :0,}}>
                         <PageLoadError>
                                 <Suspense
                                     fallback={

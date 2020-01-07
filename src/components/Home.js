@@ -14,20 +14,23 @@ import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import { Link, useHistory } from "react-router-dom";
 import advice from "../api/advice.json";
 import { useDispatch } from "react-redux";
+import { useMediaQuery } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
     item: {
         flex: 1,
         margin: 8,
+        marginTop: -8,
         minWidth: 280,
         [theme.breakpoints.down(1024)]: {
-            minWidth: "initial"
+            minWidth: "initial",
+            padding: 8,
         },
         cursor: "pointer",
     },
     swiper: {
         "& > div > div > .MuiPaper-root": {
-            height: "calc(100% - 48px)"
+            //height: "calc(100% - 48px)"
         },
         [theme.breakpoints.up(1024)]: {
             display: "none"
@@ -44,6 +47,10 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.up(1024)]: {
             display: "none",
         },
+        backgroundColor: theme.palette.background.paper,
+        margin: 8,
+        marginBottom: -8,
+        paddingBottom: 0,
     },
     info: {
         whiteSpace: "nowrap",
@@ -64,6 +71,7 @@ export default () => {
         [exams, setExams] = useState([]),
         [agenda, setAgenda] = useState([]),
         [goals, setGoals] = useState([]),
+        isSmall = useMediaQuery("(max-width: 1024px)"),
         examView = (
             <Paper className={classes.item} onClick={() => history.push("/timetable")}>
                 <Typography variant="h4" gutterBottom>
@@ -239,7 +247,7 @@ export default () => {
         });
     }, []);
     return (
-        <div className="fade" style={{margin: "-8px 0", height: "100%", marginBottom: "-240px"}}>
+        <div className={`fade ${isSmall ? "padding" : ""}`} style={{margin: !isSmall ? "-8px 0" : 0, maxHeight: isSmall ? "calc(100% - 32px)" : "100%", marginBottom: isSmall && 16,}}>
             <SwipeableViews
                 index={activeStep}
                 onChangeIndex={step => setActiveStep(step)}
