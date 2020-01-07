@@ -16,7 +16,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import getCookie from "../api/cookies";
-
+import { Chip } from "@material-ui/core";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import ButtonLink from '@material-ui/core/Link';
 
 const useStyles = makeStyles(theme => ({
     password: {
@@ -33,6 +36,9 @@ const useStyles = makeStyles(theme => ({
         width: "calc(50% - 4px)",
         marginLeft: 8,
     },
+    link: {
+        color: theme.palette.primary.main,
+    }
 }));
 
 export default () => {
@@ -46,6 +52,7 @@ export default () => {
             code: "",
             password: "",
             repeatPassword: "",
+            agreed: false,
         },
         subjects = [
             "Maths",
@@ -84,9 +91,12 @@ export default () => {
         ],
         dispatch = useDispatch(),
         [welcomeOpen, setWelcomeOpen] = useState(false),
+        [disclaimerOpen, setDisclaimerOpen] = useState(false),
         classes = useStyles(),
         [values, setValues] = useState(initialState),
         [helpers, setHelpers] = useState(initialState),
+        [agreed, setAgreed] = useState(false),
+        [userSubjects, setUserSubjects] = useState([]),
         history = useHistory(),
         login = e => {
             e.preventDefault();
@@ -107,24 +117,43 @@ export default () => {
                 .then(res => res.json())
                 .then(data => {
                     if (data.errors !== undefined) {
-                        set
+                        setHelpers(data.errors);
                     } else {*/
                         setWelcomeOpen(true);
+                        const d = new Date();
+                        localStorage.setItem("email", values.email);
+                        localStorage.setItem("name", values.firstName);
+                        document.cookie = `email=${values.email}; expires ${d.getTime() + 4e12}; path=/`;
                     /*}
                 })
                 .catch(() => {
                     dispatch({
                         type: "NEW_ERROR",
-                        payload: "There was an error logging you in",
+                        payload: "There was an error signing you up",
                     });
                 })
             }*/
         },
         finish = () => {
-            const d = new Date();
-            localStorage.setItem("email", values.email);
-            document.cookie = `email=${values.email}; expires ${d.getTime() + 4e12}; path=/`;
+            /*fetch("/update_data/subjects", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: stringify(userSubjects),
+                })
+                .then(res => res.json())
+                .then(data => {
+                    */
             history.replace("/home");
+                /*})
+                .catch(() => {
+                    dispatch({
+                        type: "NEW_ERROR",
+                        payload: "There was an error uploading your subjects",
+                    });
+                })*/
         },
         clear = () => {
             setValues(initialState);
@@ -206,16 +235,22 @@ export default () => {
         <DialogTitle>Welcome to Maximise Online Study Tools!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            To help us make your experience amazing, please enter the subjects you're taking below:
+            To help us make your experience amazing, please enter the subjects you're taking below (press enter to add a new subject). You can always change these in settings if you want.
           </DialogContentText>
           <Autocomplete
           multiple
                 freeSolo
-                PopperComponent="div"
+                style={{maxHeight: 256}}
+                //PopperComponent="div"
+                onChange={(e, val) => setUserSubjects(val)}
                 options={subjects}
-                onChange={(event, value) => {console.log(event);console.log(value)}}
+                renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                    ))
+                }
                 renderInput={params => (
-                <TextField {...params} label="Enter your subjects" margin="normal" variant="outlined" fullWidth />
+                <TextField {...params} label="Enter your subjects" margin="normal" variant="filled" fullWidth />
                 )}
             />
         </DialogContent>
@@ -225,14 +260,30 @@ export default () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={disclaimerOpen} onClose={() => setDisclaimerOpen(false)}>
+        <DialogTitle>Disclaimer</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            We created the <span className="highlight">Maximise</span> revision planner to give you a personalised revision plan that <span className="highlight">helps</span> to maximise your revision efficiency.  <span className="highlight">However</span>, this tool should be treated as an example of a <span className="highlight">possible</span> time schedule, rather than a key to great marks - that only comes with <span className="highlight">time</span> and <span className="highlight">effort</span>. It is therefore <span className="highlight">not</span> intended to entirely decide all of your revision timetabling, nor will it <span className="highlight">guarantee</span> achieving specific grades for any exam. This tool is simply <span className="highlight">a source of time schedule</span> that <span className="highlight">may help to maximise</span> your revision time.
+            <br />
+            <br />
+            In short, the <span className="highlight">Maximise</span> revision planner can help to make a great revision plan, but <span className="highlight">you</span> know your <span className="highlight">strengths</span> and <span className="highlight">weaknesses</span> best, so we ask that you apply your <span className="highlight">own</span> input to your revision plan as well.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDisclaimerOpen(false)} color="primary" autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
             <Typography variant="h4" gutterBottom>
-                Login to {" "}
+                Sign up to {" "}
                 <span className="highlight">
                      Maximise
                 </span>
             </Typography>
             <form onSubmit={login}>
-                {Object.keys(initialState).map(field => (
+                {Object.keys(initialState).filter(x => x !== "agreed").map(field => (
                     <TextField
                         label={startCase(field)}
                         placeholder={
@@ -252,12 +303,18 @@ export default () => {
                         className={classes[field]}
                     />
                 ))}
+                <FormControlLabel
+        control={
+          <Checkbox checked={agreed} onChange={e => setAgreed(e.target.checked)} value="agreed" />
+        }
+        label={<span>I have read the <Link className={classes.link} href="#" onClick={e => {e.preventDefault(); setDisclaimerOpen(true)}}>Disclaimer</Link></span>}
+      />
                 <div style={{ display: "flex", marginTop: 8, marginBottom: 16, }}>
                     <Button
                         variant="contained"
                         color="primary"
                         type="submit"
-                        //disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0}
+                        disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0 || !agreed}
                     >
                         Sign up
                     </Button>

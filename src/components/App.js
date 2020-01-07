@@ -213,6 +213,13 @@ export default () => {
                         paddingLeft: 8,
                     },
                 },
+                MuiAutocomplete: {
+                    paper: {
+                        padding: 0,
+                        border: `2px solid ${palette.primary.main}`,
+                        maxHeight: 256,
+                    },
+                }
             },
         },
         classes = useStyles(),
@@ -222,8 +229,10 @@ export default () => {
             setMouse([null, null]);
         },
         contextMenu = e => {
-            e.preventDefault();
-            setMouse([e.clientX - 2, e.clientY - 4]);
+            if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))  {
+                e.preventDefault();
+                setMouse([e.clientX - 2, e.clientY - 4]);
+}
         },
         back = () => {
             closeMenu();

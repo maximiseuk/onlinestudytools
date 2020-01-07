@@ -183,7 +183,7 @@ export default () => {
             });
         };
     useEffect(() => {
-        fetch("/goals.json"/*"/get_data"*/)
+        fetch("/goals.json"/*"/get_data/goals"*/)
         .then(res => res.json())
         .then(data => {
             setGoals({

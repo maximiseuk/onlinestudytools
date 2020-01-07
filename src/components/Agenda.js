@@ -198,7 +198,7 @@ export default () => {
             });
         };
     useEffect(() => {
-        fetch("/agenda.json"/*"/get_data"*/)
+        fetch("/agenda.json"/*"/get_data/agenda"*/)
         .then(res => res.json())
         .then(data => {
             setAgenda(data);

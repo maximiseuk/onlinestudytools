@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
@@ -12,6 +12,8 @@ import Button from "@material-ui/core/Button";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import { Link, useHistory } from "react-router-dom";
+import advice from "../api/advice.json";
+import { useDispatch } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
     item: {
@@ -57,68 +59,34 @@ export default () => {
     const
         classes = useStyles(),
         history = useHistory(),
+        dispatch = useDispatch(),
         [activeStep, setActiveStep] = useState(0),
-        exams = [
-            {
-                subject: "Maths",
-                topics: ["Quadratics", "graph sketching"],
-                date: "13/12/19"
-            },
-            {
-                subject: "Physics",
-                topics: ["Circuit diagrams", "I-V characteristics"],
-                date: "14/12/19"
-            }
-        ],
-        agenda = [
-            {
-                todo: "Revise Maths",
-                notes: "Do practice questions",
-                date: "14/12/19"
-            }
-        ],
-        advice = [
-            {
-                title: "Stay hydrated",
-                notes: "Keeps brain healthy"
-            },
-            {
-                title: "Think positively",
-                notes: "Being rained on is good"
-            }
-        ],
-        goals = [
-            {
-                subject: "Maths",
-                desc: "Beat Pratyaksh"
-            }
-        ],
+        [exams, setExams] = useState([]),
+        [agenda, setAgenda] = useState([]),
+        [goals, setGoals] = useState([]),
         examView = (
             <Paper className={classes.item} onClick={() => history.push("/timetable")}>
                 <Typography variant="h4" gutterBottom>
                     Upcoming <span className="highlight">Exams</span>
                 </Typography>
-                {exams.map((exam, i) => (
+                {exams.length !== 0 ? exams.map((exam, i) => (
                     <Card
                         key={i}
                         style={{ marginBottom: i !== exams.length - 1 ? 8 : 0 }}
                     >
                         <CardContent>
                             <Typography variant="h5" className={classes.emphasis}>
-                                {exam.subject}
+                                {exam.time}
                                 <span style={{ float: "right", fontSize: 16 }}>
                                     {exam.date}
                                 </span>
                             </Typography>
                             <Typography className={classes.info}>
-                                {exam.topics.map(
-                                    (topic, i) =>
-                                        topic + (i !== exam.topics.length - 1 ? ", " : "")
-                                )}
+                                {exam.title}
                             </Typography>
                         </CardContent>
                     </Card>
-                ))}
+                )) : <p>No upcoming exams</p>}
                 <Button
                     component={Link}
                     to="/timetable"
@@ -135,26 +103,28 @@ export default () => {
                 <Typography variant="h4" gutterBottom>
                     Your <span className="highlight">Agenda</span>
                 </Typography>
-                {agenda.map((todo, i) => (
+                {agenda.length !== 0 ? agenda.map((todo, i) => (
                     <Card
                         key={i}
                         style={{ marginBottom: i !== agenda.length - 1 ? 8 : 0 }}
                     >
                         <CardContent>
                             <Typography variant="h5" className={classes.emphasis}>
-                                {todo.todo}
+                                {todo.subject}
                                 <span style={{ float: "right", fontSize: 16 }}>
-                                    {todo.date}
+                                    {new Date(todo.date).getDate()}/
+                                    {new Date(todo.date).getMonth() + 1}/
+                                    {new Date(todo.date).getFullYear()}
                                 </span>
                             </Typography>
-                            <Typography className={classes.info}>{todo.notes}</Typography>
+                            <Typography className={classes.info}>{todo.desc}</Typography>
                         </CardContent>
                     </Card>
-                ))}
+                )) : <p>Nothing on your agenda at the moment</p>}
                 <Typography variant="h4" gutterBottom style={{ marginTop: 8 }}>
                     Your <span className="highlight">Goals</span>
                 </Typography>
-                {goals.map((goal, i) => (
+                {goals.length !== 0 ? goals.map((goal, i) => (
                     <Card
                         key={i}
                         style={{ marginBottom: i !== agenda.length - 1 ? 8 : 0 }}
@@ -166,7 +136,7 @@ export default () => {
                             <Typography className={classes.info}>{goal.desc}</Typography>
                         </CardContent>
                     </Card>
-                ))}
+                )) : <p>No goals at the moment</p>}
                 <Button
                     component={Link}
                     to="/agenda"
@@ -192,16 +162,36 @@ export default () => {
                 <Typography variant="h4" gutterBottom>
                     <span className="highlight">Advice</span>
                 </Typography>
-                {advice.map((tip, i) => (
+                {[advice.Wellbeing[1], advice.Wellbeing[2], advice.Revision[3], advice.Wellbeing[6]].map((tip, i) => (
                     <Card
                         key={i}
                         style={{ marginBottom: i !== advice.length - 1 ? 8 : 0 }}
                     >
                         <CardContent>
-                            <Typography variant="h5" className={classes.emphasis}>
-                                {tip.title}
-                            </Typography>
-                            <Typography className={classes.info}>{tip.notes}</Typography>
+                        <Typography
+                                            variant="h5"
+                                            gutterBottom
+                                            dangerouslySetInnerHTML={{
+                                                __html: tip.title
+                                                    .replace(/{/g, "<span class='highlight'>")
+                                                    .replace(/}/g, "</span>")
+                                            }}
+                                        />
+                                        <Typography
+                                            dangerouslySetInnerHTML={{
+                                                __html: tip.content
+                                                    .replace(/{/g, "<span class='highlight'>")
+                                                    .replace(/}/g, "</span>")
+                                                    .replace(":--", "<ul><li>")
+                                                    .replace("--:", "</li></ul>")
+                                                    .replace("1--", "<ol><li>")
+                                                    .replace("--1", "</li></ol>")
+                                                    .replace(/--/g, "</li><li>")
+                                                    .replace(/href='www/g, "href='https://www")
+                                                    .split(".")[0]
+                                                    .split("<p>")[1] + "."
+                                            }}
+                                        />
                         </CardContent>
                     </Card>
                 ))}
@@ -216,6 +206,38 @@ export default () => {
         </Button>
             </Paper>
         );
+    useEffect(() => {
+        fetch("/get_data.json"/*"/get_data"*/)
+        .then(res => res.json())
+        .then(data => {
+            setAgenda(data.agenda.filter((x, i) => i < 3));
+            setGoals(data.goals.filter((x, i) => i < 3));
+            const { timetable } = data;
+            delete timetable.weekrepeats;
+            delete timetable.dayrepeats;
+            let newExams = [];
+            for (let key in timetable) {
+                for (let time in timetable[key]) {
+                    if (timetable[key][time].type === "exam") {
+                        newExams.push({
+                            title: timetable[key][time].title,
+                            date: key,
+                            time: time.split("-")[0]
+                        });
+                    }
+                }
+            }
+            setExams(newExams);
+        })
+        .catch((err) => {
+            console.error(err);
+            
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error loading your data",
+            });
+        });
+    }, []);
     return (
         <div className="fade" style={{margin: "-8px 0", height: "100%", marginBottom: "-240px"}}>
             <SwipeableViews

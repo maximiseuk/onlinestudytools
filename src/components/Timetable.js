@@ -15,7 +15,6 @@ import DotsIcon from "@material-ui/icons/MoreVert";
 import { useDispatch } from "react-redux";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { omit } from "lodash";
-import { setHours } from "date-fns";
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -110,21 +109,27 @@ export default () => {
             }
         },
         setRepeat = (mode, date, hour, type, title, repeatType) => () => {
-            const
-                restOfWeekRepeats = timetable[mode + "repeats"]
-                    ? mode !== "week"
-                        ? omit(timetable.weekrepeats, currentHour)
-                        : timetable.weekrepeats
-                    : {},
-                restOfRepeatType = timetable[mode + "repeats"] ? timetable[mode + "repeats"] : {},
-                splitted = date.split("/"),
-                day = mode === "week" ? {
-                    day: new Date(splitted[2], splitted[1] - 1, splitted[0]).getDay(),
-                } : {};
             if (mode === "day" || mode === "week") {
+                const
+                    restOfWeekRepeats = timetable[mode + "repeats"]
+                        ? mode !== "week"
+                            ? omit(timetable.weekrepeats, currentHour)
+                            : timetable.weekrepeats
+                        : {},
+                    restOfDayRepeats = timetable[mode + "repeats"]
+                        ? mode !== "day"
+                            ? omit(timetable.dayrepeats, currentHour)
+                            : timetable.dayrepeats
+                        : {},
+                    restOfRepeatType = timetable[mode + "repeats"] ? timetable[mode + "repeats"] : {},
+                    splitted = date.split("/"),
+                    day = mode === "week" ? {
+                        day: new Date(splitted[2], splitted[1] - 1, splitted[0]).getDay(),
+                    } : {};
                 setClientTimetable({
                     ...timetable,
                     ...restOfWeekRepeats,
+                    ...restOfDayRepeats,
                     [mode + "repeats"]: {
                         ...restOfRepeatType,
                         [currentHour]: {
@@ -163,7 +168,7 @@ export default () => {
         
     }, [clientTimetable]);
     useEffect(() => {
-        fetch("/timetable.json"/*"/get_data"*/)
+        fetch("/timetable.json"/*"/get_data/timetable"*/)
         .then(res => res.json())
         .then(data => {
             setTimetable(data);

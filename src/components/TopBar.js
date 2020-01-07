@@ -2,18 +2,27 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
+import Tooltip from "@material-ui/core/Tooltip";
 import { useLocation } from "react-router-dom";
 import getCookie from "../api/cookies";
 
 const
     quotes = [
-        "Do well",
-        "Git gud",
-        "Git hub",
-        "Git scm",
-        "Get a life",
-        "Be smart",
-        "Get a 9",
+        ["Creativity is intelligence having fun.", "Albert Einstein"],
+["Our dreams can come true if we have the courage to pursue them.", "Walt Disney"],
+["We cannot teach people anything. We can only help them discover it within themselves.", "Galileo Galilei"],
+["Know well what leads you forward and what holds you back, and choose the path that leads you to wisdom.", "Buddha"],
+["The best way to predict the future is to invent it.", "Alan Kay"],
+["When you talk, you are only repeating what you already know. But if you listen, you may learn something new.", "Dalai Lama"],
+["A pessimist sees the difficulty in every opportunity; an optimist sees the opportunity in every difficulty.", "Winston Churchill"],
+["You don't have to see the whole staircase. Just take the first step.", "Martin Luther King"],
+["Pleasure in the job puts perfection in the work.", "Aristotle"],
+["As you think, so shall you become.", "Bruce Lee"],
+["If you lose, don't lose the lesson.", "Dalai Lama"],
+["What would life be if we had no courage to attempt anything.", "Vincent Van Gogh"],
+["Nothing is particularly hard if you divide it into small jobs.", "Henry Ford"],
+["You can't be paralyzed by fear of failure or you will never push yourself.", "Arnold Schwarzenegger"],
+["Knowing what must be done does away with fear.", "Rosa Parks"]
     ],
     { random, floor } = Math,
     useStyles = makeStyles(theme => ({
@@ -98,7 +107,7 @@ const
         },
         quote: {
             color: theme.palette.text.hint,
-            [theme.breakpoints.down(600)]: {
+            [theme.breakpoints.down(900)]: {
                 display: "none",
             },
         },
@@ -136,9 +145,8 @@ const
             },
         }
     }));
-
-localStorage.quote = localStorage.quote === null
-    ? quotes[floor(random() * quotes.length)]
+localStorage.quote = localStorage.quote === undefined
+    ? floor(random() * quotes.length)
     : localStorage.quote;
 
 export default () => {
@@ -177,10 +185,10 @@ export default () => {
             if (!(now.getDate() === quote.date.getDate() && now.getMonth() === quote.date.getMonth() && now.getFullYear() === quote.date.getFullYear())) {
                 const index = floor(random() * quotes.length);
                 setQuote({
-                    quote: quotes[index],
+                    quote: index,
                     date: now,
                 });
-                localStorage.quote = quotes[index];
+                localStorage.quote = index;
             }
         }, 1000);
         return () => clearInterval(updateDate);
@@ -221,7 +229,7 @@ export default () => {
                             <span>
                                 <span className={classes.desktopMsg}>Good {message}, </span>
                                 <span className={classes.mobileMsg}>Hi, </span>
-                                <span className={classes.highlight}>Pratyaksh</span>
+                                <span className={classes.highlight}>{localStorage.name}</span>
                             </span>
                         ) : (
                             <span>
@@ -238,9 +246,11 @@ export default () => {
                     )}
                 </Typography>
                 {isHome && email !== "" && (
+                    <Tooltip title={quotes[quote.quote][1]}>
                     <Typography variant="h4" className={classes.quote}>
-                        "{quote.quote}"
+                        "{quotes[quote.quote][0]}"
                     </Typography>
+                    </Tooltip>
                 )}
             </div>
             <img

@@ -1,12 +1,10 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import { Link, useLocation } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import ArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { IconButton } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles(theme => ({
     toggle: {
