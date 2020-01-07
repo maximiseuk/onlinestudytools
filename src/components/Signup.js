@@ -20,6 +20,12 @@ import { Chip } from "@material-ui/core";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ButtonLink from '@material-ui/core/Link';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 
 const useStyles = makeStyles(theme => ({
     password: {
@@ -92,6 +98,7 @@ export default () => {
         dispatch = useDispatch(),
         [welcomeOpen, setWelcomeOpen] = useState(false),
         [disclaimerOpen, setDisclaimerOpen] = useState(false),
+        [scores, setScores] = useState({}),
         classes = useStyles(),
         [values, setValues] = useState(initialState),
         [helpers, setHelpers] = useState(initialState),
@@ -223,36 +230,75 @@ export default () => {
                         .join(" "),
                 })
             }
+        },
+        changeScores = a => e => {
+            setScores({
+                ...scores,
+                [a]: e.target.value,
+            });
+        },
+        changeSubjects = val => {
+            let newScores = scores;
+            val.forEach(a => {
+                if (!newScores[a]) {
+                    newScores[a] = 5;
+                }
+            });
+            setScores(newScores);
+            setUserSubjects(val);
         };
     useEffect(() => {
         if (getCookie("email") !== "") {
             history.replace("/home");
         }
     }, []);
+    useEffect(() => {
+        
+    }, [userSubjects]);
+    console.log(scores);
+    
     return (
-        <Paper className="fade" style={{maxWidth: 600, margin: "0 auto", }}>
+        <Paper className="fade padding" style={{maxWidth: 600, margin: "0 auto", }}>
             <Dialog open={welcomeOpen}>
         <DialogTitle>Welcome to Maximise Online Study Tools!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            To help us make your experience amazing, please enter the subjects you're taking below (press enter to add a new subject). You can always change these in settings if you want.
+            To help us make your experience amazing, please enter the subjects you're taking below (press enter to add a new subject). You can always change these in settings if you want. Once you've entered them, enter the grade your currently working at for each one.
           </DialogContentText>
           <Autocomplete
+          style={{overflow: "auto", maxHeight: 256,}}
           multiple
                 freeSolo
-                style={{maxHeight: 256}}
-                //PopperComponent="div"
-                onChange={(e, val) => setUserSubjects(val)}
+                filterSelectedOptions
+                onChange={(e, val) => changeSubjects(val)}
                 options={subjects}
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
-                      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                      <Chip key={index} variant="outlined" label={option} {...getTagProps({ index })} style={{margin: 4,}} />
                     ))
                 }
                 renderInput={params => (
                 <TextField {...params} label="Enter your subjects" margin="normal" variant="filled" fullWidth />
                 )}
             />
+            {userSubjects.map((a, i) => (
+                <div style={{display: "flex", alignItems: "center", marginTop: 8}} key={a}>
+                    <Typography style={{marginRight: 8}}>{a}</Typography>
+                <FormControl variant="filled" style={{width: 96,marginLeft: "auto"}} size="small">
+                <InputLabel id="demo-simple-select-filled-label">Grade</InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={scores[a]}
+                  onChange={changeScores(a)}
+                >
+                    {[...Array(9).keys()].map(x => (
+                        <MenuItem value={x + 1} key={x}>{x + 1}</MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+              </div>
+            ))}
         </DialogContent>
         <DialogActions>
           <Button onClick={finish} color="primary" autoFocus>
@@ -307,14 +353,14 @@ export default () => {
         control={
           <Checkbox checked={agreed} onChange={e => setAgreed(e.target.checked)} value="agreed" />
         }
-        label={<span>I have read the <Link className={classes.link} href="#" onClick={e => {e.preventDefault(); setDisclaimerOpen(true)}}>Disclaimer</Link></span>}
+        label={<span>I have read the <ButtonLink className={classes.link} href="#" onClick={e => {e.preventDefault(); setDisclaimerOpen(true)}}>Disclaimer</ButtonLink></span>}
       />
                 <div style={{ display: "flex", marginTop: 8, marginBottom: 16, }}>
                     <Button
                         variant="contained"
                         color="primary"
                         type="submit"
-                        disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0 || !agreed}
+                        //disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0 || !agreed}
                     >
                         Sign up
                     </Button>

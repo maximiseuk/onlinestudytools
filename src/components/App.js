@@ -49,7 +49,6 @@ const
             margin: "8px 4px",
         },
         floating: {
-            position: "absolute",
             bottom: 16,
             right: 16,
             zIndex: 1000,
@@ -139,6 +138,12 @@ export default () => {
                     root: {
                         borderRadius: 8,
                     },
+                },
+                MuiMenu: {
+                        paper: {
+                            padding: 0,
+                            border: `2px solid ${palette.primary.main}`,
+                        }
                 },
                 MuiCard: {
                     root: {
@@ -303,7 +308,7 @@ export default () => {
                                 .padding {
                                     box-shadow: 0px 16px ${theme.palette.background.paper}, 0px -16px ${theme.palette.background.paper} !important;
                                     padding: 0 16px;
-                                    margin-top: 16px;
+                                    margin-top: 16px !important;
                                     max-height: calc(100% - 16px);
                                 }
                                 .contextMenu {

@@ -70,7 +70,7 @@ export default () => {
         }
     }, []);
     return (
-        <Paper className="fade" style={{maxWidth: 600, margin: "0 auto", }}>
+        <Paper className="fade padding" style={{maxWidth: 600, margin: "0 auto", }}>
             <Typography variant="h4" gutterBottom>
                 Login to {" "}
                 <span className="highlight">
