@@ -148,7 +148,10 @@ export default () => {
                         "Content-Type": "application/json",
                     },
                     credentials: "include",
-                    body: stringify(userSubjects),
+                    body: stringify({
+                        subjects: userSubjects,
+                        grades: scores,
+                    }),
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -252,11 +255,6 @@ export default () => {
             history.replace("/home");
         }
     }, []);
-    useEffect(() => {
-        
-    }, [userSubjects]);
-    console.log(scores);
-    
     return (
         <Paper className="fade padding" style={{maxWidth: 600, margin: "0 auto", }}>
             <Dialog open={welcomeOpen}>
@@ -360,7 +358,7 @@ export default () => {
                         variant="contained"
                         color="primary"
                         type="submit"
-                        //disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0 || !agreed}
+                        disabled={stringify(initialState) !== stringify(helpers) || Object.keys(values).filter(x => values[x] === "").length > 0 || !agreed}
                     >
                         Sign up
                     </Button>

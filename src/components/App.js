@@ -51,6 +51,7 @@ const
         floating: {
             bottom: 16,
             right: 16,
+            paddingLeft: 8,
             zIndex: 1000,
             "& > :first-child": {
                 marginRight: 8,

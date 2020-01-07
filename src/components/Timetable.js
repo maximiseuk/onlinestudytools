@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Paper from "@material-ui/core/Paper";
 import { DatePicker } from "@material-ui/pickers";
-import { Card, CardContent, useMediaQuery, Typography, makeStyles, InputBase, IconButton } from "@material-ui/core";
+import { Card, CardContent, useMediaQuery, Typography, makeStyles, InputBase, IconButton, Tooltip } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -15,6 +15,8 @@ import DotsIcon from "@material-ui/icons/MoreVert";
 import { useDispatch } from "react-redux";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { omit } from "lodash";
+import NextIcon from "@material-ui/icons/KeyboardArrowRight";
+import PreviousIcon from "@material-ui/icons/KeyboardArrowLeft";
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -117,7 +119,7 @@ export default () => {
                             : timetable.weekrepeats
                         : {},
                     restOfDayRepeats = timetable[mode + "repeats"]
-                        ? mode !== "day"
+                        ? mode !== "day" && timetable.dayrepeats[currentHour] && timetable.dayrepeats[currentHour].title === title && timetable.dayrepeats[currentHour].type === type
                             ? omit(timetable.dayrepeats, currentHour)
                             : timetable.dayrepeats
                         : {},
@@ -128,8 +130,8 @@ export default () => {
                     } : {};
                 setClientTimetable({
                     ...timetable,
-                    ...restOfWeekRepeats,
-                    ...restOfDayRepeats,
+                    weekrepeats: restOfWeekRepeats,
+                    dayrepeats: restOfDayRepeats,
                     [mode + "repeats"]: {
                         ...restOfRepeatType,
                         [currentHour]: {
@@ -162,6 +164,8 @@ export default () => {
             setAnchorEl(null);
         };
     maxDate.setMonth(maxDate.getMonth() + 2);
+    minDate.setHours(23, 59, 29, 999);
+    maxDate.setHours(0, 0, 0, 0);
     useEffect(() => {
         setTimetable(clientTimetable);
         console.log(clientTimetable);
@@ -185,7 +189,27 @@ export default () => {
         timetable ? (
         <Paper className="fade padding">
 <Typography variant="h4" gutterBottom>Date: {formatDate}</Typography>
+<div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+    <Tooltip title="Previous Day">
+            <IconButton onClick={() => {
+                const newDate =new Date(selectedDate);
+                newDate.setDate(newDate.getDate() - 1);
+                setSelectedDate(new Date(newDate));
+            }} disabled={minDate.getTime() >= selectedDate.getTime()}
+                >
+            <PreviousIcon />
+            </IconButton></Tooltip>
             <Button onClick={() => setOpen(true)}>Change Date</Button>
+            <Tooltip title="Next Day">
+            <IconButton onClick={() => {
+                const newDate =new Date(selectedDate);
+                newDate.setDate(newDate.getDate() + 1);
+                setSelectedDate(new Date(newDate));
+            }} disabled={selectedDate.getTime() >= maxDate.getTime()}>
+            <NextIcon />
+            </IconButton>
+            </Tooltip>
+            </div>
             <Dialog
         open={open}
         onClose={() => setOpen(false)}

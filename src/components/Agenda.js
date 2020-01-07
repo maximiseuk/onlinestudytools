@@ -198,7 +198,7 @@ export default () => {
             });
         };
     useEffect(() => {
-        fetch("/agenda.json"/*"/get_data/agenda"*/)
+        fetch("/agenda.json"/*"/get_data"*/)
         .then(res => res.json())
         .then(data => {
             setAgenda(data);
@@ -301,7 +301,7 @@ export default () => {
                     </Grid>
                 ))}
             </Container>
-            {!isSmall && <MobileStepper
+            {agenda.length > 0 ? !isSmall && <MobileStepper
                 variant="dots"
                 style={{
                     marginBottom: 16,
@@ -328,7 +328,7 @@ export default () => {
                         <KeyboardArrowLeftIcon />
                     </IconButton>
                 }
-            />}
+            /> :  <p>You don't have anything on your agenda yet</p>}
                     <Button
                         variant="contained"
                         className={classes.newTodo}

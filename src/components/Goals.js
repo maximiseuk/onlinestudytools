@@ -320,7 +320,7 @@ export default () => {
                                 <KeyboardArrowLeftIcon />
                             </IconButton>
                         }
-                    /> : `You don't have any ${type.toLowerCase()} goals yet`}
+                    /> : <p>You don't have any {type.toLowerCase()} goals yet</p>}
                     {type === "Current" &&
                         <>
                             <Button
