@@ -219,7 +219,7 @@ export default () => {
   }, []);
   useEffect(() => {
     setAgenda(clientAgenda);
-    /*fetch("/update_data", {
+    /*fetch("/users/update_data/agenda", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

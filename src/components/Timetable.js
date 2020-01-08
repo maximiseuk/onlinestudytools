@@ -203,7 +203,7 @@ export default () => {
   maxDate.setHours(0, 0, 0, 0);
   useEffect(() => {
     setTimetable(clientTimetable);
-    /*fetch("/users//update_data/timetable", {
+    /*fetch("/users/update_data/timetable", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

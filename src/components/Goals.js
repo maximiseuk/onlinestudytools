@@ -209,7 +209,7 @@ export default () => {
   }, []);
   useEffect(() => {
     setGoals(clientGoals);
-    fetch("/update_data", {
+    fetch("/users/update_data/goals", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
