@@ -347,7 +347,7 @@ export default () => {
                 theme.palette.background.paper
               } !important;
                                     margin-top: 16px !important;
-                                    max-height: calc(100% - 16px);
+                                    max-height: calc(100% - 32px);
                                     padding-top: 0px;
                                     padding-bottom: 0px;
                                     border-radius: 16px;
@@ -387,7 +387,7 @@ export default () => {
             • Maximise
           </title>
         </Helmet>
-        <div className={classes.root} onClick={contextMenu}>
+        <div className={classes.root} onContextMenu={contextMenu}>
           <Menu
             keepMounted
             open={mouse[0] !== null}
@@ -425,7 +425,7 @@ export default () => {
               className={classes.pageContainer}
               style={{
                 marginBottom: isHome ? 0 : 0,
-                paddingBottom: isHome ? 0 : 0
+                paddingBottom: isHome ? 0 : 16
               }}
             >
               <PageLoadError>

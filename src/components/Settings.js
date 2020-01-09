@@ -176,12 +176,18 @@ export default () => {
       });
     };
   useEffect(() => {
-    fetch("https://maximise.herokuapp.com/users/list" /*"/get_data/subjects"*/)
+    fetch("https://maximise.herokuapp.com/users/list" /*"/get_data/subjects"*/, {
+        credentials: "include",
+        mode: "no-cors",
+        method: "GET",
+    })
       .then(res => res.json())
       .then(data => {
         console.log(data);
       })
-      .catch(() => {
+      .catch((err) => {
+          console.error(err);
+          
         dispatch({
           type: "NEW_ERROR",
           payload: "There was an error loading your goals"

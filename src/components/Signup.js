@@ -104,7 +104,7 @@ export default () => {
     history = useHistory(),
     login = e => {
       e.preventDefault();
-      fetch("/users/create", {
+      /*fetch("/users/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -122,14 +122,14 @@ export default () => {
         .then(data => {
           if (data.errors !== undefined) {
             setHelpers(data.errors);
-          } else {
+          } else {*/
             setWelcomeOpen(true);
             const d = new Date();
             localStorage.setItem("email", values.email);
             localStorage.setItem("name", values.firstName);
             document.cookie = `email=${values.email}; expires ${d.getTime() +
               4e12}; path=/`;
-            document.cookie = `sessionID=${
+            /*document.cookie = `sessionID=${
               data.sessionID
             }; expires ${d.getTime() + 4e12}; path=/`;
           }
@@ -139,7 +139,7 @@ export default () => {
             type: "NEW_ERROR",
             payload: "There was an error signing you up"
           });
-        });
+        });*/
     },
     finish = () => {
       /*fetch("/users/update_data/subjects", {
