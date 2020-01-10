@@ -18,7 +18,7 @@ jobs:
       run: npm install
     - name: Deploy to GH Pages
       run: |
-        git config --global user.email "your_github_email>"
-        git config --global user.name "your_github_username>"
-        git remote set-url origin https://your_personal_access_token>@github.com/your_github_username>/your_repo>.git
+        git config --global user.email "maximiseuk@gmail.com"
+        git config --global user.name "maximiseuk"
+        git remote set-url origin https://63bc0e2ee974251958d12fdaa6ae942488d8d14b@github.com/maximiseuk/onlinestudytools.git
         npm run deploy
