@@ -6,6 +6,8 @@ jobs:
   build-deploy:
     runs-on: ubuntu-18.04
     steps:
+    - run: git config --global user.email "maximiseuk@gmail.com"
+    - run: git config --global user.name "Maximise Team"
     - uses: actions/checkout@v1
 
     - name: Setup Node
@@ -24,5 +26,5 @@ jobs:
     - run: npm ci
 
     - run: npm run build
-    - run: yarn add gh-pages
+    - run: npm install --save gh-pages
     - run: npm run deploy
