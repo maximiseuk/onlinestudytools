@@ -1,26 +1,41 @@
-name: CI
+name: github pages
 
 on: [push]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [10.x]
+  build-deploy:
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
+
+    - name: Setup Node
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install Github Pages
-      run: npm install --save gh-pages
-    - name: Install Packages
-      run: npm install
-    - name: Deploy to GH Pages
-      run: |
-        git config --global user.email "maximiseuk@gmail.com"
-        git config --global user.name "maximiseuk"
-        git remote set-url origin https://63bc0e2ee974251958d12fdaa6ae942488d8d14b@github.com/maximiseuk/onlinestudytools.git
-        npm run deploy
+        node-version: '10.x'
+
+    - name: Get yarn cache
+      id: yarn-cache
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - name: Cache dependencies
+      uses: actions/cache@v1
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - run: yarn install
+
+    - run: yarn build
+
+    - run: yarn export
+
+    - run: touch ./out/.nojekyll
+
+    - name: deploy
+      uses: peaceiris/actions-gh-pages@v2
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: master
+        PUBLISH_DIR: ./out
