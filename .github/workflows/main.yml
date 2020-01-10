@@ -21,4 +21,4 @@ jobs:
         git config --global user.email "maximiseuk@gmail.com"
         git config --global user.name "maximiseuk"
         git remote set-url origin https://63bc0e2ee974251958d12fdaa6ae942488d8d14b@github.com/maximiseuk/onlinestudytools.git
-        npm run start
+        npm run deploy
