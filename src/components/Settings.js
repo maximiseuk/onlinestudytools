@@ -208,6 +208,7 @@ export default () => {
                   checked={lightTheme}
                   onChange={e => setLightTheme(e.target.checked)}
                   value="lightTheme"
+                  color="primary"
                 />
               }
               label="Light Theme"

@@ -271,7 +271,6 @@ export default () => {
             them, enter the grade your currently working at for each one.
           </DialogContentText>
           <Autocomplete
-            style={{ overflow: "auto", maxHeight: 256 }}
             multiple
             freeSolo
             filterSelectedOptions

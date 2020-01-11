@@ -19,14 +19,17 @@ import { useMediaQuery } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
     item: {
         flex: 1,
-        margin: 8,
-        marginTop: -8,
         minWidth: 280,
         [theme.breakpoints.down(1024)]: {
             minWidth: "initial",
-            padding: 8,
+            padding: 16,
+            paddingTop: 0,
+            paddingBottom: 0,
         },
+        paddingTop: 0,
+        paddingBottom: 0,
         cursor: "pointer",
+overflow: "auto"
     },
     swiper: {
         "& > div > div > .MuiPaper-root": {
@@ -247,7 +250,7 @@ export default () => {
         });
     }, []);
     return (
-        <div className={`fade ${isSmall ? "padding" : ""}`} style={{margin: !isSmall ? "-8px 0" : 0, maxHeight: isSmall ? "calc(100% - 32px)" : "100%", marginBottom: isSmall && 16,}}>
+        <div className={`fade ${true ? "padding" : ""}`} style={{margin: !true ? "-8px 0" : 0, maxHeight: true ? "calc(100% - 32px)" : "100%", marginBottom: true && 16,}}>
             <SwipeableViews
                 index={activeStep}
                 onChangeIndex={step => setActiveStep(step)}

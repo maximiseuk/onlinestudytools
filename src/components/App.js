@@ -105,7 +105,7 @@ export default () => {
             main: "#3e7b63"
           },
           secondary: {
-            main: "#3e7b63"
+            main: "#3975d6"
           },
           type: "light",
           background: {
@@ -118,7 +118,7 @@ export default () => {
             main: "#5AB18E"
           },
           secondary: {
-            main: "#5AB18E"
+            main: "#39c3d6"
           },
           type: "dark",
           background: {
@@ -232,6 +232,7 @@ export default () => {
         MuiAutocomplete: {
           paper: {
             padding: 0,
+            paddingBottom: 24,
             border: `2px solid ${palette.primary.main}`,
             maxHeight: 256
           }
@@ -296,18 +297,18 @@ export default () => {
                                 }
                                 ::-moz-selection {
                                     color: ${muiTheme.palette.getContrastText(
-                                      theme.palette.secondary.main
+                                      theme.palette.primary.main
                                     )};
                                     background: ${
-                                      muiTheme.palette.secondary.main
+                                      muiTheme.palette.primary.main
                                     };
                                 }
                                 ::selection {
                                     color: ${muiTheme.palette.getContrastText(
-                                      theme.palette.secondary.main
+                                      theme.palette.primary.main
                                     )};
                                     background: ${
-                                      muiTheme.palette.secondary.main
+                                      muiTheme.palette.primary.main
                                     };
                                 }
                                 .highlight {
@@ -387,7 +388,7 @@ export default () => {
             • Maximise
           </title>
         </Helmet>
-        <div className={classes.root} onContextMenu={contextMenu}>
+        <div className={classes.root}>
           <Menu
             keepMounted
             open={mouse[0] !== null}

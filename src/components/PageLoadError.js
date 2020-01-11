@@ -16,12 +16,9 @@ class Error extends React.Component {
             hasError: false,
         };
     }
-    static getDerivedStateFromError(error) {
-        // Update state so the next render will show the fallback UI.
-        return {
-            hasError: true,
-        };
-    }
+    static getDerivedStateFromError = () => ({
+        hasError: true,
+    })
     componentDidCatch(error, info) {
         console.error(error + info)
     }
