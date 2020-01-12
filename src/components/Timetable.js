@@ -11,7 +11,11 @@ import {
   InputBase,
   IconButton,
   Tooltip,
-  DialogContentText
+  DialogContentText,
+  Chip,
+  TextField,
+  FormControl,
+  InputLabel
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -22,13 +26,14 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import DotsIcon from "@material-ui/icons/MoreVert";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { omit } from "lodash";
 import NextIcon from "@material-ui/icons/KeyboardArrowRight";
 import PreviousIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CancelIcon from "@material-ui/icons/Close";
-import RemoveIcon from "@material-ui/icons/Remove";
+import SelectIcon from "@material-ui/icons/SelectAll";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -72,11 +77,16 @@ export default () => {
       (selectedDate.getMonth() + 1) +
       "/" +
       selectedDate.getFullYear(),
+       day = String(selectedDate.getDay()),
     isSmall = useMediaQuery("(max-width: 800px)"),
     [timetable, setTimetable] = useState(false),
     [clientTimetable, setClientTimetable] = useState(false),
     [autofill, setAutofill] = useState(false),
     [autofillOpen, setAutofillOpen] = useState(false),
+    {subjects} = useSelector(state => state),
+    [autoSubjects, setAutoSubjects] = useState([]),
+    [requireds, setRequireds] = useState({}),
+    [recents, setRecents] = useState({}),
     hours = [
       "7:00 - 8:00",
       "8:00 - 9:00",
@@ -150,14 +160,7 @@ export default () => {
     closeAutofill = () => {
         setAutofillOpen(false);
     },
-    updateAutofill = hour => e => {
-        e.preventDefault()
-        const splitted = formatDate.split("/");
-            const day = String(new Date(
-                splitted[2],
-                splitted[1] - 1,
-                splitted[0]
-              ).getDay());
+    /*updateAutofill = hour => e => {
         setClientTimetable({
             ...timetable,
             autofill: {
@@ -171,35 +174,30 @@ export default () => {
                 }
             }
         });
-    },
+    },*/
     submitAutofill = () => {
-
+        fetch()
     },
-    selectAutofill = (hour, remove) => e => {
-        console.log(e.target.className);
-        
+    selectAutofill = hour => e => {
         if (autofill) {
-            const splitted = formatDate.split("/");
-            const day = String(new Date(
-                splitted[2],
-                splitted[1] - 1,
-                splitted[0]
-              ).getDay());
-              const restOfDay = timetable.autofill && timetable.autofill[day] ? timetable.autofill[day] : {}
+              const restOfDay = timetable.autofill && timetable.autofill[day] ? timetable.autofill[day] : [];
         setClientTimetable({
             ...timetable,
             autofill: {
                 ...timetable.autofill,
-                [day]: {
-                    ...restOfDay,
-                    [hour]: timetable.autofill && timetable.autofill[day] && timetable.autofill[day] && timetable.autofill[day][hour] && (e.target.className !== "MuiCardContent-root" && e.target.className !== "MuiInputBase-root" && e.target.className !== "MuiInputBase-input") ? undefined : {
-                        title: "",
-                        grade: 5,
-                    }
-                }
+                [day]: autofill && timetable.autofill && timetable.autofill[day] && timetable.autofill[day].includes(hour) ? restOfDay.filter(x => x !== hour) : [...restOfDay, hour]
             }
         });
     }
+    },
+    selectAll = () => {
+        setClientTimetable({
+            ...timetable,
+            autofill: {
+                ...timetable.autofill,
+                [day]: hours
+            }
+        });
     },
     setRepeat = (mode, date, hour, type, title, repeatType) => () => {
       if (mode === "day" || mode === "week") {
@@ -218,17 +216,7 @@ export default () => {
             : {},
           restOfRepeatType = timetable[mode + "repeats"]
             ? timetable[mode + "repeats"]
-            : {},
-          splitted = date.split("/"),
-          day =
-            mode === "week"
-              && String(new Date(
-                    splitted[2],
-                    splitted[1] - 1,
-                    splitted[0]
-                  ).getDay());
-                  console.log((restOfRepeatType));
-                  
+            : {};
         if (mode === "week") {
             setClientTimetable({
                 ...timetable,
@@ -304,7 +292,7 @@ export default () => {
     setTimetable(clientTimetable);
     console.log(clientTimetable);
     
-    /*fetch("/users/update_data/timetable", {
+    /*fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -335,7 +323,7 @@ export default () => {
         });*/
   }, [clientTimetable]);
   useEffect(() => {
-    fetch("/timetable.json" /*"/get_data/timetable"*/)
+    fetch("https://maximise.herokuapp.com/users/get_data/timetable" /*"/get_data/timetable"*/)
       .then(res => res.json())
       .then(data => {
         setTimetable(data);
@@ -350,9 +338,17 @@ export default () => {
   }, []);
   return timetable ? (
     <Paper className="fade padding">
-      <Typography variant="h4" gutterBottom>
-        Date: {formatDate}
+        <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+      <Typography variant="h4">
+        {formatDate}
       </Typography>
+            <Button onClick={() => setOpen(true)} style={{marginLeft: 8,}}>Change</Button>
+            </div>
       <div
         style={{
           display: "flex",
@@ -373,9 +369,11 @@ export default () => {
           </IconButton>
         </Tooltip>
         <div>
-            <Button onClick={() => setOpen(true)}>Change Date</Button>
-            <Button color="secondary" style={{marginLeft: 8,}} onClick={autoFill}>{autofill ? "Autofill" : "Use AI Autofill"}</Button>
-            {autofill && <Button onClick={() => setAutofill(false)} style={{marginLeft: 8,}} color="secondary"><CancelIcon /></Button>}
+            <Button color="secondary" style={{minWidth: "auto", padding: "8px 16px"}} onClick={autoFill} disabled={autofill && (!timetable.autofill || (timetable.autofill && Object.values(timetable.autofill).filter(x => x.length > 0).length === 0))}>{autofill ? "Go" : "Use AI Autofill"}</Button>
+            {autofill && <Tooltip title="Cancel"><Button onClick={() => setAutofill(false)} style={{marginLeft: 8,padding: 8,minWidth: "auto"}} color="secondary"><CancelIcon /></Button></Tooltip>}
+            {autofill && 
+            <Tooltip title="Select all today">
+                <Button onClick={selectAll} style={{marginLeft: 8,padding: 8,minWidth: "auto"}} color="secondary"><SelectIcon /></Button></Tooltip>}
         </div>
         <Dialog
         open={autofillOpen}
@@ -383,11 +381,103 @@ export default () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Welcome to AI Autofill.</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Welcome to AI Autofill!</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Please enter the subjects you would like to revise in the slots you've selected. N.B. if you have selected any slots with data already in them, they will be overridden.
+            Please enter the subjects you would like to revise, and the your recent and required grade for each of them. N.B. if you have selected any slots with data already in them, they will be overridden.
           </DialogContentText>
+          <Autocomplete
+            multiple
+            freeSolo
+            filterSelectedOptions
+            onChange={(e, val) => {
+                let newRecents = recents;
+                let newRequireds = requireds;
+                val.forEach(a => {
+                    if (!newRecents[a]) {
+                        newRecents[a] = 5;
+                    }
+                    if (!newRequireds[a]) {
+                        newRequireds[a] = 5;
+                    }
+                  });
+                  setRecents(newRecents);
+                  setRequireds(newRequireds);
+                setAutoSubjects(val)
+            }}
+            options={subjects}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  key={index}
+                  variant="outlined"
+                  label={option}
+                  {...getTagProps({ index })}
+                  style={{ margin: 4 }}
+                />
+              ))
+            }
+            renderInput={params => (
+              <TextField
+                {...params}
+                label="Enter your subjects"
+                margin="normal"
+                variant="filled"
+                fullWidth
+              />
+            )}
+          />
+          {autoSubjects.map((a, i) => (
+            <div
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between",marginTop: 8 }}
+              key={a}
+            >
+              <Typography style={{ marginRight: 8 }}>{a}</Typography>
+              <div><FormControl
+                variant="filled"
+                style={{ width: 96, marginRight: 8 }}
+                size="small"
+              >
+                <InputLabel id="demo-simple-select-filled-label">
+                  Recent
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={recents[a]}
+                  onChange={e => setRecents({...recents, [a]: e.target.value})}
+                >
+                  {[...Array(9).keys()].map(x => (
+                    <MenuItem value={x + 1} key={x}>
+                      {x + 1}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl
+                variant="filled"
+                style={{ width: 96 }}
+                size="small"
+              >
+                <InputLabel id="demo-simple-select-filled-label">
+                  Required
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-filled-label"
+                  id="demo-simple-select-filled"
+                  value={requireds[a]}
+                  onChange={e => setRequireds({...recents, [a]: e.target.value})}
+                >
+                  {[...Array(9).keys()].map(x => (
+                    <MenuItem value={x + 1} key={x}>
+                      {x + 1}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              </div>
+            </div>
+          ))}
         </DialogContent>
         <DialogActions> 
           <Button onClick={closeAutofill} color="secondary">
@@ -426,7 +516,7 @@ export default () => {
             value={selectedDate}
             onChange={setSelectedDate}
             minDate={minDate}
-            maxDate={maxDate}
+            maxDate={!autofill ? maxDate : maxAutofill}
             autoFocus
           />
         </DialogContent>
@@ -439,12 +529,7 @@ export default () => {
       {hours.map(hour => {
         let root = false;
         let repeatType = "";
-        const splitted = formatDate.split("/")
-        const day = String(new Date(
-            splitted[2],
-            splitted[1] - 1,
-            splitted[0]
-          ).getDay())
+        
         if (
           timetable[formatDate] &&
           timetable[formatDate][hour] &&
@@ -507,25 +592,10 @@ export default () => {
               </CardContent>
             </Card>
             <Card style={{ marginTop: 8, flex: 1, marginLeft: 8 }} onClick={selectAutofill(hour)}
-              className={autofill && timetable.autofill && timetable.autofill[day] && timetable.autofill[day][hour] && classes.autofillCard}>
+              className={autofill && timetable.autofill && timetable.autofill[day] && timetable.autofill[day].includes(hour) && classes.autofillCard}>
               <CardContent>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    {autofill ?
-                    autofill && timetable.autofill && timetable.autofill[day] && timetable.autofill[day][hour] ? <><InputBase
-                    value={timetable.autofill[day][hour].title}
-                    placeholder="Enter subject"
-                    onChange={updateAutofill(hour)}
-                    style={{ flex: 1, marginRight: 8 }}
-                    onKeyDown={keyDown}
-                    inputProps={{
-                      maxLength: "64"
-                    }}
-                  />
-                  <Tooltip title="Remove">
-                  <IconButton onClick={selectAutofill(hour, "remove")} size="small"><RemoveIcon /></IconButton>
-                  </Tooltip>
-                  </>
-                     : <Typography className={classes.autofillText}>Click to select</Typography>
+                    {autofill ? <Typography className={classes.autofillText}>Click to select</Typography>
                     :
                     <>
                   <InputBase

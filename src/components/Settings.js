@@ -15,6 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import getCookie from "../api/cookies";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { Chip } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -23,10 +25,47 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
-  const classes = useStyles(),
+  const
+  subjects = [
+    "Maths",
+    "Chemistry",
+    "Physics",
+    "Biology",
+    "Computing",
+    "Astronomy",
+    "Greek",
+    "Latin",
+    "English literature",
+    "English language",
+    "Art",
+    "Technology",
+    "French",
+    "Further maths",
+    "German",
+    "Spanish",
+    "Business",
+    "Mandarin",
+    "Drama",
+    "Economics",
+    "Food tech",
+    "Politics",
+    "History",
+    "Geography",
+    "Italian",
+    "Religious studies",
+    "Music",
+    "Psychology",
+    "Statistics",
+    "Sociology",
+    "Citizenship",
+    "Urdu",
+    "Underwater basket weaving"
+  ],
+  classes = useStyles(),
     dispatch = useDispatch(),
     history = useHistory(),
     isLight = useSelector(state => state.lightTheme),
+    userSubjects = useSelector(state => state.subjects),
     [lightTheme, setLightTheme] = useState(isLight),
     initialState = {
       oldPassword: "",
@@ -45,14 +84,6 @@ export default () => {
               newPassword: values.newPassword
             }
           : {};
-      dispatch({
-        type: "TOGGLE_THEME_TYPE",
-        payload: lightTheme
-      });
-      const d = new Date();
-      document.cookie = `theme=${
-        lightTheme ? "light" : ""
-      }; expires ${d.getTime() + 4e12}; path=/`;
       /*fetch("/users/update_password", {
                 method: "POST",
                 credentials: "include",
@@ -94,6 +125,8 @@ export default () => {
         "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie =
         "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie =
+          "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       dispatch({
         type: "TOGGLE_THEME_TYPE",
         payload: false
@@ -174,26 +207,53 @@ export default () => {
         ...helpers,
         ...newState
       });
-    };
-  useEffect(() => {
-    fetch("https://maximise.herokuapp.com/users/list" /*"/get_data/subjects"*/, {
-        credentials: "include",
-        mode: "no-cors",
-        method: "GET",
+    },
+  updateSubjects = val => {
+    fetch("https://maximise.herokuapp.com/users/update_data/subjects" /*"/get_data/subjects"*/, {
+        method: "POST",
+        body: JSON.stringify({
+            sessionID: getCookie("sessionId"),
+            username: getCookie("username"),
+            newData: userSubjects
+        })
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
+        if (data.errors.length > 0) {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error updating your subjects"
+              });
+        } else {
+
+    dispatch({
+        type: "CHANGE_SUBJECTS",
+        payload: val,
+    });
+        }
       })
       .catch((err) => {
-          console.error(err);
-          
         dispatch({
           type: "NEW_ERROR",
-          payload: "There was an error loading your goals"
+          payload: "There was an error updating your subjects"
         });
       });
-  }, []);
+    dispatch({
+        type: "CHANGE_SUBJECTS",
+        payload: val,
+    });
+  };
+  useEffect(() => {
+
+    dispatch({
+        type: "TOGGLE_THEME_TYPE",
+        payload: lightTheme
+      });
+      const d = new Date();
+      document.cookie = `theme=${
+        lightTheme ? "light" : ""
+      }; expires ${d.getTime() + 4e12}; path=/`;
+  }, [lightTheme]);
   return (
     <Paper className="fade padding">
       <Card className={classes.card}>
@@ -221,7 +281,7 @@ export default () => {
           <Typography variant="h4" gutterBottom>
             Change <span className="highlight">password</span>
           </Typography>
-          <form>
+          <form onSubmit={save}>
             <Grid container spacing={2}>
               {Object.keys(initialState).map(field => (
                 <Grid item xs={12} sm={4} key={field}>
@@ -239,12 +299,46 @@ export default () => {
                 </Grid>
               ))}
             </Grid>
+      <Button variant="contained" type="submit">
+        Change
+      </Button>
           </form>
         </CardContent>
       </Card>
-      <Button variant="contained" onClick={save}>
-        Save
-      </Button>
+      <Card className={classes.card}>
+        <CardContent>
+        <Typography variant="h4" gutterBottom>
+            Edit your <span className="highlight">subjects</span>
+          </Typography>
+      <Autocomplete
+            multiple
+            freeSolo
+            filterSelectedOptions
+            onChange={(e, val) => updateSubjects(val)}
+            options={subjects}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  key={index}
+                  variant="outlined"
+                  label={option}
+                  {...getTagProps({ index })}
+                  style={{ margin: 4 }}
+                />
+              ))
+            }
+            renderInput={params => (
+              <TextField
+                {...params}
+                label="Enter your subjects"
+                margin="normal"
+                variant="filled"
+                fullWidth
+              />
+            )}
+          />
+          </CardContent>
+          </Card>
       <Divider style={{ margin: "16px 0" }} />
       <Button variant="contained" onClick={logout}>
         Logout

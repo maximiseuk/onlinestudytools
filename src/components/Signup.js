@@ -142,7 +142,7 @@ export default () => {
         });*/
     },
     finish = () => {
-      /*fetch("/users/update_data/subjects", {
+      /*fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -160,6 +160,10 @@ export default () => {
                 .then(res => res.json())
                 .then(data => {
                     */
+                   dispatch({
+                       type: "CHANGE_SUBJECTS",
+                       payload: userSubjects,
+                   });
       history.replace("/home");
       /*})
                 .catch(() => {

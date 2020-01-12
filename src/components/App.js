@@ -13,7 +13,7 @@ import {
   MuiThemeProvider,
   makeStyles
 } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
@@ -234,7 +234,9 @@ export default () => {
             padding: 0,
             paddingBottom: 24,
             border: `2px solid ${palette.primary.main}`,
-            maxHeight: 256
+            height: "auto",
+            maxHeight: 256,
+            overflow: "auto"
           }
         }
       }
@@ -242,6 +244,7 @@ export default () => {
     classes = useStyles(),
     muiTheme = createMuiTheme(theme),
     [mouse, setMouse] = useState([null, null]),
+    dispatch = useDispatch(),
     closeMenu = () => {
       setMouse([null, null]);
     },
@@ -278,6 +281,38 @@ export default () => {
   useEffect(() => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
+
+  useEffect(() => {
+    fetch("https://maximise.herokuapp.com/users/get_data/subjects" /*"/get_data/subjects"*/, {
+        method: "POST",
+        body: JSON.stringify({
+            sessionID: getCookie("sessionId"),
+            username: getCookie("username")
+        })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.errors.length > 0) {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error loading your subjects"
+              });
+        } else {
+            dispatch({
+                type: "CHANGE_SUBJECTS",
+                payload: data.subjects,
+            })
+        }
+      })
+      .catch((err) => {
+          console.error(err);
+          
+        dispatch({
+          type: "NEW_ERROR",
+          payload: "There was an error loading your subjects"
+        });
+      });
+  }, []);
   return (
     <MuiThemeProvider theme={muiTheme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>

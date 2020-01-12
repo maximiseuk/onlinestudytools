@@ -188,7 +188,7 @@ export default () => {
       });
     };
   useEffect(() => {
-    fetch("/goals.json" /*"/get_data/goals"*/)
+    fetch("https://maximise.herokuapp.com/users/get_data/goals" /*"/get_data/goals"*/)
       .then(res => res.json())
       .then(data => {
         setGoals({
@@ -209,7 +209,7 @@ export default () => {
   }, []);
   useEffect(() => {
     setGoals(clientGoals);
-    fetch("/users/update_data/goals", {
+    fetch("https://maximise.herokuapp.com/users/update_data/goals", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

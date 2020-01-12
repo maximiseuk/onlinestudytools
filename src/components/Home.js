@@ -218,7 +218,7 @@ export default () => {
             </Paper>
         );
     useEffect(() => {
-        fetch("/get_data.json"/*"/get_data"*/)
+        fetch("https://maximise.herokuapp.com/users/get_data/"/*"/get_data"*/)
         .then(res => res.json())
         .then(data => {
             setAgenda(data.agenda.filter((x, i) => i < 3));
