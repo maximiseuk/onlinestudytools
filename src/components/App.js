@@ -260,15 +260,15 @@ export default () => {
     },
     back = () => {
       closeMenu();
-      window.history.back();
+      history.goBack();
     },
     forward = () => {
       closeMenu();
-      window.history.forward();
+      history.goForward();
     },
     reload = () => {
       closeMenu();
-      window.history.reload();
+      window.location.reload();
     },
     copy = () => {
       closeMenu();
@@ -283,30 +283,33 @@ export default () => {
   }, [document.cookie]);
 
   useEffect(() => {
-    fetch("https://maximise.herokuapp.com/users/get_data/subjects" /*"/get_data/subjects"*/, {
+    fetch(
+      /*"https://maximise.herokuapp.com/users/get_data/subjects"*/ "/get_data.json" /*"/get_data/subjects"*/
+      /*{
         method: "POST",
         body: JSON.stringify({
-            sessionID: getCookie("sessionId"),
-            username: getCookie("username")
+          sessionID: getCookie("sessionId"),
+          username: getCookie("username")
         })
-    })
+      }*/
+    )
       .then(res => res.json())
       .then(data => {
         if (data.errors.length > 0) {
-            dispatch({
-                type: "NEW_ERROR",
-                payload: "There was an error loading your subjects"
-              });
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error loading your subjects"
+          });
         } else {
-            dispatch({
-                type: "CHANGE_SUBJECTS",
-                payload: data.subjects,
-            })
+          dispatch({
+            type: "CHANGE_SUBJECTS",
+            payload: data.subjects
+          });
         }
       })
-      .catch((err) => {
-          console.error(err);
-          
+      .catch(err => {
+        console.error(err);
+
         dispatch({
           type: "NEW_ERROR",
           payload: "There was an error loading your subjects"
@@ -423,7 +426,7 @@ export default () => {
             • Maximise
           </title>
         </Helmet>
-        <div className={classes.root}>
+        <div className={classes.root} onContextMenu={contextMenu}>
           <Menu
             keepMounted
             open={mouse[0] !== null}
