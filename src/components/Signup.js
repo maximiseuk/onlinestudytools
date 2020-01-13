@@ -54,8 +54,7 @@ export default () => {
       lastName: "",
       code: "",
       password: "",
-      repeatPassword: "",
-      agreed: false
+      repeatPassword: ""
     },
     subjects = [
       "Maths",
@@ -104,32 +103,37 @@ export default () => {
     history = useHistory(),
     login = e => {
       e.preventDefault();
-      /*fetch("/users/create", {
+      fetch("https://maximise.herokuapp.com/users/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        credentials: "include",
         body: stringify({
           email: values.email,
           username: values.username,
           firstName: values.firstName,
           lastName: values.lastName,
-          password: values.password
+          password: values.password,
+          code: values.code
         })
       })
         .then(res => res.json())
         .then(data => {
-          if (data.errors !== undefined) {
-            setHelpers(data.errors);
-          } else {*/
+          console.log(data);
+          if (data.errors.length > 0) {
+            let newErrors = helpers;
+            for (let key in data.errors) {
+              newErrors[key] = data.errors[key];
+            }
+            setHelpers(newErrors);
+          } else {
             setWelcomeOpen(true);
             const d = new Date();
             localStorage.setItem("email", values.email);
             localStorage.setItem("name", values.firstName);
             document.cookie = `email=${values.email}; expires ${d.getTime() +
               4e12}; path=/`;
-            /*document.cookie = `sessionID=${
+            document.cookie = `sessionID=${
               data.sessionID
             }; expires ${d.getTime() + 4e12}; path=/`;
           }
@@ -139,7 +143,7 @@ export default () => {
             type: "NEW_ERROR",
             payload: "There was an error signing you up"
           });
-        });*/
+        });
     },
     finish = () => {
       /*fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
@@ -160,10 +164,10 @@ export default () => {
                 .then(res => res.json())
                 .then(data => {
                     */
-                   dispatch({
-                       type: "CHANGE_SUBJECTS",
-                       payload: userSubjects,
-                   });
+      dispatch({
+        type: "CHANGE_SUBJECTS",
+        payload: userSubjects
+      });
       history.replace("/home");
       /*})
                 .catch(() => {
@@ -394,7 +398,7 @@ export default () => {
               onChange={handleChange(field)}
               margin="normal"
               variant="filled"
-              helperText={helpers[field] + " "}
+              helperText={helpers[field] ? helpers[field] + " " : ""}
               error={helpers[field] !== ""}
               key={field}
               type={field.includes("assword") ? "password" : "text"}
@@ -408,6 +412,7 @@ export default () => {
               checked={agreed}
               onChange={e => setAgreed(e.target.checked)}
               value="agreed"
+              color="primary"
             />
           }
           label={
@@ -433,7 +438,9 @@ export default () => {
             type="submit"
             disabled={
               stringify(initialState) !== stringify(helpers) ||
-              Object.keys(values).filter(x => values[x] === "").length > 0 ||
+              Object.keys(values).filter(
+                x => values[x] === "" || values[x] === undefined
+              ).length > 0 ||
               !agreed
             }
           >

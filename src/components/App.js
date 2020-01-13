@@ -283,38 +283,40 @@ export default () => {
   }, [document.cookie]);
 
   useEffect(() => {
-    fetch(
-      /*"https://maximise.herokuapp.com/users/get_data/subjects"*/ "/get_data.json" /*"/get_data/subjects"*/
-      /*{
+    if (getCookie("email") !== "") {
+      fetch(
+        /*"https://maximise.herokuapp.com/users/get_data/subjects"*/ "/get_data.json" /*"/get_data/subjects"*/
+        /*{
         method: "POST",
         body: JSON.stringify({
           sessionID: getCookie("sessionId"),
           username: getCookie("username")
         })
       }*/
-    )
-      .then(res => res.json())
-      .then(data => {
-        if (data.errors.length > 0) {
+      )
+        .then(res => res.json())
+        .then(data => {
+          if (data.errors.length > 0) {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error loading your subjects"
+            });
+          } else {
+            dispatch({
+              type: "CHANGE_SUBJECTS",
+              payload: data.subjects
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error loading your subjects"
           });
-        } else {
-          dispatch({
-            type: "CHANGE_SUBJECTS",
-            payload: data.subjects
-          });
-        }
-      })
-      .catch(err => {
-        console.error(err);
-
-        dispatch({
-          type: "NEW_ERROR",
-          payload: "There was an error loading your subjects"
         });
-      });
+    }
   }, []);
   return (
     <MuiThemeProvider theme={muiTheme}>
