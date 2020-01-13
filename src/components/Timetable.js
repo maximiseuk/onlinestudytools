@@ -435,7 +435,6 @@ export default () => {
             </DialogContentText>
             <Autocomplete
               multiple
-              freeSolo
               filterSelectedOptions
               onChange={(e, val) => {
                 let newRecents = recents;

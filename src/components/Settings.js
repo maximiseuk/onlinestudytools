@@ -25,43 +25,42 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default () => {
-  const
-  subjects = [
-    "Maths",
-    "Chemistry",
-    "Physics",
-    "Biology",
-    "Computing",
-    "Astronomy",
-    "Greek",
-    "Latin",
-    "English literature",
-    "English language",
-    "Art",
-    "Technology",
-    "French",
-    "Further maths",
-    "German",
-    "Spanish",
-    "Business",
-    "Mandarin",
-    "Drama",
-    "Economics",
-    "Food tech",
-    "Politics",
-    "History",
-    "Geography",
-    "Italian",
-    "Religious studies",
-    "Music",
-    "Psychology",
-    "Statistics",
-    "Sociology",
-    "Citizenship",
-    "Urdu",
-    "Underwater basket weaving"
-  ],
-  classes = useStyles(),
+  const subjects = [
+      "Maths",
+      "Chemistry",
+      "Physics",
+      "Biology",
+      "Computing",
+      "Astronomy",
+      "Greek",
+      "Latin",
+      "English literature",
+      "English language",
+      "Art",
+      "Technology",
+      "French",
+      "Further maths",
+      "German",
+      "Spanish",
+      "Business",
+      "Mandarin",
+      "Drama",
+      "Economics",
+      "Food tech",
+      "Politics",
+      "History",
+      "Geography",
+      "Italian",
+      "Religious studies",
+      "Music",
+      "Psychology",
+      "Statistics",
+      "Sociology",
+      "Citizenship",
+      "Urdu",
+      "Underwater basket weaving"
+    ],
+    classes = useStyles(),
     dispatch = useDispatch(),
     history = useHistory(),
     isLight = useSelector(state => state.lightTheme),
@@ -84,35 +83,34 @@ export default () => {
               newPassword: values.newPassword
             }
           : {};
-      /*fetch("/users/update_password", {
-                method: "POST",
-                credentials: "include",
-                body: JSON.stringify({
-                    newData: passwordData,
-                        sessionID: getCookie("sessionID"),
-                      username: getCookie("email")
-                }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data === "success") {*/
-
-      /*} else {
-                    dispatch({
-                        type: "NEW_ERROR",
-                        payload: "There was an error updating your settings",
-                    });
-                }
-            })
-            .catch(() => {
-                dispatch({
-                    type: "NEW_ERROR",
-                    payload: "There was an error updating your settings",
-                });
-            });*/
+      fetch("https://maximise.herokuapp.com/users/update_password", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          newData: passwordData,
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.errors.length === 0) {
+          } else {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your settings"
+            });
+          }
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error updating your settings"
+          });
+        });
     },
     logout = () => {
       /*fetch("/users/logout", {
@@ -125,8 +123,8 @@ export default () => {
         "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie =
         "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie =
-          "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       dispatch({
         type: "TOGGLE_THEME_TYPE",
         payload: false
@@ -208,51 +206,52 @@ export default () => {
         ...newState
       });
     },
-  updateSubjects = val => {
-    fetch("https://maximise.herokuapp.com/users/update_data/subjects" /*"/get_data/subjects"*/, {
-        method: "POST",
-        body: JSON.stringify({
+    updateSubjects = val => {
+      fetch(
+        "https://maximise.herokuapp.com/users/update_data/subjects" /*"/get_data/subjects"*/,
+        {
+          method: "POST",
+          body: JSON.stringify({
             sessionID: getCookie("sessionId"),
             username: getCookie("username"),
             newData: userSubjects
-        })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.errors.length > 0) {
-            dispatch({
-                type: "NEW_ERROR",
-                payload: "There was an error updating your subjects"
-              });
-        } else {
-
-    dispatch({
-        type: "CHANGE_SUBJECTS",
-        payload: val,
-    });
+          })
         }
-      })
-      .catch((err) => {
-        dispatch({
-          type: "NEW_ERROR",
-          payload: "There was an error updating your subjects"
+      )
+        .then(res => res.json())
+        .then(data => {
+          if (data.errors.length > 0) {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your subjects"
+            });
+          } else {
+            dispatch({
+              type: "CHANGE_SUBJECTS",
+              payload: val
+            });
+          }
+        })
+        .catch(err => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error updating your subjects"
+          });
         });
-      });
-    dispatch({
+      dispatch({
         type: "CHANGE_SUBJECTS",
-        payload: val,
-    });
-  };
-  useEffect(() => {
-
-    dispatch({
-        type: "TOGGLE_THEME_TYPE",
-        payload: lightTheme
+        payload: val
       });
-      const d = new Date();
-      document.cookie = `theme=${
-        lightTheme ? "light" : ""
-      }; expires ${d.getTime() + 4e12}; path=/`;
+    };
+  useEffect(() => {
+    dispatch({
+      type: "TOGGLE_THEME_TYPE",
+      payload: lightTheme
+    });
+    const d = new Date();
+    document.cookie = `theme=${
+      lightTheme ? "light" : ""
+    }; expires ${d.getTime() + 4e12}; path=/`;
   }, [lightTheme]);
   return (
     <Paper className="fade padding">
@@ -299,18 +298,18 @@ export default () => {
                 </Grid>
               ))}
             </Grid>
-      <Button variant="contained" type="submit">
-        Change
-      </Button>
+            <Button variant="contained" type="submit">
+              Change
+            </Button>
           </form>
         </CardContent>
       </Card>
       <Card className={classes.card}>
         <CardContent>
-        <Typography variant="h4" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             Edit your <span className="highlight">subjects</span>
           </Typography>
-      <Autocomplete
+          <Autocomplete
             multiple
             freeSolo
             filterSelectedOptions
@@ -337,8 +336,8 @@ export default () => {
               />
             )}
           />
-          </CardContent>
-          </Card>
+        </CardContent>
+      </Card>
       <Divider style={{ margin: "16px 0" }} />
       <Button variant="contained" onClick={logout}>
         Logout

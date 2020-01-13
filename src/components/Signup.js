@@ -146,36 +146,35 @@ export default () => {
         });
     },
     finish = () => {
-      /*fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: stringify({
-                        newData: {
-                          subjects: userSubjects,
-                          grades: scores,
-                        },
-                        sessionID: getCookie("sessionID"),
-                      username: getCookie("email")
-                    }),
-                })
-                .then(res => res.json())
-                .then(data => {
-                    */
-      dispatch({
-        type: "CHANGE_SUBJECTS",
-        payload: userSubjects
-      });
-      history.replace("/home");
-      /*})
-                .catch(() => {
-                    dispatch({
-                        type: "NEW_ERROR",
-                        payload: "There was an error uploading your subjects",
-                    });
-                })*/
+      fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: stringify({
+          newData: {
+            subjects: userSubjects,
+            grades: scores
+          },
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          dispatch({
+            type: "CHANGE_SUBJECTS",
+            payload: userSubjects
+          });
+          history.replace("/home");
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error uploading your subjects"
+          });
+        });
     },
     clear = () => {
       setValues(initialState);
