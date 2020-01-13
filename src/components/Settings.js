@@ -73,7 +73,8 @@ export default () => {
     },
     [values, setValues] = useState(initialState),
     [helpers, setHelpers] = useState(initialState),
-    save = () => {
+    save = e => {
+      e.preventDefault();
       const passwordData =
         helpers.repeatPassword === "" &&
         helpers.password === "" &&
@@ -85,7 +86,6 @@ export default () => {
           : {};
       fetch("https://maximise.herokuapp.com/users/update_password", {
         method: "POST",
-        credentials: "include",
         body: JSON.stringify({
           newData: passwordData,
           sessionID: getCookie("sessionID"),
@@ -98,6 +98,7 @@ export default () => {
         .then(res => res.json())
         .then(data => {
           if (data.errors.length === 0) {
+            console.log(data);
           } else {
             dispatch({
               type: "NEW_ERROR",
