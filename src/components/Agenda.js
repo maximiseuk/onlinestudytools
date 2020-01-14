@@ -86,7 +86,8 @@ export default () => {
     [dialogs, setDialogs] = useState({
       delete: false,
       edit: false,
-      newTodo: false
+      newTodo: false,
+      poo: false
     }),
     isSmall = useMediaQuery("(min-width: 600px)"),
     Container = isSmall ? Grid : SwipeableViews,
@@ -127,6 +128,12 @@ export default () => {
       });
     },
     handleChange = name => e => {
+      if (e.target.value === "poo") {
+        setDialogs({
+          ...dialogs,
+          poo: true
+        });
+      }
       setValues({
         ...values,
         [name]: e.target.value
@@ -393,6 +400,27 @@ export default () => {
             </Button>
             <Button onClick={deleteTodo} color="primary" autoFocus>
               Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={dialogs.poo}
+          onClose={close("poo")}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">POO</DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="alert-dialog-description"
+              style={{ fontSize: 120 }}
+            >
+              💩
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={close("poo")} color="primary">
+              Close
             </Button>
           </DialogActions>
         </Dialog>

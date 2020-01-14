@@ -133,6 +133,9 @@ export default () => {
         MuiButton: {
           color: "primary",
           variant: "contained"
+        },
+        MuiSwitch: {
+          color: "primary"
         }
       },
       overrides: {

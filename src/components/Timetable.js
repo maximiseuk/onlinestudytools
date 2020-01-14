@@ -87,6 +87,8 @@ export default () => {
     [autoSubjects, setAutoSubjects] = useState([]),
     [requireds, setRequireds] = useState({}),
     [recents, setRecents] = useState({}),
+    [autofillInfo, setAutofillInfo] = useState(false),
+    [autofillSlots, setAutofillSlots] = useState({}),
     hours = [
       "7:00 - 8:00",
       "8:00 - 9:00",
@@ -152,6 +154,7 @@ export default () => {
       if (autofill) {
         setAutofillOpen(true);
       } else {
+        setAutofillInfo(true);
         setSelectedDate(new Date());
       }
       //alert(autofill)
@@ -180,32 +183,20 @@ export default () => {
     },
     selectAutofill = hour => e => {
       if (autofill) {
-        const restOfDay =
-          timetable.autofill && timetable.autofill[day]
-            ? timetable.autofill[day]
-            : [];
-        setClientTimetable({
-          ...timetable,
-          autofill: {
-            ...timetable.autofill,
-            [day]:
-              autofill &&
-              timetable.autofill &&
-              timetable.autofill[day] &&
-              timetable.autofill[day].includes(hour)
-                ? restOfDay.filter(x => x !== hour)
-                : [...restOfDay, hour]
-          }
+        const restOfDay = autofillSlots[day] ? autofillSlots[day] : [];
+        setAutofillSlots({
+          ...autofillSlots,
+          [day]:
+            autofill && autofillSlots[day] && autofillSlots[day].includes(hour)
+              ? restOfDay.filter(x => x !== hour)
+              : [...restOfDay, hour]
         });
       }
     },
     selectAll = () => {
-      setClientTimetable({
-        ...timetable,
-        autofill: {
-          ...timetable.autofill,
-          [day]: hours
-        }
+      setAutofillSlots({
+        ...autofillSlots,
+        [day]: hours
       });
     },
     setRepeat = (mode, date, hour, type, title, repeatType) => () => {
@@ -386,9 +377,9 @@ export default () => {
             onClick={autoFill}
             disabled={
               autofill &&
-              (!timetable.autofill ||
-                (timetable.autofill &&
-                  Object.values(timetable.autofill).filter(x => x.length > 0)
+              (!autofillSlots ||
+                (autofillSlots &&
+                  Object.values(autofillSlots).filter(x => x.length > 0)
                     .length === 0))
             }
           >
@@ -418,14 +409,43 @@ export default () => {
           )}
         </div>
         <Dialog
-          open={autofillOpen}
-          onClose={closeAutofill}
+          open={autofillInfo}
+          onClose={() => setAutofillInfo(false)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">
             Welcome to AI Autofill!
           </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              AI Autofill is a revision tool that uses machine learning designed
+              to help you revise as efficiently as possible. To get started,
+              simply:
+              <br />
+              <ol>
+                <li>Pick the timeslots you want to revise for and click Go</li>
+                <li>Choose the subjects you want to revise</li>
+              </ol>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setAutofillInfo(false)}
+              color="secondary"
+              autoFocus
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={autofillOpen}
+          onClose={closeAutofill}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">AI Autofill</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Please enter the subjects you would like to revise, and the your
@@ -654,9 +674,8 @@ export default () => {
               onClick={selectAutofill(hour)}
               className={
                 autofill &&
-                timetable.autofill &&
-                timetable.autofill[day] &&
-                timetable.autofill[day].includes(hour) &&
+                autofillSlots[day] &&
+                autofillSlots[day].includes(hour) &&
                 classes.autofillCard
               }
             >
