@@ -128,7 +128,7 @@ export default () => {
       });
     },
     handleChange = name => e => {
-      if (e.target.value === "poo") {
+      if (e.target.value.toLowerCase() === "poo") {
         setDialogs({
           ...dialogs,
           poo: true

@@ -589,9 +589,10 @@ export default () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              For any tests you've had graded, enter the grades here - this will
-              help us make the AI Autofill feature more accurate and more likely
-              to help you revise efficiently.
+              For the tests that you last revised for using this timetable,
+              enter the grades here - this will help us make the AI Autofill
+              feature more accurate and more likely to help you revise
+              efficiently.
             </DialogContentText>
             <Autocomplete
               multiple
