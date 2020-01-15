@@ -1,30 +1,30 @@
 [
-    {
-        "q": "What is {Maximise}?",
-        "a": "<p>{Maximise} is a Company based in the United Kingdom that is committed to helping students around the country achieve the {grades} they are looking for. Maximise is the creator of {The Passbox}, an {innovative} box of revision materials put together by students who know what is really required to do well in your GCSEs.</p>"
-    },
-    {
-        "q": "Why should I use the {advice} on this website?",
-        "a": "<p>The {advice} section gives us a chance to share our tips about what {we} found helps with revision and getting {great grades}. However, it is important to remember that you should do what {you} feel works best – not what everyone else prefers. If there is one thing that you remember from these tips it is that it is more important to revise {efficiently} that for a {long time}: don’t stare at notes for hours on end (unless you find this is really useful, of course); find a system that works for you.</p>"
-    },
-    {
-        "q": "Why should I set {goals}?",
-        "a": "<p>We found that during our GCSEs, giving ourselves goals helped to {focus} our revision, rather than just revising because we are told to. This isn’t just a {hunch}, though: an article from the {University of Maryland} read '... goals and intentions are the most immediate motivational determinants of task performance ...'. The article also went on to state that 'In nearly all cases the correlations [between {goal setting} and {performance}] were both high and/or significant.' (Source: <a href='https://www.sciencedirect.com/science/article/pii/0030507370900115'>sciencedirect.com</a>)</p>"
-    },
-    {
-        "q": "How does the {agenda} section help me?",
-        "a": "<p>The idea behind planning your revision out is to have a good structured approach to what your revising and when. It provides an opportunity to put aside some time to do some serious learning to get those {top grades}.</p><p>Our unique system for generating personalised example revision timetables uses {cutting edge technology} such as {machine learning} to pick the best revision schedule for you based on your past recodes. However, only you know what will work best for {you} so we ask that you use this tool with that in mind.</p><p>According to Phil Race, a visiting professor at {Plymoth University}, 'a student with moderate ability, who uses his talents methodically to Study, will achieve more success, than a person with greater ability, but is unmethodical.'</p>"
-    },
-    {
-        "q": "What’s the difference between {Agenda} and {Timetable}?",
-        "a": "<p>The {agenda} shows you the {deadlines} for when you need to get work done by, but the {timetable} shows you when you {plan} on doing the work required.</p>"
-    },
-    {
-        "q": "Why use the {tools}?",
-        "a": "<p>The tools on {maximise.org.uk} have been created with real two main goals in mind: What do people revising for exams actually {need}; and what can the use of {science and technology} add to revision.</p><p>The tools on this website will not guarantee any specific grades but they have been made to use technology and {scientifically proven} methods to help you revise as efficiently as possible by students who have already been successful in their GCSEs and know what is {actually} useful for revision and passing exams.</p>"
-    },
-    {
-        "q": "Have {another} question?",
-        "a": "<p>We are happy to do our best to help you to solve any problem you may have – just email us at <a href='mailto: contact.maximise@gmail.com'>{contact.maximise@gmail.com}</a></p>"
-    }
+  {
+    "q": "What is {Maximise}?",
+    "a": "<p>{Maximise} is a Company based in the United Kingdom that is committed to helping students around the country achieve the {grades} they are looking for. Maximise is the creator of {The Passbox}, an {innovative} box of revision materials put together by students who know what is really required to do well in your GCSEs.</p>"
+  },
+  {
+    "q": "Why should I use the {advice} on this website?",
+    "a": "<p>The {advice} section gives us a chance to share our tips about what {we} found helps with revision and getting {great grades}. However, it is important to remember that you should do what {you} feel works best – not what everyone else prefers. If there is one thing that you remember from these tips it is that it is more important to revise {efficiently} that for a {long time}: don’t stare at notes for hours on end (unless you find this is really useful, of course); find a system that works for you.</p>"
+  },
+  {
+    "q": "Why should I set {goals}?",
+    "a": "<p>We found that during our GCSEs, giving ourselves goals helped to {focus} our revision, rather than just revising because we are told to. This isn’t just a {hunch}, though: an article from the {University of Maryland} read '... goals and intentions are the most immediate motivational determinants of task performance ...'. The article also went on to state that 'In nearly all cases the correlations [between {goal setting} and {performance}] were both high and/or significant.' (Source: <a href='https://www.sciencedirect.com/science/article/pii/0030507370900115'>sciencedirect.com</a>)</p>"
+  },
+  {
+    "q": "How does the {agenda} section help me?",
+    "a": "<p>The idea behind planning your revision out is to have a good structured approach to what your revising and when. It provides an opportunity to put aside some time to do some serious learning to get those {top grades}.</p><p>Our unique system for generating personalised example revision timetables uses {cutting edge technology} such as {machine learning} to pick the best revision schedule for you based on your past recodes. However, only you know what will work best for {you} so we ask that you use this tool with that in mind.</p><p>According to Phil Race, a visiting professor at {Plymoth University}, 'a student with moderate ability, who uses his talents methodically to Study, will achieve more success, than a person with greater ability, but is unmethodical.'</p>"
+  },
+  {
+    "q": "What’s the difference between {Agenda} and {Goals}?",
+    "a": "<p>The {agenda} shows you the {deadlines} for when you need to get work done by, but the {goals} are more long term aims that you want to achieve.</p>"
+  },
+  {
+    "q": "Why use the {tools}?",
+    "a": "<p>The tools on {maximise.org.uk} have been created with real two main goals in mind: What do people revising for exams actually {need}; and what can the use of {science and technology} add to revision.</p><p>The tools on this website will not guarantee any specific grades but they have been made to use technology and {scientifically proven} methods to help you revise as efficiently as possible by students who have already been successful in their GCSEs and know what is {actually} useful for revision and passing exams.</p>"
+  },
+  {
+    "q": "Have {another} question?",
+    "a": "<p>We are happy to do our best to help you to solve any problem you may have – just email us at <a href='mailto: contact.maximise@gmail.com'>{contact.maximise@gmail.com}</a></p>"
+  }
 ]
