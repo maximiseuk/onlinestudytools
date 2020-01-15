@@ -25,38 +25,39 @@ export default () => {
         setPasswordHelper("Please enter your password");
       }
       if (email !== "" && password !== "") {
-        /*fetch("https://maximise.herokuapp.com/users/login", {
+        fetch("https://maximise.herokuapp.com/users/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          credentials: "include",
           body: JSON.stringify({
-            email,
+            username: email,
             password
           })
         })
           .then(res => res.json())
           .then(data => {
             if (data.errors !== undefined) {
-              setEmailHelper(data.errors.email);
-              setPasswordHelper(data.error.password);
-            } else {*/
+                console.log(data);
+                
+              if (data.errors.email) setEmailHelper(data.errors.email);
+              if (data.errors.password) setPasswordHelper(data.error.password);
+            } else {
               const d = new Date();
               localStorage.setItem("email", email);
               document.cookie = `email=${email}; expires ${d.getTime() +
                 4e12}; path=/`;
-              localStorage.name = /*data.firstName*/ "Isaac";
-              //document.cookie = `sessionID=${data.sessionID}; expires ${d.getTime() + 4e12}; path=/`;
+              localStorage.name = data.firstName;
+              document.cookie = `sessionID=${data.sessionID}; expires ${d.getTime() + 4e12}; path=/`;
               history.replace("/home");
-            /*}
+            }
           })
           .catch(() => {
             dispatch({
               type: "NEW_ERROR",
               payload: "There was an error logging you in"
             });
-          });*/
+          });
       }
     },
     clear = () => {

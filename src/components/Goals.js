@@ -31,7 +31,6 @@ const useStyles = makeStyles(theme => ({
   loadingContainer: {
     textAlign: "center",
     margin: "0 auto",
-    paddingTop: "40%"
   },
   newGoal: {
     marginTop: 16
@@ -188,7 +187,7 @@ export default () => {
       });
     };
   useEffect(() => {
-    fetch("https://maximise.herokuapp.com/users/get_data/goals" /*"/get_data/goals"*/)
+    fetch(/*"https://maximise.herokuapp.com/users/get_data/goals"*/"/goals.json")
       .then(res => res.json())
       .then(data => {
         setGoals({
@@ -214,7 +213,6 @@ export default () => {
       headers: {
         "Content-Type": "application/json"
       },
-      credentials: "include",
       body: JSON.stringify({
         newData: clientGoals,
         sessionID: getCookie("sessionID"),
@@ -223,7 +221,7 @@ export default () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data === "failed") {
+        if (data.errors.length > 0) {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your goals"

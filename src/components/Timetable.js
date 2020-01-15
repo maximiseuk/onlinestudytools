@@ -83,6 +83,7 @@ export default () => {
     [clientTimetable, setClientTimetable] = useState(false),
     [autofill, setAutofill] = useState(false),
     [autofillOpen, setAutofillOpen] = useState(false),
+    [autofillSlots, setAutofillSlots] = useState({}),
     { subjects } = useSelector(state => state),
     [autoSubjects, setAutoSubjects] = useState([]),
     [requireds, setRequireds] = useState({}),
@@ -181,32 +182,24 @@ export default () => {
     selectAutofill = hour => e => {
       if (autofill) {
         const restOfDay =
-          timetable.autofill && timetable.autofill[day]
-            ? timetable.autofill[day]
+        autofillSlots[day]
+            ? autofillSlots[day]
             : [];
-        setClientTimetable({
-          ...timetable,
-          autofill: {
-            ...timetable.autofill,
+        setAutofillSlots({
+            ...autofillSlots,
             [day]:
-              autofill &&
-              timetable.autofill &&
-              timetable.autofill[day] &&
-              timetable.autofill[day].includes(hour)
+              autofillSlots[day] &&
+              autofillSlots[day].includes(hour)
                 ? restOfDay.filter(x => x !== hour)
                 : [...restOfDay, hour]
-          }
         });
       }
     },
     selectAll = () => {
-      setClientTimetable({
-        ...timetable,
-        autofill: {
-          ...timetable.autofill,
+      setAutofillSlots({
+          ...autofillSlots,
           [day]: hours
-        }
-      });
+        });
     },
     setRepeat = (mode, date, hour, type, title, repeatType) => () => {
       if (mode === "day" || mode === "week") {
@@ -333,7 +326,7 @@ export default () => {
   }, [clientTimetable]);
   useEffect(() => {
     fetch(
-      /*"https://maximise.herokuapp.com/users/get_data/timetable"*/ "timetable.json" /*"/get_data/timetable"*/
+      /*"https://maximise.herokuapp.com/users/get_data/timetable"*/ "/timetable.json" /*"/get_data/timetable"*/
     )
       .then(res => res.json())
       .then(data => {
@@ -386,9 +379,9 @@ export default () => {
             onClick={autoFill}
             disabled={
               autofill &&
-              (!timetable.autofill ||
-                (timetable.autofill &&
-                  Object.values(timetable.autofill).filter(x => x.length > 0)
+              (!autofillSlots ||
+                (autofillSlots &&
+                  Object.values(autofillSlots).filter(x => x.length > 0)
                     .length === 0))
             }
           >
@@ -654,9 +647,8 @@ export default () => {
               onClick={selectAutofill(hour)}
               className={
                 autofill &&
-                timetable.autofill &&
-                timetable.autofill[day] &&
-                timetable.autofill[day].includes(hour) &&
+                autofillSlots[day] &&
+                autofillSlots[day].includes(hour) &&
                 classes.autofillCard
               }
             >
