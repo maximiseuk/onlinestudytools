@@ -34,6 +34,7 @@ import PreviousIcon from "@material-ui/icons/KeyboardArrowLeft";
 import CancelIcon from "@material-ui/icons/Close";
 import SelectIcon from "@material-ui/icons/SelectAll";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import AddIcon from "@material-ui/icons/Add";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -89,6 +90,9 @@ export default () => {
     [recents, setRecents] = useState({}),
     [autofillInfo, setAutofillInfo] = useState(false),
     [autofillSlots, setAutofillSlots] = useState({}),
+    [addScoresDialog, setAddScoresDialog] = useState(false),
+    [examGrades, setExamGrades] = useState({}),
+    [examScoreSubjects, setExamScoreSubjects] = useState([]),
     hours = [
       "7:00 - 8:00",
       "8:00 - 9:00",
@@ -163,6 +167,7 @@ export default () => {
     closeAutofill = () => {
       setAutofillOpen(false);
     },
+    submitExamGrades = () => {},
     /*updateAutofill = hour => e => {
         setClientTimetable({
             ...timetable,
@@ -178,9 +183,7 @@ export default () => {
             }
         });
     },*/
-    submitAutofill = () => {
-      fetch();
-    },
+    submitAutofill = () => {},
     selectAutofill = hour => e => {
       if (autofill) {
         const restOfDay = autofillSlots[day] ? autofillSlots[day] : [];
@@ -383,8 +386,19 @@ export default () => {
                     .length === 0))
             }
           >
-            {autofill ? "Go" : "Use AI Autofill"}
+            {autofill ? "Go" : "AI Autofill"}
           </Button>
+          {!autofill && (
+            <Tooltip title="Add test scores">
+              <Button
+                onClick={() => setAddScoresDialog(true)}
+                style={{ marginLeft: 8, padding: 8, minWidth: "auto" }}
+                color="secondary"
+              >
+                <AddIcon />
+              </Button>
+            </Tooltip>
+          )}
           {autofill && (
             <Tooltip title="Cancel">
               <Button
@@ -560,6 +574,104 @@ export default () => {
               Cancel
             </Button>
             <Button onClick={submitAutofill} color="secondary" autoFocus>
+              Go
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={addScoresDialog}
+          onClose={() => setAddScoresDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Enter your grades for tests you've had
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              For any tests you've had graded, enter the grades here - this will
+              help us make the AI Autofill feature more accurate and more likely
+              to help you revise efficiently.
+            </DialogContentText>
+            <Autocomplete
+              multiple
+              filterSelectedOptions
+              onChange={(e, val) => {
+                let newGrades = examGrades;
+                val.forEach(a => {
+                  if (!newGrades[a]) {
+                    newGrades[a] = 5;
+                  }
+                });
+                setExamGrades(newGrades);
+                setExamScoreSubjects(val);
+              }}
+              options={subjects}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    key={index}
+                    variant="outlined"
+                    label={option}
+                    {...getTagProps({ index })}
+                    style={{ margin: 4 }}
+                  />
+                ))
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="Enter your subjects"
+                  margin="normal"
+                  variant="filled"
+                  fullWidth
+                />
+              )}
+            />
+            {examScoreSubjects.map((a, i) => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 8
+                }}
+                key={a}
+              >
+                <Typography style={{ marginRight: 8 }}>{a}</Typography>
+                <div>
+                  <FormControl
+                    variant="filled"
+                    style={{ width: 96 }}
+                    size="small"
+                  >
+                    <InputLabel id="demo-simple-select-filled-label">
+                      Grade
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-filled-label"
+                      id="demo-simple-select-filled"
+                      value={examGrades[a]}
+                      onChange={e =>
+                        setExamGrades({ ...examGrades, [a]: e.target.value })
+                      }
+                    >
+                      {[...Array(9).keys()].map(x => (
+                        <MenuItem value={x + 1} key={x}>
+                          {x + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              </div>
+            ))}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setAddScoresDialog(false)} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={submitExamGrades} color="secondary" autoFocus>
               Go
             </Button>
           </DialogActions>

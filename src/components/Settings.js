@@ -97,8 +97,10 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data);
           if (data.errors.length === 0) {
-            console.log(data);
+            setValues(initialState);
+            setHelpers(initialState);
           } else {
             dispatch({
               type: "NEW_ERROR",
