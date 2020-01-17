@@ -84,7 +84,7 @@ export default () => {
               newPassword: values.newPassword
             }
           : {};
-      fetch("https://maximise.herokuapp.com/users/update_password", {
+      fetch("https://maximise.herokuapp.com/users/change_password", {
         method: "POST",
         body: JSON.stringify({
           newData: passwordData,
@@ -97,15 +97,15 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
-          if (data.errors.length === 0) {
+          if (JSON.stringify(data.errors) !== "{}") {
+            let newErrors = helpers;
+            for (let key in data.errors) {
+              newErrors[key] = data.errors[key];
+            }
+            setHelpers(newErrors);
+          } else {
             setValues(initialState);
             setHelpers(initialState);
-          } else {
-            dispatch({
-              type: "NEW_ERROR",
-              payload: "There was an error updating your settings"
-            });
           }
         })
         .catch(() => {
