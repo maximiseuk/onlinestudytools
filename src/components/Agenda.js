@@ -417,7 +417,7 @@ export default () => {
               id="alert-dialog-description"
               style={{ fontSize: 120 }}
             >
-              💩
+              <span role="img" aria-label="poo">💩</span>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

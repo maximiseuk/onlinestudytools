@@ -90,7 +90,6 @@ export default () => {
     [requireds, setRequireds] = useState({}),
     [recents, setRecents] = useState({}),
     [autofillInfo, setAutofillInfo] = useState(false),
-    [autofillSlots, setAutofillSlots] = useState({}),
     [addScoresDialog, setAddScoresDialog] = useState(false),
     [examGrades, setExamGrades] = useState({}),
     [examScoreSubjects, setExamScoreSubjects] = useState([]),
@@ -187,7 +186,6 @@ export default () => {
     submitAutofill = () => {},
     selectAutofill = hour => e => {
       if (autofill) {
-<<<<<<< HEAD
         const restOfDay =
         autofillSlots[day]
             ? autofillSlots[day]
@@ -199,29 +197,14 @@ export default () => {
               autofillSlots[day].includes(hour)
                 ? restOfDay.filter(x => x !== hour)
                 : [...restOfDay, hour]
-=======
-        const restOfDay = autofillSlots[day] ? autofillSlots[day] : [];
-        setAutofillSlots({
-          ...autofillSlots,
-          [day]:
-            autofill && autofillSlots[day] && autofillSlots[day].includes(hour)
-              ? restOfDay.filter(x => x !== hour)
-              : [...restOfDay, hour]
->>>>>>> a0c1c9ffec153e5fbb29ec950d92988c4ae3b4e6
         });
       }
     },
     selectAll = () => {
       setAutofillSlots({
-<<<<<<< HEAD
           ...autofillSlots,
           [day]: hours
         });
-=======
-        ...autofillSlots,
-        [day]: hours
-      });
->>>>>>> a0c1c9ffec153e5fbb29ec950d92988c4ae3b4e6
     },
     setRepeat = (mode, date, hour, type, title, repeatType) => () => {
       if (mode === "day" || mode === "week") {
