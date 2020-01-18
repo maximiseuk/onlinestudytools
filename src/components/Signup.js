@@ -120,7 +120,7 @@ export default () => {
         .then(res => res.json())
         .then(data => {
           console.log(data);
-          if (data.errors.length > 0) {
+          if (JSON.stringify(data.errors) !== "{}") {
             let newErrors = helpers;
             for (let key in data.errors) {
               newErrors[key] = data.errors[key];
@@ -131,10 +131,11 @@ export default () => {
             const d = new Date();
             localStorage.setItem("email", values.email);
             localStorage.setItem("name", values.firstName);
-            document.cookie = `email=${values.email}; expires ${d.getTime() +
-              4e12}; path=/`;
+            document.cookie = `email=${
+              data.response.username
+            }; expires ${d.getTime() + 4e12}; path=/`;
             document.cookie = `sessionID=${
-              data.sessionID
+              data.response.sessionID
             }; expires ${d.getTime() + 4e12}; path=/`;
           }
         })

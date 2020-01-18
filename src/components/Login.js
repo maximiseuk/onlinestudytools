@@ -37,18 +37,19 @@ export default () => {
         })
           .then(res => res.json())
           .then(data => {
-            if (data.errors !== undefined) {
-                console.log(data);
-                
-              if (data.errors.email) setEmailHelper(data.errors.email);
+            console.log(data);
+            if (JSON.stringify(data.errors) !== "{}") {
+              if (data.errors.username) setEmailHelper(data.errors.username);
               if (data.errors.password) setPasswordHelper(data.error.password);
             } else {
               const d = new Date();
               localStorage.setItem("email", email);
               document.cookie = `email=${email}; expires ${d.getTime() +
                 4e12}; path=/`;
-              localStorage.name = data.firstName;
-              document.cookie = `sessionID=${data.sessionID}; expires ${d.getTime() + 4e12}; path=/`;
+              localStorage.name = data.response.firstName;
+              document.cookie = `sessionID=${
+                data.response.sessionID
+              }; expires ${d.getTime() + 4e12}; path=/`;
               history.replace("/home");
             }
           })
