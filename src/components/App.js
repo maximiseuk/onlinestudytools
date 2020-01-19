@@ -288,18 +288,21 @@ export default () => {
   useEffect(() => {
     if (getCookie("email") !== "") {
       fetch(
-        /*"https://maximise.herokuapp.com/users/get_data/subjects"*/ "/get_data.json" /*"/get_data/subjects"*/
-        /*{
+        "https://maximise.herokuapp.com/users/get_data/subjects",
+        {
         method: "POST",
         body: JSON.stringify({
-          sessionID: getCookie("sessionId"),
-          username: getCookie("username")
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
         })
-      }*/
+      }
       )
         .then(res => res.json())
         .then(data => {
-          if (data.errors.length > 0) {
+            console.log(data);
+            
+          if (JSON.stringify(data.errors) !== "{}") {
+              console.error(data.errors)
             dispatch({
               type: "NEW_ERROR",
               payload: "There was an error loading your subjects"
@@ -307,7 +310,7 @@ export default () => {
           } else {
             dispatch({
               type: "CHANGE_SUBJECTS",
-              payload: data.subjects
+              payload: data.response
             });
           }
         })

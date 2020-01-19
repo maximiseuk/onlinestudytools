@@ -35,6 +35,7 @@ import CancelIcon from "@material-ui/icons/Close";
 import SelectIcon from "@material-ui/icons/SelectAll";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddIcon from "@material-ui/icons/Add";
+import getCookie from "../api/cookies";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -299,12 +300,11 @@ export default () => {
     setTimetable(clientTimetable);
     console.log(clientTimetable);
 
-    /*fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
+    fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: "include",
             body: JSON.stringify({
               newData: clientTimetable,
               sessionID: getCookie("sessionID"),
@@ -313,13 +313,15 @@ export default () => {
         })
         .then(res => res.json())
         .then(data => {
-            if (data === "failed") {
+            console.log(data);
+            
+            if (JSON.stringify(data.errors) !== "{}") {
                 dispatch({
                     type: "NEW_ERROR",
                     payload: "There was an error updating your agenda",
                 });
             } else {
-                setAgenda(clientAgenda);
+                setTimetable(clientTimetable);
             }
         })
         .catch(() => {
@@ -327,16 +329,26 @@ export default () => {
                 type: "NEW_ERROR",
                 payload: "There was an error updating your agenda",
             });
-        });*/
+        });
   }, [clientTimetable]);
   useEffect(() => {
     fetch(
-      /*"https://maximise.herokuapp.com/users/get_data/timetable"*/ "/timetable.json" /*"/get_data/timetable"*/
+      "https://maximise.herokuapp.com/users/get_data/timetable", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+    }
     )
       .then(res => res.json())
       .then(data => {
-        setTimetable(data);
-        setClientTimetable(data);
+        console.log(data);
+        setTimetable(data.response ? data.response : {});
+        setClientTimetable(data.response ? data.response : {});
       })
       .catch(() => {
         dispatch({

@@ -125,7 +125,9 @@ export default () => {
             for (let key in data.errors) {
               newErrors[key] = data.errors[key];
             }
-            setHelpers(newErrors);
+            console.log(newErrors);
+            
+            setHelpers({...helpers, ...newErrors});
           } else {
             setWelcomeOpen(true);
             const d = new Date();
@@ -152,7 +154,6 @@ export default () => {
         headers: {
           "Content-Type": "application/json"
         },
-        credentials: "include",
         body: stringify({
           newData: {
             subjects: userSubjects,
@@ -438,12 +439,15 @@ export default () => {
             type="submit"
             disabled={
               stringify(initialState) !== stringify(helpers) ||
-              Object.keys(values).filter(
-                x => values[x] === "" || values[x] === undefined
+              Object.values(values).filter(
+                x => values[x] === ""
               ).length > 0 ||
               !agreed
             }
           >
+              {console.log(Object.values(values).filter(
+                x => x === ""
+              ))}
             Sign up
           </Button>
           <Button

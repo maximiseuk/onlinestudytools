@@ -116,12 +116,15 @@ export default () => {
         });
     },
     logout = () => {
-      /*fetch("/users/logout", {
+      fetch("https://maximise.herokuapp.com/users/logout", {
                 method: "POST",
+                body: JSON.stringify({
+                    sessionID: getCookie("sessionID"),
+                    username: getCookie("email"),
+                  })
             })
             .then(res => res.text())
             .then(data => {
-                if (data === "success") {*/
       document.cookie =
         "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       document.cookie =
@@ -134,13 +137,7 @@ export default () => {
       });
       history.replace(
         "/"
-      ); /*
-                } else {
-                    dispatch({
-                        type: "NEW_ERROR",
-                        payload: "There was an error logging you out",
-                    });
-                }
+      );
             })
             
             .catch(() => {
@@ -148,7 +145,7 @@ export default () => {
                     type: "NEW_ERROR",
                     payload: "There was an error logging you out",
                 });
-            });*/
+            });
     },
     handleChange = field => e => {
       setValues({
@@ -211,19 +208,21 @@ export default () => {
     },
     updateSubjects = val => {
       fetch(
-        "https://maximise.herokuapp.com/users/update_data/subjects" /*"/get_data/subjects"*/,
+        "https://maximise.herokuapp.com/users/update_data/subjects",
         {
           method: "POST",
           body: JSON.stringify({
-            sessionID: getCookie("sessionId"),
-            username: getCookie("username"),
+            sessionID: getCookie("sessionID"),
+            username: getCookie("email"),
             newData: userSubjects
           })
         }
       )
         .then(res => res.json())
         .then(data => {
-          if (data.errors.length > 0) {
+            
+          if (JSON.stringify(data.errors) !== "{}") {
+            console.log(data);
             dispatch({
               type: "NEW_ERROR",
               payload: "There was an error updating your subjects"
@@ -236,6 +235,8 @@ export default () => {
           }
         })
         .catch(err => {
+            console.error(err);
+            
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your subjects"
@@ -318,6 +319,7 @@ export default () => {
             filterSelectedOptions
             onChange={(e, val) => updateSubjects(val)}
             options={subjects}
+            defaultValue={userSubjects}
             renderTags={(value, getTagProps) =>
               value.map((option, index) => (
                 <Chip

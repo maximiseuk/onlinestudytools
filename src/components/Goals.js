@@ -187,17 +187,33 @@ export default () => {
       });
     };
   useEffect(() => {
-    fetch(/*"https://maximise.herokuapp.com/users/get_data/goals"*/"/goals.json")
+    fetch("https://maximise.herokuapp.com/users/get_data/goals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
       .then(res => res.json())
       .then(data => {
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error loading your goals"
+            });
+          } else {
         setGoals({
-          Current: data.filter(goal => !goal.completed),
-          Completed: data.filter(goal => goal.completed)
+          Current: data.response.filter(goal => !goal.completed),
+          Completed: data.response.filter(goal => goal.completed)
         });
         setClientGoals({
-          Current: data.filter(goal => !goal.completed),
-          Completed: data.filter(goal => goal.completed)
+          Current: data.response.filter(goal => !goal.completed),
+          Completed: data.response.filter(goal => goal.completed)
         });
+    }
       })
       .catch(() => {
         dispatch({
@@ -221,7 +237,7 @@ export default () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.errors.length > 0) {
+        if (JSON.stringify(data.errors) !== "{}") {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your goals"

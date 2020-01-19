@@ -15,6 +15,7 @@ import { Link, useHistory } from "react-router-dom";
 import advice from "../api/advice.json";
 import { useDispatch } from "react-redux";
 import { useMediaQuery } from "@material-ui/core";
+import getCookie from "../api/cookies";
 
 const useStyles = makeStyles(theme => ({
   item: {
@@ -32,9 +33,7 @@ const useStyles = makeStyles(theme => ({
     overflow: "auto"
   },
   swiper: {
-    "& > div > div > .MuiPaper-root": {
-      //height: "calc(100% - 48px)"
-    },
+      height: "calc(100% - 32px)",
     [theme.breakpoints.up(1024)]: {
       display: "none"
     }
@@ -52,8 +51,9 @@ const useStyles = makeStyles(theme => ({
     },
     backgroundColor: theme.palette.background.paper,
     margin: 8,
-    marginBottom: -8,
-    paddingBottom: 0
+    paddingBottom: 0,
+    marginBottom: 0,
+    paddingTop: 0,
   },
   info: {
     whiteSpace: "nowrap",
@@ -237,13 +237,22 @@ export default () => {
     );
   useEffect(() => {
     fetch(
-      /*"https://maximise.herokuapp.com/users/get_data/"*/ "/get_data.json" /*"/get_data"*/
+      "https://maximise.herokuapp.com/users/get_data/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      }
     )
       .then(res => res.json())
       .then(data => {
-        setAgenda(data.agenda.filter((x, i) => i < 3));
-        setGoals(data.goals.filter((x, i) => i < 3));
-        const { timetable } = data;
+        setAgenda(data.response.agenda.filter((x, i) => i < 3));
+        setGoals(data.response.goals.filter((x, i) => i < 3));
+        const { timetable } = data.response;
         delete timetable.weekrepeats;
         delete timetable.dayrepeats;
         let newExams = [];

@@ -37,10 +37,9 @@ export default () => {
         })
           .then(res => res.json())
           .then(data => {
-            console.log(data);
             if (JSON.stringify(data.errors) !== "{}") {
               if (data.errors.username) setEmailHelper(data.errors.username);
-              if (data.errors.password) setPasswordHelper(data.error.password);
+              if (data.errors.password) setPasswordHelper(data.errors.password);
             } else {
               const d = new Date();
               localStorage.setItem("email", email);
