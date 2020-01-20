@@ -94,6 +94,7 @@ export default () => {
     [addScoresDialog, setAddScoresDialog] = useState(false),
     [examGrades, setExamGrades] = useState({}),
     [examScoreSubjects, setExamScoreSubjects] = useState([]),
+    [stop, setStop] = useState(false),
     hours = [
       "7:00 - 8:00",
       "8:00 - 9:00",
@@ -418,6 +419,19 @@ export default () => {
         });
       });
   }, []);
+  useEffect(() => {
+    if (
+      JSON.stringify(autofillSlots["0"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["1"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["2"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["3"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["4"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["5"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["6"]) === JSON.stringify(hours)
+    ) {
+      setStop(true);
+    }
+  }, [autofillSlots]);
   return timetable ? (
     <Paper className="fade padding">
       <div
@@ -529,6 +543,26 @@ export default () => {
               color="secondary"
               autoFocus
             >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={stop}
+          onClose={() => setStop(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            You're doing too much revision!
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Seriously, you need to have some breaks dude!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setStop(false)} color="secondary" autoFocus>
               OK
             </Button>
           </DialogActions>
