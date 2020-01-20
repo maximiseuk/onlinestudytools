@@ -168,7 +168,38 @@ export default () => {
     closeAutofill = () => {
       setAutofillOpen(false);
     },
-    submitExamGrades = () => {},
+    submitExamGrades = () => {
+      fetch("https://maximise.herokuapp.com/users/update_data/exam_grades", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: examGrades,
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error uploading your exam grades"
+            });
+          } else {
+            setAddScoresDialog(false);
+          }
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error uploading your exam grades"
+          });
+        });
+    },
     /*updateAutofill = hour => e => {
         setClientTimetable({
             ...timetable,
@@ -184,28 +215,61 @@ export default () => {
             }
         });
     },*/
-    submitAutofill = () => {},
+    submitAutofill = () => {
+      fetch(
+        "https://maximise.herokuapp.com/users/update_data/recent_required_grades",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            newData: {
+              recents,
+              requireds
+            },
+            sessionID: getCookie("sessionID"),
+            username: getCookie("email")
+          })
+        }
+      )
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error uploading your exam grades"
+            });
+          } else {
+            setAutofillOpen(false);
+          }
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error uploading your exam grades"
+          });
+        });
+    },
     selectAutofill = hour => e => {
       if (autofill) {
-        const restOfDay =
-        autofillSlots[day]
-            ? autofillSlots[day]
-            : [];
+        const restOfDay = autofillSlots[day] ? autofillSlots[day] : [];
         setAutofillSlots({
-            ...autofillSlots,
-            [day]:
-              autofillSlots[day] &&
-              autofillSlots[day].includes(hour)
-                ? restOfDay.filter(x => x !== hour)
-                : [...restOfDay, hour]
+          ...autofillSlots,
+          [day]:
+            autofillSlots[day] && autofillSlots[day].includes(hour)
+              ? restOfDay.filter(x => x !== hour)
+              : [...restOfDay, hour]
         });
       }
     },
     selectAll = () => {
       setAutofillSlots({
-          ...autofillSlots,
-          [day]: hours
-        });
+        ...autofillSlots,
+        [day]: hours
+      });
     },
     setRepeat = (mode, date, hour, type, title, repeatType) => () => {
       if (mode === "day" || mode === "week") {
@@ -301,49 +365,47 @@ export default () => {
     console.log(clientTimetable);
 
     fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              newData: clientTimetable,
-              sessionID: getCookie("sessionID"),
-              username: getCookie("email")
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
-            
-            if (JSON.stringify(data.errors) !== "{}") {
-                dispatch({
-                    type: "NEW_ERROR",
-                    payload: "There was an error updating your agenda",
-                });
-            } else {
-                setTimetable(clientTimetable);
-            }
-        })
-        .catch(() => {
-            dispatch({
-                type: "NEW_ERROR",
-                payload: "There was an error updating your agenda",
-            });
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        newData: clientTimetable,
+        sessionID: getCookie("sessionID"),
+        username: getCookie("email")
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+
+        if (JSON.stringify(data.errors) !== "{}") {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error updating your agenda"
+          });
+        } else {
+          setTimetable(clientTimetable);
+        }
+      })
+      .catch(() => {
+        dispatch({
+          type: "NEW_ERROR",
+          payload: "There was an error updating your agenda"
         });
+      });
   }, [clientTimetable]);
   useEffect(() => {
-    fetch(
-      "https://maximise.herokuapp.com/users/get_data/timetable", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sessionID: getCookie("sessionID"),
-          username: getCookie("email")
-        })
-    }
-    )
+    fetch("https://maximise.herokuapp.com/users/get_data/timetable", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sessionID: getCookie("sessionID"),
+        username: getCookie("email")
+      })
+    })
       .then(res => res.json())
       .then(data => {
         console.log(data);
@@ -457,6 +519,9 @@ export default () => {
                 <li>Pick the timeslots you want to revise for and click Go</li>
                 <li>Choose the subjects you want to revise</li>
               </ol>
+              <br />
+              AI Autofill will also automatically fill in break periods for you
+              so you don't need to add them yourself.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
