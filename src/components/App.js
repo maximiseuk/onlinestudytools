@@ -30,7 +30,6 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-
 const useStyles = makeStyles(theme => ({
     root: {
       height: "100vh",
@@ -295,14 +294,13 @@ export default () => {
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
         })
-      }
-      )
+      })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
-            
+          console.log(data);
+
           if (JSON.stringify(data.errors) !== "{}") {
-              console.error(data.errors)
+            console.error(data.errors);
             dispatch({
               type: "NEW_ERROR",
               payload: "There was an error loading your subjects"

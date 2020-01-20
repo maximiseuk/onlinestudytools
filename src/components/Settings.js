@@ -117,35 +117,33 @@ export default () => {
     },
     logout = () => {
       fetch("https://maximise.herokuapp.com/users/logout", {
-                method: "POST",
-                body: JSON.stringify({
-                    sessionID: getCookie("sessionID"),
-                    username: getCookie("email"),
-                  })
-            })
-            .then(res => res.text())
-            .then(data => {
-      document.cookie =
-        "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie =
-        "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie =
-        "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      dispatch({
-        type: "TOGGLE_THEME_TYPE",
-        payload: false
-      });
-      history.replace(
-        "/"
-      );
-            })
-            
-            .catch(() => {
-                dispatch({
-                    type: "NEW_ERROR",
-                    payload: "There was an error logging you out",
-                });
-            });
+        method: "POST",
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.text())
+        .then(data => {
+          document.cookie =
+            "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie =
+            "theme=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie =
+            "sessionID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          dispatch({
+            type: "TOGGLE_THEME_TYPE",
+            payload: false
+          });
+          history.replace("/");
+        })
+
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error logging you out"
+          });
+        });
     },
     handleChange = field => e => {
       setValues({
@@ -207,20 +205,16 @@ export default () => {
       });
     },
     updateSubjects = val => {
-      fetch(
-        "https://maximise.herokuapp.com/users/update_data/subjects",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            sessionID: getCookie("sessionID"),
-            username: getCookie("email"),
-            newData: userSubjects
-          })
-        }
-      )
+      fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
+        method: "POST",
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email"),
+          newData: userSubjects
+        })
+      })
         .then(res => res.json())
         .then(data => {
-            
           if (JSON.stringify(data.errors) !== "{}") {
             console.log(data);
             dispatch({
@@ -235,8 +229,8 @@ export default () => {
           }
         })
         .catch(err => {
-            console.error(err);
-            
+          console.error(err);
+
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your subjects"
@@ -341,6 +335,7 @@ export default () => {
               />
             )}
           />
+          <Button variant="contained">Update</Button>
         </CardContent>
       </Card>
       <Divider style={{ margin: "16px 0" }} />

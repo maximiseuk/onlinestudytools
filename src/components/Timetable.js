@@ -94,6 +94,7 @@ export default () => {
     [addScoresDialog, setAddScoresDialog] = useState(false),
     [examGrades, setExamGrades] = useState({}),
     [examScoreSubjects, setExamScoreSubjects] = useState([]),
+    [stop, setStop] = useState(false),
     hours = [
       "7:00 - 8:00",
       "8:00 - 9:00",
@@ -168,7 +169,38 @@ export default () => {
     closeAutofill = () => {
       setAutofillOpen(false);
     },
-    submitExamGrades = () => {},
+    submitExamGrades = () => {
+      fetch("https://maximise.herokuapp.com/users/update_data/grades", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: examGrades,
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error uploading your exam grades"
+            });
+          } else {
+            setAddScoresDialog(false);
+          }
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error uploading your exam grades"
+          });
+        });
+    },
     /*updateAutofill = hour => e => {
         setClientTimetable({
             ...timetable,
@@ -184,28 +216,58 @@ export default () => {
             }
         });
     },*/
-    submitAutofill = () => {},
+    submitAutofill = () => {
+      fetch("https://maximise.herokuapp.com/users/update_data/grades", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: {
+            recents,
+            requireds
+          },
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error uploading your exam grades"
+            });
+          } else {
+            setAutofillOpen(false);
+          }
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error uploading your exam grades"
+          });
+        });
+    },
     selectAutofill = hour => e => {
       if (autofill) {
-        const restOfDay =
-        autofillSlots[day]
-            ? autofillSlots[day]
-            : [];
+        const restOfDay = autofillSlots[day] ? autofillSlots[day] : [];
         setAutofillSlots({
-            ...autofillSlots,
-            [day]:
-              autofillSlots[day] &&
-              autofillSlots[day].includes(hour)
-                ? restOfDay.filter(x => x !== hour)
-                : [...restOfDay, hour]
+          ...autofillSlots,
+          [day]:
+            autofillSlots[day] && autofillSlots[day].includes(hour)
+              ? restOfDay.filter(x => x !== hour)
+              : [...restOfDay, hour]
         });
       }
     },
     selectAll = () => {
       setAutofillSlots({
-          ...autofillSlots,
-          [day]: hours
-        });
+        ...autofillSlots,
+        [day]: hours
+      });
     },
     setRepeat = (mode, date, hour, type, title, repeatType) => () => {
       if (mode === "day" || mode === "week") {
@@ -296,54 +358,54 @@ export default () => {
   maxDate.setHours(0, 0, 0, 0);
   maxAutofill.setDate(maxDate.getDate() + 6);
   maxAutofill.setHours(0, 0, 0, 0);
+  console.log(recents);
+  console.log(requireds);
   useEffect(() => {
     setTimetable(clientTimetable);
     console.log(clientTimetable);
 
     fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              newData: clientTimetable,
-              sessionID: getCookie("sessionID"),
-              username: getCookie("email")
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
-            
-            if (JSON.stringify(data.errors) !== "{}") {
-                dispatch({
-                    type: "NEW_ERROR",
-                    payload: "There was an error updating your agenda",
-                });
-            } else {
-                setTimetable(clientTimetable);
-            }
-        })
-        .catch(() => {
-            dispatch({
-                type: "NEW_ERROR",
-                payload: "There was an error updating your agenda",
-            });
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        newData: clientTimetable,
+        sessionID: getCookie("sessionID"),
+        username: getCookie("email")
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+
+        if (JSON.stringify(data.errors) !== "{}") {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error updating your agenda"
+          });
+        } else {
+          setTimetable(clientTimetable);
+        }
+      })
+      .catch(() => {
+        dispatch({
+          type: "NEW_ERROR",
+          payload: "There was an error updating your agenda"
         });
+      });
   }, [clientTimetable]);
   useEffect(() => {
-    fetch(
-      "https://maximise.herokuapp.com/users/get_data/timetable", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sessionID: getCookie("sessionID"),
-          username: getCookie("email")
-        })
-    }
-    )
+    fetch("https://maximise.herokuapp.com/users/get_data/timetable", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sessionID: getCookie("sessionID"),
+        username: getCookie("email")
+      })
+    })
       .then(res => res.json())
       .then(data => {
         console.log(data);
@@ -357,6 +419,19 @@ export default () => {
         });
       });
   }, []);
+  useEffect(() => {
+    if (
+      JSON.stringify(autofillSlots["0"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["1"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["2"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["3"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["4"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["5"]) === JSON.stringify(hours) &&
+      JSON.stringify(autofillSlots["6"]) === JSON.stringify(hours)
+    ) {
+      setStop(true);
+    }
+  }, [autofillSlots]);
   return timetable ? (
     <Paper className="fade padding">
       <div
@@ -457,6 +532,9 @@ export default () => {
                 <li>Pick the timeslots you want to revise for and click Go</li>
                 <li>Choose the subjects you want to revise</li>
               </ol>
+              <br />
+              AI Autofill will also automatically fill in break periods for you
+              so you don't need to add them yourself.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -465,6 +543,26 @@ export default () => {
               color="secondary"
               autoFocus
             >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={stop}
+          onClose={() => setStop(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            You're doing too much revision!
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Seriously, you need to have some breaks dude!
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setStop(false)} color="secondary" autoFocus>
               OK
             </Button>
           </DialogActions>
