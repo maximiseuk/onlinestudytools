@@ -67,7 +67,7 @@ export default () => {
       setPasswordHelper(" ");
     };
   useEffect(() => {
-    if (getCookie("email") !== "") {
+    if (getCookie("sessionID") !== "") {
       history.replace("/home");
     }
   }, []);

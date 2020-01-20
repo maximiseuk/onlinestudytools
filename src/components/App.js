@@ -286,7 +286,7 @@ export default () => {
   }, [document.cookie]);
 
   useEffect(() => {
-    if (getCookie("email") !== "") {
+    if (getCookie("sessionID") !== "") {
       fetch(
         "https://maximise.herokuapp.com/users/get_data/subjects",
         {
@@ -485,7 +485,7 @@ export default () => {
                 >
                   <Switch location={location}>
                     <Route
-                      component={getCookie("email") !== "" ? Home : LandingPage}
+                      component={getCookie("sessionID") !== "" ? Home : LandingPage}
                       exact
                       path="/(home||)/"
                     />
@@ -496,7 +496,7 @@ export default () => {
                             if (
                               component !== "Login" &&
                               component !== "Signup" &&
-                              email === ""
+                              getCookie("sessionID") === ""
                             ) {
                               return <Redirect to="/login" />;
                             }
