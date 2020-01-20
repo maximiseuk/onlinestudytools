@@ -1,9 +1,10 @@
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 ::-webkit-scrollbar {
     display: none;
@@ -34,6 +35,39 @@ body, html {
     0% {
         opacity: 0;
         transform: translate(0px, 256px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@keyframes faderight {
+    0% {
+        opacity: 0;
+        transform: translate(32px, 0px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@-webkit-keyframes faderight {
+    0% {
+        opacity: 0;
+        transform: translate(32px, 0px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(0px, 0px);
+    }
+}
+@-moz-keyframes faderight {
+    0% {
+        opacity: 0;
+        transform: translate(32px, 0px);
     }
 
     100% {
@@ -101,12 +135,40 @@ body, html {
         opacity: 1;
     }
 }
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+@-webkit-keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+@-moz-keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
 .fade {
     animation: fadeup 1s forwards;
     overflow: auto;
     max-height: 100%;
 }
-ul, ol {
+ul,
+ol {
     padding-left: 16px;
     margin-bottom: 0;
 }
