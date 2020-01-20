@@ -169,7 +169,7 @@ export default () => {
       setAutofillOpen(false);
     },
     submitExamGrades = () => {
-      fetch("https://maximise.herokuapp.com/users/update_data/exam_grades", {
+      fetch("https://maximise.herokuapp.com/users/update_data/grades", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -216,23 +216,20 @@ export default () => {
         });
     },*/
     submitAutofill = () => {
-      fetch(
-        "https://maximise.herokuapp.com/users/update_data/recent_required_grades",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
+      fetch("https://maximise.herokuapp.com/users/update_data/grades", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: {
+            recents,
+            requireds
           },
-          body: JSON.stringify({
-            newData: {
-              recents,
-              requireds
-            },
-            sessionID: getCookie("sessionID"),
-            username: getCookie("email")
-          })
-        }
-      )
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
         .then(res => res.json())
         .then(data => {
           console.log(data);
@@ -360,6 +357,8 @@ export default () => {
   maxDate.setHours(0, 0, 0, 0);
   maxAutofill.setDate(maxDate.getDate() + 6);
   maxAutofill.setHours(0, 0, 0, 0);
+  console.log(recents);
+  console.log(requireds);
   useEffect(() => {
     setTimetable(clientTimetable);
     console.log(clientTimetable);
