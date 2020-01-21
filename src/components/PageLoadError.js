@@ -6,9 +6,6 @@ import Typography from "@material-ui/core/Typography";
 import { withRouter } from "react-router-dom";
 
 const styles = theme => ({
-    error: {
-        backgroundColor: theme.palette.background.default,
-    },
 });
 
 class Error extends React.Component {
@@ -18,20 +15,17 @@ class Error extends React.Component {
             hasError: false,
         };
     }
-    static getDerivedStateFromError(error) {
-        // Update state so the next render will show the fallback UI.
-        return {
-            hasError: true,
-        };
-    }
+    static getDerivedStateFromError = () => ({
+        hasError: true,
+    })
     componentDidCatch(error, info) {
         console.error(error + info)
     }
     componentDidMount() {
-        this.props.history.listen((location) => {
+        this.props.history.listen(() => {
             this.setState({
-                hasError: false
-            })
+                hasError: false,
+            });
         });
     }
     render() {
@@ -39,6 +33,7 @@ class Error extends React.Component {
         if (this.state.hasError) {
             return (
                 <Paper className={classes.error}>
+                    <img src="/images/error.jpeg" alt="Error" style={{width: "100%", maxWidth: 512, margin: "0 auto"}} />
                     <Typography variant="h4" component="h4">
                         Oh dear! Sorry, something went wrong loading this page.
                     </Typography>

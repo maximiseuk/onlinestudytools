@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
-import theme from "./theme";
+import lightTheme from "./theme";
 import pageTitle from "./pageTitle";
 import error from "./error";
+import subjects from "./subjects";
 
 export default combineReducers({
-    theme, pageTitle, error,
+    lightTheme, pageTitle, error, subjects
 });

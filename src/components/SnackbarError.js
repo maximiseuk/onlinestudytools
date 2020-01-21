@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.error.main,
         color: "white",
         borderRadius: 8,
-    }
+    },
 }));
 
 export default () => {
@@ -35,7 +35,7 @@ export default () => {
             style={{
                 display: "block",
             }}
-            autoHideDuration={3000}
+            autoHideDuration={6000}
             className={classes.root}
             onClose={() => setState({error: ""})}
         >

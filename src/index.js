@@ -8,16 +8,15 @@ import { createStore } from "redux";
 import rootReducer from "./reducers";
 import { BrowserRouter as Router } from "react-router-dom";
 
-const
-    store = createStore(rootReducer),
-    supportsHistory = "pushState" in window.history;
+const store = createStore(rootReducer),
+  supportsHistory = "pushState" in window.history;
 
 render(
-    <Provider store={store}>
-        <Router forceRefresh={!supportsHistory}>
-            <App />
-        </Router>
-    </Provider>,
-    document.getElementById("root")
+  <Provider store={store}>
+    <Router forceRefresh={!supportsHistory}>
+      <App />
+    </Router>
+  </Provider>,
+  document.getElementById("root")
 );
 serviceWorker.unregister();
