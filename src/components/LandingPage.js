@@ -23,13 +23,13 @@ const useStyles = makeStyles(theme => ({
         opacity: 0,
         animation: "faderight 1s ease-in-out forwards",
         fontSize: "3.7vw",
-        lineHeight: "3.9vw",
+        lineHeight: "4.2vw",
         width: "42vw"
     },
     fade: {
         fontWeight: 500,
         fontSize: "3.7vw",
-        lineHeight: "3.9vw",
+        lineHeight: "4.2vw",
         width: "42vw",
         opacity: 0,
         animation: "fadeout 0.3s ease-in-out forwards"
