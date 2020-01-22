@@ -97,22 +97,9 @@ const useStyles = makeStyles(theme => ({
         right: "18vw",
         bottom: "3.5vw",
         transform: "rotate(-0.03turn)",
-        transition: "1.5s",
         borderRadius: "25px",
         boxShadow: "0 4px 8px 2px rgba(0, 0, 0, 0.4)",
         filter: "hue-rotate(10deg) contrast(110%)"
-    },
-    tipfloat: {
-        position: "absolute",
-        width: "25vw",
-        right: "18vw",
-        bottom: "3.5vw",
-        transform: "rotate(-0.03turn)",
-        transition: "1.5s",
-        borderRadius: "25px",
-        boxShadow: "0 4px 8px 2px rgba(0, 0, 0, 0.4)",
-        filter: "hue-rotate(10deg) contrast(110%)",
-        transform: "rotateX(25deg)"
     }
 }));
 
