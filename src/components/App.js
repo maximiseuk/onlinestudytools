@@ -36,9 +36,9 @@ const useStyles = makeStyles(theme => ({
       width: "100vw"
     },
     loadingContainer: {
-      height: "100%",
+      height: "10vh",
       width: "100%",
-      paddingTop: "40%",
+      marginTop: "45vh",
       textAlign: "center"
     },
     mainContainer: {
