@@ -283,7 +283,6 @@ export default () => {
   useEffect(() => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
-
   useEffect(() => {
     if (getCookie("email") !== "") {
       fetch("https://maximise.herokuapp.com/users/get_data/subjects", {

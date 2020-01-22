@@ -836,7 +836,6 @@ export default () => {
       {hours.map(hour => {
         let root = false;
         let repeatType = "";
-
         if (
           timetable[formatDate] &&
           timetable[formatDate][hour] &&
