@@ -361,9 +361,8 @@ export default () => {
   console.log(recents);
   console.log(requireds);
   useEffect(() => {
-    setTimetable(clientTimetable);
+    console.log("update");
     console.log(clientTimetable);
-
     fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
       method: "POST",
       headers: {
@@ -377,8 +376,6 @@ export default () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-
         if (JSON.stringify(data.errors) !== "{}") {
           dispatch({
             type: "NEW_ERROR",
@@ -408,14 +405,21 @@ export default () => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        setTimetable(data.response ? data.response : {});
-        setClientTimetable(data.response ? data.response : {});
+        if (JSON.stringify(data.errors) !== "{}") {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error loading your timetable"
+          });
+        } else {
+          console.log("po");
+          setTimetable(data.response ? data.response : {});
+          setClientTimetable(data.response ? data.response : {});
+        }
       })
       .catch(() => {
         dispatch({
           type: "NEW_ERROR",
-          payload: "There was an error loading your goals"
+          payload: "There was an error loading your timetable"
         });
       });
   }, []);

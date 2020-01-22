@@ -1,1 +1,2 @@
-export default (state = [], action) => action.type === "CHANGE_SUBJECTS" ? action.payload : state;
+export default (state = null, action) =>
+  action.type === "CHANGE_SUBJECTS" ? action.payload : state;

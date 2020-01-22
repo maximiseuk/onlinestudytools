@@ -65,6 +65,7 @@ export default () => {
     history = useHistory(),
     isLight = useSelector(state => state.lightTheme),
     userSubjects = useSelector(state => state.subjects),
+    [stateSubjects, setStateSubjects] = useState(null),
     [lightTheme, setLightTheme] = useState(isLight),
     initialState = {
       oldPassword: "",
@@ -215,6 +216,7 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data.errors);
           if (JSON.stringify(data.errors) !== "{}") {
             console.log(data);
             dispatch({
@@ -251,6 +253,9 @@ export default () => {
       lightTheme ? "light" : ""
     }; expires ${d.getTime() + 4e12}; path=/`;
   }, [lightTheme]);
+  useEffect(() => {
+    setStateSubjects(userSubjects);
+  }, [userSubjects]);
   return (
     <Paper className="fade padding">
       <Card className={classes.card}>
@@ -302,42 +307,44 @@ export default () => {
           </form>
         </CardContent>
       </Card>
-      <Card className={classes.card}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom>
-            Edit your <span className="highlight">subjects</span>
-          </Typography>
-          <Autocomplete
-            multiple
-            freeSolo
-            filterSelectedOptions
-            onChange={(e, val) => updateSubjects(val)}
-            options={subjects}
-            defaultValue={userSubjects}
-            renderTags={(value, getTagProps) =>
-              value.map((option, index) => (
-                <Chip
-                  key={index}
-                  variant="outlined"
-                  label={option}
-                  {...getTagProps({ index })}
-                  style={{ margin: 4 }}
+      {userSubjects && (
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography variant="h4" gutterBottom>
+              Edit your <span className="highlight">subjects</span>
+            </Typography>
+            <Autocomplete
+              multiple
+              freeSolo
+              filterSelectedOptions
+              onChange={(e, val) => updateSubjects(val)}
+              options={subjects}
+              defaultValue={userSubjects}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    key={index}
+                    variant="outlined"
+                    label={option}
+                    {...getTagProps({ index })}
+                    style={{ margin: 4 }}
+                  />
+                ))
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="Enter your subjects"
+                  margin="normal"
+                  variant="filled"
+                  fullWidth
                 />
-              ))
-            }
-            renderInput={params => (
-              <TextField
-                {...params}
-                label="Enter your subjects"
-                margin="normal"
-                variant="filled"
-                fullWidth
-              />
-            )}
-          />
-          <Button variant="contained">Update</Button>
-        </CardContent>
-      </Card>
+              )}
+            />
+            <Button variant="contained">Update</Button>
+          </CardContent>
+        </Card>
+      )}
       <Divider style={{ margin: "16px 0" }} />
       <Button variant="contained" onClick={logout}>
         Logout
