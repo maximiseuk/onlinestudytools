@@ -31,7 +31,6 @@ const useStyles = makeStyles(theme => ({
   loadingContainer: {
     textAlign: "center",
     margin: "0 auto",
-    paddingTop: "40%"
   },
   newGoal: {
     marginTop: 16
@@ -188,17 +187,33 @@ export default () => {
       });
     };
   useEffect(() => {
-    fetch("/goals.json" /*"/get_data/goals"*/)
+    fetch("https://maximise.herokuapp.com/users/get_data/goals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
       .then(res => res.json())
       .then(data => {
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error loading your goals"
+            });
+          } else {
         setGoals({
-          Current: data.filter(goal => !goal.completed),
-          Completed: data.filter(goal => goal.completed)
+          Current: data.response.filter(goal => !goal.completed),
+          Completed: data.response.filter(goal => goal.completed)
         });
         setClientGoals({
-          Current: data.filter(goal => !goal.completed),
-          Completed: data.filter(goal => goal.completed)
+          Current: data.response.filter(goal => !goal.completed),
+          Completed: data.response.filter(goal => goal.completed)
         });
+    }
       })
       .catch(() => {
         dispatch({
@@ -209,12 +224,11 @@ export default () => {
   }, []);
   useEffect(() => {
     setGoals(clientGoals);
-    fetch("/users/update_data/goals", {
+    fetch("https://maximise.herokuapp.com/users/update_data/goals", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      credentials: "include",
       body: JSON.stringify({
         newData: clientGoals,
         sessionID: getCookie("sessionID"),
@@ -223,7 +237,7 @@ export default () => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data === "failed") {
+        if (JSON.stringify(data.errors) !== "{}") {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your goals"

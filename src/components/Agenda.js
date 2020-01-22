@@ -31,6 +31,7 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import { useDispatch } from "react-redux";
 import { KeyboardDatePicker, KeyboardTimePicker } from "@material-ui/pickers";
 import Portal from "@material-ui/core/Portal";
+import getCookie from "../api/cookies";
 
 const useStyles = makeStyles(theme => ({
   loadingContainer: {
@@ -86,7 +87,8 @@ export default () => {
     [dialogs, setDialogs] = useState({
       delete: false,
       edit: false,
-      newTodo: false
+      newTodo: false,
+      poo: false
     }),
     isSmall = useMediaQuery("(min-width: 600px)"),
     Container = isSmall ? Grid : SwipeableViews,
@@ -127,6 +129,12 @@ export default () => {
       });
     },
     handleChange = name => e => {
+      if (e.target.value.toLowerCase() === "poo") {
+        setDialogs({
+          ...dialogs,
+          poo: true
+        });
+      }
       setValues({
         ...values,
         [name]: e.target.value
@@ -204,11 +212,22 @@ export default () => {
       });
     };
   useEffect(() => {
-    fetch("/agenda.json" /*"/get_data/agenda"*/)
+    fetch("https://maximise.herokuapp.com/users/get_data/agenda", {
+        method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              sessionID: getCookie("sessionID"),
+              username: getCookie("email")
+            })
+    })
       .then(res => res.json())
       .then(data => {
-        setAgenda(data);
-        setClientAgenda(data);
+          console.log(data);
+          
+        setAgenda(data.response);
+        setClientAgenda(data.response);
       })
       .catch(() => {
         dispatch({
@@ -219,12 +238,11 @@ export default () => {
   }, []);
   useEffect(() => {
     setAgenda(clientAgenda);
-    /*fetch("/users/update_data/agenda", {
+    fetch("https://maximise.herokuapp.com/users/update_data/agenda", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            credentials: "include",
             body: JSON.stringify({
               newData: clientAgenda,
               sessionID: getCookie("sessionID"),
@@ -233,7 +251,7 @@ export default () => {
         })
         .then(res => res.json())
         .then(data => {
-            if (data === "failed") {
+            if (JSON.stringify(data.errors) !== "{}") {
                 dispatch({
                     type: "NEW_ERROR",
                     payload: "There was an error updating your agenda",
@@ -247,7 +265,7 @@ export default () => {
                 type: "NEW_ERROR",
                 payload: "There was an error updating your agenda",
             });
-        });*/
+        });
   }, [clientAgenda]);
   return agenda ? (
     <>
@@ -393,6 +411,27 @@ export default () => {
             </Button>
             <Button onClick={deleteTodo} color="primary" autoFocus>
               Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={dialogs.poo}
+          onClose={close("poo")}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">POO</DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="alert-dialog-description"
+              style={{ fontSize: 120 }}
+            >
+              <span role="img" aria-label="poo">💩</span>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={close("poo")} color="primary">
+              Close
             </Button>
           </DialogActions>
         </Dialog>

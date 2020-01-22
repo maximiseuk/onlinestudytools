@@ -13,7 +13,7 @@ import {
   MuiThemeProvider,
   makeStyles
 } from "@material-ui/core/styles";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
@@ -30,7 +30,6 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-
 const useStyles = makeStyles(theme => ({
     root: {
       height: "100vh",
@@ -133,6 +132,9 @@ export default () => {
         MuiButton: {
           color: "primary",
           variant: "contained"
+        },
+        MuiSwitch: {
+          color: "primary"
         }
       },
       overrides: {
@@ -234,7 +236,9 @@ export default () => {
             padding: 0,
             paddingBottom: 24,
             border: `2px solid ${palette.primary.main}`,
-            maxHeight: 256
+            height: "auto",
+            maxHeight: 256,
+            overflow: "auto"
           }
         }
       }
@@ -242,6 +246,7 @@ export default () => {
     classes = useStyles(),
     muiTheme = createMuiTheme(theme),
     [mouse, setMouse] = useState([null, null]),
+    dispatch = useDispatch(),
     closeMenu = () => {
       setMouse([null, null]);
     },
@@ -257,15 +262,15 @@ export default () => {
     },
     back = () => {
       closeMenu();
-      window.history.back();
+      history.goBack();
     },
     forward = () => {
       closeMenu();
-      window.history.forward();
+      history.goForward();
     },
     reload = () => {
       closeMenu();
-      window.history.reload();
+      window.location.reload();
     },
     copy = () => {
       closeMenu();
@@ -278,6 +283,42 @@ export default () => {
   useEffect(() => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
+  useEffect(() => {
+    if (getCookie("email") !== "") {
+      fetch("https://maximise.herokuapp.com/users/get_data/subjects", {
+        method: "POST",
+        body: JSON.stringify({
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+
+          if (JSON.stringify(data.errors) !== "{}") {
+            console.error(data.errors);
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error loading your subjects"
+            });
+          } else {
+            dispatch({
+              type: "CHANGE_SUBJECTS",
+              payload: data.response
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error loading your subjects"
+          });
+        });
+    }
+  }, []);
   return (
     <MuiThemeProvider theme={muiTheme}>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -388,7 +429,7 @@ export default () => {
             • Maximise
           </title>
         </Helmet>
-        <div className={classes.root}>
+        <div className={classes.root} onContextMenu={contextMenu}>
           <Menu
             keepMounted
             open={mouse[0] !== null}

@@ -54,8 +54,7 @@ export default () => {
       lastName: "",
       code: "",
       password: "",
-      repeatPassword: "",
-      agreed: false
+      repeatPassword: ""
     },
     subjects = [
       "Maths",
@@ -104,33 +103,41 @@ export default () => {
     history = useHistory(),
     login = e => {
       e.preventDefault();
-      /*fetch("/users/create", {
+      fetch("https://maximise.herokuapp.com/users/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        credentials: "include",
         body: stringify({
           email: values.email,
           username: values.username,
           firstName: values.firstName,
           lastName: values.lastName,
-          password: values.password
+          password: values.password,
+          code: values.code
         })
       })
         .then(res => res.json())
         .then(data => {
-          if (data.errors !== undefined) {
-            setHelpers(data.errors);
-          } else {*/
+          console.log(data);
+          if (JSON.stringify(data.errors) !== "{}") {
+            let newErrors = helpers;
+            for (let key in data.errors) {
+              newErrors[key] = data.errors[key];
+            }
+            console.log(newErrors);
+            
+            setHelpers({...helpers, ...newErrors});
+          } else {
             setWelcomeOpen(true);
             const d = new Date();
             localStorage.setItem("email", values.email);
             localStorage.setItem("name", values.firstName);
-            document.cookie = `email=${values.email}; expires ${d.getTime() +
-              4e12}; path=/`;
-            /*document.cookie = `sessionID=${
-              data.sessionID
+            document.cookie = `email=${
+              data.response.username
+            }; expires ${d.getTime() + 4e12}; path=/`;
+            document.cookie = `sessionID=${
+              data.response.sessionID
             }; expires ${d.getTime() + 4e12}; path=/`;
           }
         })
@@ -139,35 +146,37 @@ export default () => {
             type: "NEW_ERROR",
             payload: "There was an error signing you up"
           });
-        });*/
+        });
     },
     finish = () => {
-      /*fetch("/users/update_data/subjects", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: stringify({
-                        newData: {
-                          subjects: userSubjects,
-                          grades: scores,
-                        },
-                        sessionID: getCookie("sessionID"),
-                      username: getCookie("email")
-                    }),
-                })
-                .then(res => res.json())
-                .then(data => {
-                    */
-      history.replace("/home");
-      /*})
-                .catch(() => {
-                    dispatch({
-                        type: "NEW_ERROR",
-                        payload: "There was an error uploading your subjects",
-                    });
-                })*/
+      fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: stringify({
+          newData: {
+            subjects: userSubjects,
+            grades: scores
+          },
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          dispatch({
+            type: "CHANGE_SUBJECTS",
+            payload: userSubjects
+          });
+          history.replace("/home");
+        })
+        .catch(() => {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error uploading your subjects"
+          });
+        });
     },
     clear = () => {
       setValues(initialState);
@@ -390,7 +399,7 @@ export default () => {
               onChange={handleChange(field)}
               margin="normal"
               variant="filled"
-              helperText={helpers[field] + " "}
+              helperText={helpers[field] ? helpers[field] + " " : ""}
               error={helpers[field] !== ""}
               key={field}
               type={field.includes("assword") ? "password" : "text"}
@@ -404,6 +413,7 @@ export default () => {
               checked={agreed}
               onChange={e => setAgreed(e.target.checked)}
               value="agreed"
+              color="primary"
             />
           }
           label={
@@ -429,10 +439,15 @@ export default () => {
             type="submit"
             disabled={
               stringify(initialState) !== stringify(helpers) ||
-              Object.keys(values).filter(x => values[x] === "").length > 0 ||
+              Object.values(values).filter(
+                x => values[x] === ""
+              ).length > 0 ||
               !agreed
             }
           >
+              {console.log(Object.values(values).filter(
+                x => x === ""
+              ))}
             Sign up
           </Button>
           <Button
