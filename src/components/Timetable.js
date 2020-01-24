@@ -443,7 +443,7 @@ export default () => {
           alignItems: "center"
         }}
       >
-        <Typography variant="h4">{formatDate.replace(/\|/, "/")}</Typography>
+        <Typography variant="h4">{formatDate.replace(/\|/g, "/")}</Typography>
         <Button onClick={() => setOpen(true)} style={{ marginLeft: 8 }}>
           Change
         </Button>
