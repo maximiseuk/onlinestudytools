@@ -75,9 +75,9 @@ export default () => {
     [open, setOpen] = useState(false),
     formatDate =
       selectedDate.getDate() +
-      "/" +
+      "|" +
       (selectedDate.getMonth() + 1) +
-      "/" +
+      "|" +
       selectedDate.getFullYear(),
     day = String(selectedDate.getDay()),
     isSmall = useMediaQuery("(max-width: 800px)"),
@@ -163,7 +163,6 @@ export default () => {
         setAutofillInfo(true);
         setSelectedDate(new Date());
       }
-      //alert(autofill)
       setAutofill(!autofill);
     },
     closeAutofill = () => {
@@ -358,39 +357,37 @@ export default () => {
   maxDate.setHours(0, 0, 0, 0);
   maxAutofill.setDate(maxDate.getDate() + 6);
   maxAutofill.setHours(0, 0, 0, 0);
-  console.log(recents);
-  console.log(requireds);
   useEffect(() => {
-    console.log("update");
-    console.log(clientTimetable);
-    fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        newData: clientTimetable,
-        sessionID: getCookie("sessionID"),
-        username: getCookie("email")
+    if (clientTimetable) {
+      fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: clientTimetable,
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
       })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (JSON.stringify(data.errors) !== "{}") {
+        .then(res => res.json())
+        .then(data => {
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your timetable"
+            });
+          } else {
+            setTimetable(clientTimetable);
+          }
+        })
+        .catch(() => {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your agenda"
           });
-        } else {
-          setTimetable(clientTimetable);
-        }
-      })
-      .catch(() => {
-        dispatch({
-          type: "NEW_ERROR",
-          payload: "There was an error updating your agenda"
         });
-      });
+    }
   }, [clientTimetable]);
   useEffect(() => {
     fetch("https://maximise.herokuapp.com/users/get_data/timetable", {
@@ -405,18 +402,20 @@ export default () => {
     })
       .then(res => res.json())
       .then(data => {
+        console.log(data);
+        console.log("data");
         if (JSON.stringify(data.errors) !== "{}") {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error loading your timetable"
           });
         } else {
-          console.log("po");
           setTimetable(data.response ? data.response : {});
           setClientTimetable(data.response ? data.response : {});
         }
       })
-      .catch(() => {
+      .catch(err => {
+        console.error(err);
         dispatch({
           type: "NEW_ERROR",
           payload: "There was an error loading your timetable"
@@ -444,7 +443,7 @@ export default () => {
           alignItems: "center"
         }}
       >
-        <Typography variant="h4">{formatDate}</Typography>
+        <Typography variant="h4">{formatDate.replace(/\|/, "/")}</Typography>
         <Button onClick={() => setOpen(true)} style={{ marginLeft: 8 }}>
           Change
         </Button>
