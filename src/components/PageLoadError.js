@@ -6,7 +6,6 @@ import Typography from "@material-ui/core/Typography";
 import { withRouter } from "react-router-dom";
 
 const styles = theme => ({
-   
 });
 
 class Error extends React.Component {
