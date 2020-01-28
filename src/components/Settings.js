@@ -65,7 +65,6 @@ export default () => {
     history = useHistory(),
     isLight = useSelector(state => state.lightTheme),
     userSubjects = useSelector(state => state.subjects),
-    [stateSubjects, setStateSubjects] = useState(null),
     [lightTheme, setLightTheme] = useState(isLight),
     initialState = {
       oldPassword: "",
@@ -206,6 +205,7 @@ export default () => {
       });
     },
     updateSubjects = val => {
+        console.log(val)
       fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
         method: "POST",
         body: JSON.stringify({
@@ -253,9 +253,6 @@ export default () => {
       lightTheme ? "light" : ""
     }; expires ${d.getTime() + 4e12}; path=/`;
   }, [lightTheme]);
-  useEffect(() => {
-    setStateSubjects(userSubjects);
-  }, [userSubjects]);
   return (
     <Paper className="fade padding">
       <Card className={classes.card}>

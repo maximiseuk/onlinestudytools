@@ -55,8 +55,8 @@ const useStyles = makeStyles(theme => ({
 export default () => {
   const dispatch = useDispatch(),
     classes = useStyles(),
-    [goals, setGoals] = useState(false),
-    [clientGoals, setClientGoals] = useState(false),
+    [goals, setGoals] = useState(null),
+    [clientGoals, setClientGoals] = useState(null),
     [activeStep, setActiveStep] = useState({
       Current: 0,
       Completed: 0
@@ -147,8 +147,8 @@ export default () => {
       const goal = goals.Completed[i];
       goal.completed = false;
       setClientGoals({
+        Completed: goals.Completed.filter((x, j) => j !== i),
         Current: [goal, ...goals.Current],
-        Completed: goals.Completed.filter((x, j) => j !== i)
       });
     },
     changeDesc = e => {
@@ -169,6 +169,7 @@ export default () => {
     createGoal = e => {
       e.preventDefault();
       setClientGoals({
+        Completed: goals.Completed,
         Current: [
           {
             subject: values.newTitle,
@@ -177,7 +178,6 @@ export default () => {
           },
           ...goals.Current
         ],
-        Completed: goals.Completed
       });
       close("newGoal")();
       setValues({
@@ -199,19 +199,20 @@ export default () => {
       })
       .then(res => res.json())
       .then(data => {
+          console.log(data)
           if (JSON.stringify(data.errors) !== "{}") {
             dispatch({
               type: "NEW_ERROR",
               payload: "There was an error loading your goals"
             });
           } else {
-        setGoals({
-          Current: data.response.filter(goal => !goal.completed),
-          Completed: data.response.filter(goal => goal.completed)
+        setGoals(data.response ? data.response : {
+            Completed: [],
+            Current: []
         });
-        setClientGoals({
-          Current: data.response.filter(goal => !goal.completed),
-          Completed: data.response.filter(goal => goal.completed)
+        setClientGoals(data.response ? data.response : {
+            Completed: [],
+            Current: []
         });
     }
       })
@@ -223,7 +224,7 @@ export default () => {
       });
   }, []);
   useEffect(() => {
-    setGoals(clientGoals);
+      if (clientGoals && JSON.stringify(clientGoals) !== JSON.stringify(goals)) {
     fetch("https://maximise.herokuapp.com/users/update_data/goals", {
       method: "POST",
       headers: {
@@ -252,11 +253,12 @@ export default () => {
           payload: "There was an error updating your goals"
         });
       });
+    }
   }, [clientGoals]);
 
   return goals ? (
     <Paper className="fade padding">
-      {Object.keys(goals).map(type => (
+      {Object.keys(goals).sort().reverse().map(type => (
         <Fragment key={type}>
           <Typography variant="h4" gutterBottom>
             <span className="highlight">{type + " "}</span>

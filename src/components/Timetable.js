@@ -160,10 +160,10 @@ export default () => {
       if (autofill) {
         setAutofillOpen(true);
       } else {
+        setAutofill(true);
         setAutofillInfo(true);
         setSelectedDate(new Date());
       }
-      setAutofill(!autofill);
     },
     closeAutofill = () => {
       setAutofillOpen(false);
@@ -232,8 +232,6 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
-
           if (JSON.stringify(data.errors) !== "{}") {
             dispatch({
               type: "NEW_ERROR",
@@ -241,6 +239,7 @@ export default () => {
             });
           } else {
             setAutofillOpen(false);
+            setAutofill(false);
           }
         })
         .catch(() => {
@@ -913,7 +912,7 @@ export default () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {autofill ? (
                     <Typography className={classes.autofillText}>
-                      Click to select
+                      {(root && root[hour]) ? root[hour].title : "Click to select"}
                     </Typography>
                   ) : (
                     <>
