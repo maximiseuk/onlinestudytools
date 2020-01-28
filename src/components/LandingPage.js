@@ -93,13 +93,106 @@ const useStyles = makeStyles(theme => ({
     },
     tipcard: {
         position: "absolute",
-        width: "25vw",
+        width: "27vw",
         right: "18vw",
         bottom: "3.5vw",
         transform: "rotate(-0.03turn)",
-        borderRadius: "25px",
+        borderRadius: "30px",
         boxShadow: "0 4px 8px 2px rgba(0, 0, 0, 0.4)",
         filter: "hue-rotate(10deg) contrast(110%)"
+    },
+    rest: {
+        position: "absolute",
+        top: "100vh"
+    },
+    pageOne: {
+        marginLeft: "-2vw",
+        display: "flex",
+        flexDirection: "column",
+        width: "100vw",
+        height: "110vh",
+        backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/booksapple.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "0% 40%",
+        boxShadow: "0 -2px 10px #000000"
+    },
+    pageOneText: {
+        margin: "10vw",
+        background: "rgba(0, 0, 0, 0.3)",
+        borderRadius: "25px",
+        width: "40vw",
+        padding: "2vw"
+    },
+    slogan: {
+        fontSize: "3.7vw",
+        lineHeight: "3.7vw",
+        fontWeight: 500
+    },
+    description: {
+        marginTop: "2vw"
+    },
+    pageTwo: {
+        display: "flex",
+        alignItems: "center",
+        width: "100vw",
+        height: "110vh"
+    },
+    pageTwoText: {
+        width: "40vw",
+        textAlign: "right"
+    },
+    imac: {
+        width: "50vw"
+    },
+    pageThree: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        height: "100vh",
+        justifyContent: "center",
+        padding: "2vw",
+        textAlign: "center"
+    },
+    personRow: {
+        display: "flex",
+        alignItems: "center",
+        padding: "1vw"
+    },
+    person: {
+        width: "20vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
+    },
+    personPic: {
+        width: "10vw",
+        height: "10vw",
+        borderRadius: "10vw",
+        border: "5px solid #3e7b63"
+    },
+    personText: {
+        textAlign: "center",
+        fontWeight: 300,
+        marginTop: "1vw"
+    },
+    pageFour: {
+        marginLeft: "-2vw",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+        width: "100vw",
+        height: "110vh",
+        backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/server.png")',
+        backgroundSize: "cover",
+        boxShadow: "0 -2px 10px #000000"
+    },
+    pageFourText: {
+        textAlign: "right",
+        margin: "10vw",
+        background: "rgba(0, 0, 0, 0.3)",
+        borderRadius: "25px",
+        width: "40vw",
+        padding: "2vw"
     }
 }));
 
@@ -114,7 +207,6 @@ export default () => {
     ];
     const [count, setCount] = useState(0);
     const [visible, setVisible] = useState(true);
-    const [rot, setRot] = useState(0);
 
     useEffect(() => {
         let interval = null;
@@ -126,13 +218,6 @@ export default () => {
             }, 1000);
         }, 11000);
     }, [count]);
-
-    useEffect(() => {
-        let interval = null;
-        interval = setTimeout(() => {
-            setRot(rot => rot + 0.02);
-        }, 100);
-    }, [rot]);
 
     return (
         <div>
@@ -148,7 +233,7 @@ export default () => {
                 <img src="/images/pen.png" alt="" className={classes.pen} />
                 <img src="/images/linesnew.png" alt="" className={classes.lines} />
                 <img src="/images/logo.png" alt="" className={classes.logo} />
-                <img src="/images/tipcard.png" alt="" className={classes.tipcard} style={{ transform: "rotate(" + 15 * Math.sin(rot) + "deg)" }} />
+                <img src="/images/tipcard.png" alt="" className={classes.tipcard} />
                 <div className={classes.textContainer}>
                     <div>
                         <Typography
@@ -160,9 +245,130 @@ export default () => {
                         <Button component="a" href="https://jamarketplace.com/young-enterprise-uk" variant="contained" className={classes.btn}>
                             Buy now
                         </Button>
-                        <Button component={Link} to="/" variant="outlined" className={classes.btn}>
+                        <Button component={Link} to="/login" variant="outlined" className={classes.btn}>
                             Tools (Coming Soon)
                         </Button>
+                    </div>
+                </div>
+
+                <div className={classes.rest}>
+                    <div className={classes.pageOne}>
+                        <div className={classes.pageOneText}>
+                            <Typography className={classes.slogan}>
+                                ELIMINATE STRESS, <span className="highlight">ACCELERATE SUCCESS</span>
+                            </Typography>
+                            <Typography className={classes.description}>
+                                According to the{" "}
+                                <a href="https://academic.oup.com/chemse/article/30/suppl_1/i248/270387" className="highlight">
+                                    oxford journal
+                                </a>
+                                , fragrance can have a positive effect on your mood and productivity. The PASSbox contains aromatic pouches of
+                                lavender, rosemary and peppermint to create a calming work environment.
+                            </Typography>
+                        </div>
+                    </div>
+                    <div className={classes.pageTwo}>
+                        <img src="/images/imactimetable.png" alt="" className={classes.imac} />,
+                        <div className={classes.pageTwoText}>
+                            <Typography className={classes.slogan}>
+                                <span className="highlight">Structure</span> your path to success with <span className="highlight">timetable</span>
+                            </Typography>
+                            <Typography className={classes.description}>
+                                Take it with you on your phone so that you always know your schedule. With room built in for revision as well as
+                                breaks, you can achieve your productivity goals with time left over to relax.
+                            </Typography>
+                            <Button component="a" href="https://jamarketplace.com/young-enterprise-uk" variant="contained" className={classes.btn}>
+                                Buy now
+                            </Button>
+                        </div>
+                    </div>
+                    <div className={classes.pageFour}>
+                        <div className={classes.pageFourText}>
+                            <Typography className={classes.slogan}>
+                                OPTIMISE REVISION WITH <span className="highlight">AI TECHNOLOGY</span>
+                            </Typography>
+                            <Typography className={classes.description}>
+                                Using advanced machine learning models dedicated to improving grades, the timetable adapts to account for your strengths and weaknesses in different subjects, so you're always making the most of your time.
+                            </Typography>
+                        </div>
+                    </div>
+                    <div className={classes.pageThree}>
+                        <Typography className={classes.slogan}>Meet the team</Typography>
+                        <div className={classes.personRow}>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Oscar and Shannon
+                                    <br></br>
+                                    Managing Directors
+                                </Typography>
+                            </div>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Hardik and Rosanna
+                                    <br></br>
+                                    Marketing Directors
+                                </Typography>
+                            </div>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Jacob and Joseph
+                                    <br></br>
+                                    Operations Directors
+                                </Typography>
+                            </div>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Tom and Dom
+                                    <br></br>
+                                    Finance Directors
+                                </Typography>
+                            </div>
+                        </div>
+                        <div className={classes.personRow}>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Pratyaksh and Isaac
+                                    <br></br>
+                                    Digital and Technology Directors
+                                </Typography>
+                            </div>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Raymond
+                                    <br></br>
+                                    Sales Director
+                                </Typography>
+                            </div>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Ryan and Toby
+                                    <br></br>
+                                    Social Responsibility and HR
+                                </Typography>
+                            </div>
+                            <div className={classes.person}>
+                                <img src="/images/personpic.jpg" alt="" className={classes.personPic} />
+                                <Typography className={classes.personText}>
+                                    Libi
+                                    <br></br>
+                                    Company Secretary
+                                </Typography>
+                            </div>
+                        </div>
+                        <Typography>
+                            We are happy to help you with any problems or questions you may have - just email us at <a href="mailto:contact.maximise@gmail.com" className="highlight">contact.maximise@gmail.com</a>
+                        </Typography>
+                        <Typography style={{color: "#aaaaaa"}}>
+                            Young Enterprise in England and Wales (including the Channel Islands)
+                            A Company Limited by Guarantee No. 712260 Charity No. 313697 Registered office: Young Enterprise, Yeoman House, Sekforde Street, London EC1R 0HF
+                        </Typography>
                     </div>
                 </div>
             </div>
