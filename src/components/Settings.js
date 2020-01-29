@@ -205,13 +205,13 @@ export default () => {
       });
     },
     updateSubjects = val => {
-        console.log(val)
+      console.log(val);
       fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
         method: "POST",
         body: JSON.stringify({
           sessionID: getCookie("sessionID"),
           username: getCookie("email"),
-          newData: userSubjects
+          newData: val
         })
       })
         .then(res => res.json())

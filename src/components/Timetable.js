@@ -175,7 +175,7 @@ export default () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          newData: examGrades,
+          newData: { examGrades },
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
         })
@@ -789,7 +789,7 @@ export default () => {
               Cancel
             </Button>
             <Button onClick={submitExamGrades} color="secondary" autoFocus>
-              Go
+              Submit
             </Button>
           </DialogActions>
         </Dialog>
@@ -912,7 +912,9 @@ export default () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {autofill ? (
                     <Typography className={classes.autofillText}>
-                      {(root && root[hour]) ? root[hour].title : "Click to select"}
+                      {root && root[hour]
+                        ? root[hour].title
+                        : "Click to select"}
                     </Typography>
                   ) : (
                     <>
