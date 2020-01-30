@@ -250,7 +250,6 @@ export default () => {
     )
       .then(res => res.json())
       .then(data => {
-          console.log(data)
         setAgenda(data.response.agenda ? data.response.agenda.filter((x, i) => i < 3) : []);
         setGoals((data.response.goals && data.response.goals.Current) ? data.response.goals.Current.filter((x, i) => i < 3) : []);
         if (data.reponse.timetable) {

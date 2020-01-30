@@ -178,6 +178,7 @@ export default () => {
           },
           ...goals.Current
         ],
+        Completed: goals.Completed
       });
       close("newGoal")();
       setValues({
@@ -199,7 +200,6 @@ export default () => {
       })
       .then(res => res.json())
       .then(data => {
-          console.log(data)
           if (JSON.stringify(data.errors) !== "{}") {
             dispatch({
               type: "NEW_ERROR",
@@ -225,6 +225,7 @@ export default () => {
   }, []);
   useEffect(() => {
       if (clientGoals && JSON.stringify(clientGoals) !== JSON.stringify(goals)) {
+    setGoals(clientGoals);
     fetch("https://maximise.herokuapp.com/users/update_data/goals", {
       method: "POST",
       headers: {
