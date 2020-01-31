@@ -227,6 +227,12 @@ export default () => {
             email: "Email address invalid"
           };
         }
+      } else if (field === "username") {
+        if (!/^[a-z0-9]+$/i.test(e.target.value)) {
+          newState = {
+            username: "Username must be alphanumeric"
+          }
+        }
       }
       setValues({
         ...values,

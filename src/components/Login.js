@@ -39,7 +39,9 @@ export default () => {
           .then(data => {
             if (JSON.stringify(data.errors) !== "{}") {
               if (data.errors.username) setEmailHelper(data.errors.username);
+              else setEmailHelper("");
               if (data.errors.password) setPasswordHelper(data.errors.password);
+              else setPasswordHelper("");
             } else {
               const d = new Date();
               localStorage.setItem("email", email);
@@ -67,7 +69,7 @@ export default () => {
       setPasswordHelper(" ");
     };
   useEffect(() => {
-    if (getCookie("email") !== "") {
+    if (getCookie("sessionID") !== "") {
       history.replace("/home");
     }
   }, []);

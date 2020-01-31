@@ -284,8 +284,10 @@ export default () => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
   useEffect(() => {
-    if (getCookie("email") !== "") {
-      fetch("https://maximise.herokuapp.com/users/get_data/subjects", {
+    if (getCookie("sessionID") !== "" && getCookie("email") !== "") {
+      fetch(
+        "https://maximise.herokuapp.com/users/get_data/subjects",
+        {
         method: "POST",
         body: JSON.stringify({
           sessionID: getCookie("sessionID"),
@@ -480,7 +482,7 @@ export default () => {
                 >
                   <Switch location={location}>
                     <Route
-                      component={getCookie("email") !== "" ? Home : LandingPage}
+                      component={getCookie("sessionID") !== "" ? Home : LandingPage}
                       exact
                       path="/(home||)/"
                     />
@@ -491,7 +493,7 @@ export default () => {
                             if (
                               component !== "Login" &&
                               component !== "Signup" &&
-                              email === ""
+                              getCookie("sessionID") === ""
                             ) {
                               return <Redirect to="/login" />;
                             }

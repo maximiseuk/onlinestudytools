@@ -237,7 +237,7 @@ export default () => {
     );
   useEffect(() => {
     fetch(
-      "https://maximise.herokuapp.com/users/get_data/", {
+      "https://maximise.herokuapp.com/users/get_data", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -250,8 +250,9 @@ export default () => {
     )
       .then(res => res.json())
       .then(data => {
-        setAgenda(data.response.agenda.filter((x, i) => i < 3));
-        setGoals(data.response.goals.filter((x, i) => i < 3));
+        setAgenda(data.response.agenda ? data.response.agenda.filter((x, i) => i < 3) : []);
+        setGoals((data.response.goals && data.response.goals.Current) ? data.response.goals.Current.filter((x, i) => i < 3) : []);
+        if (data.reponse.timetable) {
         const { timetable } = data.response;
         delete timetable.weekrepeats;
         delete timetable.dayrepeats;
@@ -268,6 +269,7 @@ export default () => {
           }
         }
         setExams(newExams);
+    }
       })
       .catch(err => {
         console.error(err);

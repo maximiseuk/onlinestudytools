@@ -75,9 +75,9 @@ export default () => {
     [open, setOpen] = useState(false),
     formatDate =
       selectedDate.getDate() +
-      "/" +
+      "|" +
       (selectedDate.getMonth() + 1) +
-      "/" +
+      "|" +
       selectedDate.getFullYear(),
     day = String(selectedDate.getDay()),
     isSmall = useMediaQuery("(max-width: 800px)"),
@@ -160,11 +160,10 @@ export default () => {
       if (autofill) {
         setAutofillOpen(true);
       } else {
+        setAutofill(true);
         setAutofillInfo(true);
         setSelectedDate(new Date());
       }
-      //alert(autofill)
-      setAutofill(!autofill);
     },
     closeAutofill = () => {
       setAutofillOpen(false);
@@ -233,8 +232,6 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
-
           if (JSON.stringify(data.errors) !== "{}") {
             dispatch({
               type: "NEW_ERROR",
@@ -242,6 +239,7 @@ export default () => {
             });
           } else {
             setAutofillOpen(false);
+            setAutofill(false);
           }
         })
         .catch(() => {
@@ -358,42 +356,37 @@ export default () => {
   maxDate.setHours(0, 0, 0, 0);
   maxAutofill.setDate(maxDate.getDate() + 6);
   maxAutofill.setHours(0, 0, 0, 0);
-  console.log(recents);
-  console.log(requireds);
   useEffect(() => {
-    setTimetable(clientTimetable);
-    console.log(clientTimetable);
-
-    fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        newData: clientTimetable,
-        sessionID: getCookie("sessionID"),
-        username: getCookie("email")
+    if (clientTimetable) {
+      fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: clientTimetable,
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
       })
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-
-        if (JSON.stringify(data.errors) !== "{}") {
+        .then(res => res.json())
+        .then(data => {
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your timetable"
+            });
+          } else {
+            setTimetable(clientTimetable);
+          }
+        })
+        .catch(() => {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your agenda"
           });
-        } else {
-          setTimetable(clientTimetable);
-        }
-      })
-      .catch(() => {
-        dispatch({
-          type: "NEW_ERROR",
-          payload: "There was an error updating your agenda"
         });
-      });
+    }
   }, [clientTimetable]);
   useEffect(() => {
     fetch("https://maximise.herokuapp.com/users/get_data/timetable", {
@@ -409,13 +402,22 @@ export default () => {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        setTimetable(data.response ? data.response : {});
-        setClientTimetable(data.response ? data.response : {});
+        console.log("data");
+        if (JSON.stringify(data.errors) !== "{}") {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error loading your timetable"
+          });
+        } else {
+          setTimetable(data.response ? data.response : {});
+          setClientTimetable(data.response ? data.response : {});
+        }
       })
-      .catch(() => {
+      .catch(err => {
+        console.error(err);
         dispatch({
           type: "NEW_ERROR",
-          payload: "There was an error loading your goals"
+          payload: "There was an error loading your timetable"
         });
       });
   }, []);
@@ -440,7 +442,7 @@ export default () => {
           alignItems: "center"
         }}
       >
-        <Typography variant="h4">{formatDate}</Typography>
+        <Typography variant="h4">{formatDate.replace(/\|/g, "/")}</Typography>
         <Button onClick={() => setOpen(true)} style={{ marginLeft: 8 }}>
           Change
         </Button>
@@ -836,6 +838,7 @@ export default () => {
       {hours.map(hour => {
         let root = false;
         let repeatType = "";
+
         if (
           timetable[formatDate] &&
           timetable[formatDate][hour] &&
@@ -909,7 +912,7 @@ export default () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {autofill ? (
                     <Typography className={classes.autofillText}>
-                      Click to select
+                      {(root && root[hour]) ? root[hour].title : "Click to select"}
                     </Typography>
                   ) : (
                     <>
