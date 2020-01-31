@@ -46,5 +46,5 @@ This is a really quick tutorial on how to set up development on the project:
 - Silly comments for obvious things
 - Functions that carry out more than one action
 - Overuse new lines
-- # Put spaces at the end of lines
+- Put spaces at the end of lines
 - When you want to make another change, _you need to ensure that your local project is synced with the online version_. You can do this by writing `git fetch origin`, then `git checkout master` and finally `git merge origin master`. This means that you don"t need to use `git clone` every time you want to make a change. The rest of the steps above remain the same.
