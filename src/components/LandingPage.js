@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
+import Icon from "@material-ui/core/Icon";
 
 const useStyles = makeStyles(theme => ({
   loadingContainer: {
@@ -12,19 +13,33 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     marginTop: "45vh",
     textAlign: "center",
-    animation: "fadeout 0s 1.5s forwards"
+    animation: "fadeout 0s 1.5s forwards",
+    position: "fixed"
   },
   btn: {
     padding: "16px 32px",
     marginRight: "1.12vw",
     marginTop: "2vw",
-    height: "4vw"
+    height: "4vw",
+    [theme.breakpoints.down(1024)]: {
+      padding: "24px 16px"
+    }
   },
   textContainer: {
     display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-end",
     position: "absolute",
-    bottom: "10vh",
-    left: "14vw"
+    height: "30vh",
+
+    [theme.breakpoints.up(1024)]: {
+      bottom: "10vh",
+      left: "14vw"
+    },
+    [theme.breakpoints.down(1024)]: {
+      top: "10vh",
+      left: "7vw"
+    }
   },
   text: {
     fontWeight: 500,
@@ -32,7 +47,12 @@ const useStyles = makeStyles(theme => ({
     animation: "faderight 1s ease-in-out forwards",
     fontSize: "3.7vw",
     lineHeight: "4.2vw",
-    width: "42vw"
+    width: "42vw",
+    [theme.breakpoints.down(1024)]: {
+      fontSize: "3.7vh",
+      lineHeight: "4.2vh",
+      width: "80vw"
+    }
   },
   fade: {
     fontWeight: 500,
@@ -40,66 +60,113 @@ const useStyles = makeStyles(theme => ({
     lineHeight: "4.2vw",
     width: "42vw",
     opacity: 0,
-    animation: "fadeout 0.3s ease-in-out forwards"
+    animation: "fadeout 0.3s ease-in-out forwards",
+    [theme.breakpoints.down(1024)]: {
+      fontSize: "3.7vh",
+      lineHeight: "4.2vh",
+      width: "80vw"
+    }
   },
   flower: {
+    display: "block",
     position: "absolute",
-    top: 0,
+    top: "-8vw",
     left: 0,
-    width: "24.5vw"
+    width: "24.5vw",
+    [theme.breakpoints.down(1024)]: {
+      display: "none"
+    }
   },
   book: {
     position: "absolute",
     bottom: "6vh",
-    left: "-12.5vw",
-    width: "27.6vw"
+    left: "-9vw",
+    width: "23vw",
+    [theme.breakpoints.down(1024)]: {
+      bottom: "-5vh",
+      width: "40vh",
+      left: "-25vh",
+      transform: "rotate(26deg)"
+    }
   },
   keyboard: {
     position: "absolute",
     top: "-28vw",
     right: "10vw",
-    width: "35vw"
+    width: "35vw",
+    [theme.breakpoints.down(1024)]: {
+      display: "none"
+    }
   },
   box: {
     position: "absolute",
     right: "-42.5vw",
-    top: "-28vw",
-    width: "72vw"
+    width: "72vw",
+    clipPath: "view-box",
+    [theme.breakpoints.up(1024)]: {
+      top: "-28vw"
+    },
+    [theme.breakpoints.down(1024)]: {
+      bottom: "-35vh",
+      width: "72vh",
+      right: "-35vh"
+    }
   },
   dots: {
     position: "absolute",
     top: "-0.7vw",
     right: "39.4vw",
-    width: "14vw"
+    width: "14vw",
+    [theme.breakpoints.down(1024)]: {
+      display: "none"
+    }
   },
   pen: {
     position: "absolute",
-    top: "22vw",
-    right: "8vw",
-    width: "21vw",
-    transform: "rotate(0.03turn)"
+    [theme.breakpoints.up(1024)]: {
+      top: "15vw",
+      width: "20vw",
+      right: "8vw",
+      transform: "rotate(-0.26turn)"
+    },
+    [theme.breakpoints.down(1024)]: {
+      transform: "rotate(-0.01turn)",
+      height: "40vh",
+      bottom: "5vh",
+      left: "6vw"
+    }
   },
   lines: {
     position: "absolute",
     width: "35vw",
     bottom: "-1.75vw",
-    right: "-2vw"
+    right: "-2vw",
+    [theme.breakpoints.down(1024)]: {
+      right: "10vw",
+      width: "50vh"
+    }
   },
   logo: {
     position: "absolute",
     width: "7vw",
     right: "3.5vw",
-    top: "3.5vw"
+    top: "3.5vw",
+    [theme.breakpoints.down(1024)]: {
+      width: "7vh"
+    }
   },
   tipcard: {
     position: "absolute",
     width: "27vw",
-    right: "18vw",
-    bottom: "3.5vw",
+    right: "16vw",
+    bottom: "0",
     transform: "rotate(-0.03turn)",
     borderRadius: "30px",
     boxShadow: "0 4px 8px 2px rgba(0, 0, 0, 0.4)",
-    filter: "hue-rotate(10deg) contrast(110%)"
+    filter: "hue-rotate(10deg) contrast(110%)",
+    [theme.breakpoints.down(1024)]: {
+      display: "none"
+    }
   },
   rest: {
     position: "absolute",
@@ -108,13 +175,15 @@ const useStyles = makeStyles(theme => ({
   pageOne: {
     display: "flex",
     flexDirection: "column",
-    width: "102vw",
+    width: "100vw",
     height: "110vh",
-    marginLeft: "-2vw",
     backgroundImage:
-      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/booksapple.jpg")',
+      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/Booksapple.jpg")',
     backgroundSize: "cover",
     backgroundPosition: "0% 40%",
+    [theme.breakpoints.down(1024)]: {
+      backgroundPosition: "60% 40%"
+    },
     boxShadow: "0 -2px 10px #000000"
   },
   pageOneText: {
@@ -122,38 +191,82 @@ const useStyles = makeStyles(theme => ({
     background: "rgba(0, 0, 0, 0.3)",
     borderRadius: "25px",
     width: "40vw",
+    [theme.breakpoints.down(1024)]: {
+      width: "80vw"
+    },
     padding: "2vw"
   },
   slogan: {
     fontSize: "3.7vw",
     lineHeight: "3.7vw",
-    fontWeight: 500
+    fontWeight: 500,
+    [theme.breakpoints.down(1024)]: {
+      fontSize: "3.7vh",
+      lineHeight: "4.2vh"
+    }
   },
   description: {
-    marginTop: "2vw",
-    fontSize: "1.2vw"
+    marginTop: "1vw",
+    fontSize: "1.2vw",
+    [theme.breakpoints.down(1024)]: {
+      fontSize: "1.7vh"
+    }
   },
   pageTwo: {
+    width: "100vw",
+    [theme.breakpoints.up(1024)]: {
+      height: "110vh"
+    },
+    [theme.breakpoints.down(1024)]: {
+      display: "flex"
+    }
+  },
+  pageTwoContainer: {
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     width: "100vw",
-    height: "110vh"
+    marginBottom: "2vh",
+    [theme.breakpoints.up(1024)]: {
+      flexDirection: "row",
+      width: "105vw",
+      justifyContent: "space-between",
+      position: "absolute",
+      left: "-10vw"
+    }
   },
   pageTwoText: {
     width: "40vw",
-    textAlign: "right"
+    textAlign: "right",
+    [theme.breakpoints.down(1024)]: {
+      width: "80vw",
+      textAlign: "center"
+    }
   },
   imac: {
-    width: "50vw"
+    width: "60vw",
+    [theme.breakpoints.down(1024)]: {
+      width: "100vw"
+    }
+  },
+  iphone: {
+    width: "30vw",
+    marginLeft: "-20vw",
+    alignSelf: "flex-end",
+    marginBottom: "11vh",
+    [theme.breakpoints.down(1024)]: {
+      display: "none"
+    }
   },
   pageThree: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "110vh",
-    justifyContent: "space-around",
-    padding: "2vw",
-    textAlign: "center"
+    width: "100vw",
+    justifyContent: "center",
+    position: "absolute",
+    textAlign: "center",
+    marginTop: "2vh"
   },
   personRow: {
     display: "flex",
@@ -173,7 +286,7 @@ const useStyles = makeStyles(theme => ({
     width: "150px",
     height: "150px",
     borderRadius: "100%",
-    border: "5px solid #3e7b63"
+    boxShadow: "0 0 0 2px #272727, 0 0 0 7px #3e7b63"
   },
   personText: {
     textAlign: "center",
@@ -181,11 +294,10 @@ const useStyles = makeStyles(theme => ({
     marginTop: "1vw"
   },
   pageFour: {
-    marginLeft: "-2vw",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    width: "102vw",
+    width: "100vw",
     height: "110vh",
     backgroundImage:
       'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/server.png")',
@@ -198,7 +310,24 @@ const useStyles = makeStyles(theme => ({
     background: "rgba(0, 0, 0, 0.3)",
     borderRadius: "25px",
     width: "40vw",
+    [theme.breakpoints.down(1024)]: {
+      width: "80vw"
+    },
     padding: "2vw"
+  },
+  footer: {
+    backgroundColor: "#161616",
+    padding: "2vw"
+  },
+  imacDots: {
+    position: "absolute",
+    width: "14vw",
+    top: "-4.5vw",
+    right: "3.5vw",
+    transform: "rotate(90deg)",
+    [theme.breakpoints.down(1024)]: {
+      display: "none"
+    }
   }
 }));
 
@@ -209,7 +338,7 @@ export default () => {
     "Our {PASSbox} contains revision {tips} and {tools} that are {scientifically} proven to increase your learning {efficiency} and reduce stress.",
     "Gain access to {guidance} and advice from {experienced students} who have achieved some of the {best grades in the country}.",
     "Use cutting-edge {machine learning} technology to {optimise} your revision schedule and {maximise} your academic potential.",
-    "We put a focus on {mental wellbeing} by including {relaxing} scents and advice for {healthy} specifically tailored to {students}."
+    "We focus on {mental wellbeing} by including {relaxing} scents and advice for {healthy living} specifically tailored to {students}."
   ];
   const [count, setCount] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -226,20 +355,19 @@ export default () => {
   }, [count]);
 
   return (
-    <div>
+    <div id="page" style={{ marginLeft: "-8px" }}>
       <div className={classes.loadingContainer}>
         <CircularProgress />
       </div>
       <div style={{ opacity: 0, animation: "fadein 2s 1.5s forwards" }}>
-        <img src="/images/flower.png" alt="" className={classes.flower} />
-        <img src="/images/book.png" alt="" className={classes.book} />
+        <img src="/images/Plant.png" alt="" className={classes.flower} />
         <img src="/images/keyboard.png" alt="" className={classes.keyboard} />
-        <img src="/images/box.png" alt="" className={classes.box} />
-        <img src="/images/dots2.png" alt="" className={classes.dots} />
-        <img src="/images/pen.png" alt="" className={classes.pen} />
         <img src="/images/linesnew.png" alt="" className={classes.lines} />
+        <img src="/images/dots2.png" alt="" className={classes.dots} />
+        <img src="/images/Book.png" alt="" className={classes.book} />
+        <img src="/images/box.png" alt="" className={classes.box} />
+        <img src="/images/Pen.png" alt="" className={classes.pen} />
         <img src="/images/logo.png" alt="" className={classes.logo} />
-        <img src="/images/tipcard.png" alt="" className={classes.tipcard} />
         <div className={classes.textContainer}>
           <div>
             <Typography
@@ -250,14 +378,16 @@ export default () => {
                   .replace(/}/g, "</span>")
               }}
             />
-            <Button
-              component="a"
-              href="https://jamarketplace.com/young-enterprise-uk"
-              variant="contained"
-              className={classes.btn}
-            >
-              Buy now
-            </Button>
+            <Tooltip title="Contact us to preorder">
+              <Button
+                component="a"
+                href="#footer"
+                variant="contained"
+                className={classes.btn}
+              >
+                Buy now
+              </Button>
+            </Tooltip>
             <Button
               component={Link}
               to="/"
@@ -268,7 +398,6 @@ export default () => {
             </Button>
           </div>
         </div>
-
         <div className={classes.rest}>
           <div className={classes.pageOne}>
             <div className={classes.pageOneText}>
@@ -287,35 +416,50 @@ export default () => {
                 , fragrance can have a positive effect on your mood and
                 productivity. The PASSbox contains aromatic pouches of lavender,
                 rosemary and peppermint to create a calming work environment.
+                <br />
+                <br />
+                It also contains stationery, revision tip cards, sticky notes
+                and blank flashcards to equip you with the tools that helped us
+                with our revision.
               </Typography>
             </div>
           </div>
           <div className={classes.pageTwo}>
-            <img
-              src="/images/imactimetable.png"
-              alt=""
-              className={classes.imac}
-            />
-            ,
-            <div className={classes.pageTwoText}>
-              <Typography className={classes.slogan}>
-                <span className="highlight">Structure</span> your path to
-                success with <span className="highlight">timetable</span>
-              </Typography>
-              <Typography className={classes.description}>
-                Take it with you on your phone so that you always know your
-                schedule. With room built in for revision as well as breaks, you
-                can achieve your productivity goals with time left over to
-                relax.
-              </Typography>
-              <Button
-                component="a"
-                href="https://jamarketplace.com/young-enterprise-uk"
-                variant="contained"
-                className={classes.btn}
-              >
-                Buy now
-              </Button>
+            <div className={classes.pageTwoContainer}>
+              <img src="/images/dots.png" alt="" className={classes.imacDots} />
+              <img
+                src="/images/imactimetable.png"
+                alt=""
+                className={classes.imac}
+              />
+              <img
+                src="/images/iphonetimetable.png"
+                alt=""
+                className={classes.iphone}
+              />
+              <div className={classes.pageTwoText}>
+                <Typography className={classes.slogan}>
+                  <span className="highlight">Structure</span> your path to
+                  success with your online{" "}
+                  <span className="highlight">timetable</span>
+                </Typography>
+                <Typography className={classes.description}>
+                  Take it with you on your phone so that you always know your
+                  schedule. With room built in for revision as well as breaks,
+                  you can achieve your productivity goals with time left over to
+                  relax.
+                </Typography>
+                <Tooltip title="Contact us to preorder">
+                  <Button
+                    component="a"
+                    href="#footer"
+                    variant="contained"
+                    className={classes.btn}
+                  >
+                    Buy now
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
           </div>
           <div className={classes.pageFour}>
@@ -329,6 +473,19 @@ export default () => {
                 grades, the timetable adapts to account for your strengths and
                 weaknesses in different subjects, so you're always making the
                 most of your time.
+                <br />
+                <br />
+                The website also includes advice from succesful students, daily
+                agendas and long-term goals. The effects of target-setting are
+                "robust, typically yielding a success rate of 90%" according to
+                studies such as{" "}
+                <a
+                  href="https://www.sehity.com/uploads/4/2/2/4/42243697/locke_-_1996_-_motivation_through_conscious_goal_setting.pdf"
+                  className="highlight"
+                >
+                  this one from the University of Maryland
+                </a>
+                .
               </Typography>
             </div>
           </div>
@@ -338,31 +495,31 @@ export default () => {
               <div className={classes.personRow}>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/oscar.png"
                     alt=""
                     className={classes.personPic}
                   />
                   <Typography className={classes.personText}>
-                    Oscar and Shannon
+                    Oscar
                     <br />
-                    Managing Directors
+                    Managing Director
                   </Typography>
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/hardik"
                     alt=""
                     className={classes.personPic}
                   />
                   <Typography className={classes.personText}>
-                    Hardik and Rosanna
+                    Hardik
                     <br />
-                    Marketing Directors
+                    Marketing Director
                   </Typography>
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/jacob"
                     alt=""
                     className={classes.personPic}
                   />
@@ -374,33 +531,33 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/tom"
                     alt=""
                     className={classes.personPic}
                   />
                   <Typography className={classes.personText}>
-                    Tom and Dom
+                    Tom
                     <br />
-                    Finance Directors
+                    Finance Director
                   </Typography>
                 </div>
               </div>
               <div className={classes.personRow}>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/pratyaksh"
                     alt=""
                     className={classes.personPic}
                   />
                   <Typography className={classes.personText}>
-                    Pratyaksh and Isaac
+                    Pratyaksh
                     <br />
-                    Digital and Technology Directors
+                    Digital and Technology Director
                   </Typography>
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/raymond"
                     alt=""
                     className={classes.personPic}
                   />
@@ -412,19 +569,19 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/toby"
                     alt=""
                     className={classes.personPic}
                   />
                   <Typography className={classes.personText}>
-                    Ryan and Toby
+                    Toby
                     <br />
-                    Social Responsibility and HR
+                    Human Resources Director
                   </Typography>
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="/images/personpic.jpg"
+                    src="https://api.adorable.io/avatars/150/libi"
                     alt=""
                     className={classes.personPic}
                   />
@@ -436,7 +593,10 @@ export default () => {
                 </div>
               </div>
             </div>
-            <div>
+            <div className={classes.footer} id="footer">
+              <Typography className="highlight" style={{ fontWeight: 500 }}>
+                Contact us now to preorder the PASSbox!
+              </Typography>
               <Typography>
                 We are happy to help you with any problems or questions you may
                 have - just email us at{" "}
@@ -447,6 +607,24 @@ export default () => {
                   contact.maximise@gmail.com
                 </a>
               </Typography>
+              <a href="https://www.facebook.com/maximise.ye/">
+                <Icon
+                  className="fab fa-facebook"
+                  style={{ color: "#ffffff", padding: "0.5vw" }}
+                />
+              </a>
+              <a href="https://www.instagram.com/maximiseuk/">
+                <Icon
+                  className="fab fa-instagram"
+                  style={{ color: "#ffffff", padding: "0.5vw" }}
+                />
+              </a>
+              <a href="https://www.tiktok.com/@maximiseuk">
+                <Icon
+                  className="fab fa-tiktok"
+                  style={{ color: "#ffffff", padding: "0.5vw" }}
+                />
+              </a>
               <Typography style={{ color: "#aaaaaa" }}>
                 Young Enterprise in England and Wales (including the Channel
                 Islands) A Company Limited by Guarantee No. 712260 Charity No.
@@ -456,6 +634,7 @@ export default () => {
             </div>
           </div>
         </div>
+        <img src="/images/tipcard.png" alt="" className={classes.tipcard} />
       </div>
     </div>
   );
