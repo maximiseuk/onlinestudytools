@@ -5,169 +5,28 @@ import Typography from "@material-ui/core/Typography";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
-    btn: {
-        padding: "16px 32px",
-        margin: 8,
-    },
-    textContainer: {
-        width: "50vw",
-        display: "flex",
-        position: "absolute",
-        bottom: 0,
-    },
-    flower: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-    },
-    book: {
-        position: "absolute",
-        bottom: 64,
-        left: -200,
-        
-    },
-}));
-
-export default () => {
-    const classes = useStyles();
-    return (
-        <div>
-            <img
-                src="/images/flower.png"
-                alt=""
-                className={classes.flower}
-            />
-            <img
-                src="/images/book.png"
-                alt=""
-                className={classes.book}
-            />
-            <div className={classes.textContainer}>
-                <div>
-                    <Typography variant="h2" style={{fontWeight: 500}}>
-                        <span className="highlight">
-                            Maximise{" "}
-                        </span>
-                        is a company based in the
-                        <span className="highlight">
-                            {" "}UK{" "}
-                        </span>
-                        committed to helping students achieve the
-                        <span className="highlight">
-                            {" "}best{" "}
-                        </span>
-                        possible 
-                        <span className="highlight">
-                            {" "}Grades 
-                        </span>.
-                    </Typography>
-                    <Button
-                        component="a"
-                        href="https://jamarketplace.com/young-enterprise-uk"
-                        variant="contained"
-                        className={classes.btn}
-                    >
-                        Buy Now
-                    </Button>
-                    <Button
-                        component={Link}
-                        to="/login"
-                        variant="outlined"
-                        className={classes.btn}
-                    >
-                        Go To Tools
-                    </Button>
-                </div>
-            </div>
-        </div>
-    );
-};
-=======
+const useStyles = makeStyles({
   btn: {
     padding: "16px 32px",
-    marginRight: "1.12vw",
-    marginTop: "2vw",
-    height: "4vw"
+    margin: 8
   },
   textContainer: {
+    width: "50vw",
     display: "flex",
     position: "absolute",
-    bottom: "10vh",
-    left: "14vw"
-  },
-  text: {
-    fontWeight: 500,
-    opacity: 0,
-    animation: "faderight 1s ease-in-out forwards",
-    fontSize: "3.7vw",
-    lineHeight: "4.2vw",
-    width: "42vw"
-  },
-  fade: {
-    fontWeight: 500,
-    fontSize: "3.7vw",
-    lineHeight: "4.2vw",
-    width: "42vw",
-    opacity: 0,
-    animation: "fadeout 0.3s ease-in-out forwards"
+    bottom: 0
   },
   flower: {
     position: "absolute",
     top: 0,
-    left: 0,
-    width: "24.5vw"
+    left: 0
   },
   book: {
     position: "absolute",
-    bottom: "6vh",
-    left: "-12.5vw",
-    width: "27.6vw"
-  },
-  keyboard: {
-    position: "absolute",
-    top: "-28vw",
-    right: "10vw",
-    width: "35vw"
-  },
-  box: {
-    position: "absolute",
-    right: "-42.5vw",
-    top: "-28vw",
-    width: "72vw"
-  },
-  dots: {
-    position: "absolute",
-    top: "-0.7vw",
-    right: "39.4vw",
-    width: "14vw"
-  },
-  pen: {
-    position: "absolute",
-    top: "22vw",
-    right: "8vw",
-    width: "21vw",
-    transform: "rotate(0.03turn)"
-  },
-  lines: {
-    position: "absolute",
-    width: "35vw",
-    bottom: "-1.75vw",
-    right: "4vw"
-  },
-  logo: {
-    position: "absolute",
-    width: "7vw",
-    right: "3.5vw",
-    top: "3.5vw"
-  },
-  tipcard: {
-    position: "absolute",
-    width: "22vw",
-    right: "15vw",
-    bottom: "3.5vw"
+    bottom: 64,
+    left: -200
   }
-}));
+});
 
 export default () => {
   var classes = useStyles();
