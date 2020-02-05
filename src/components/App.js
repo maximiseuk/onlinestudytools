@@ -91,7 +91,6 @@ const useStyles = makeStyles(theme => ({
     Signup: lazy(() => import("./Signup")),
     Login: lazy(() => import("./Login"))
   };
-
 export default () => {
   const location = useLocation(),
     history = useHistory(),
@@ -284,6 +283,7 @@ export default () => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
   useEffect(() => {
+    history.push("/");
     if (getCookie("sessionID") !== "" && getCookie("email") !== "") {
       fetch("https://maximise.herokuapp.com/users/get_data/subjects", {
         method: "POST",
