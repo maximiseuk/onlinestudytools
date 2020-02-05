@@ -287,7 +287,7 @@ export default () => {
           <form onSubmit={save}>
             <Grid container spacing={2}>
               {Object.keys(initialState).map(field => (
-                <Grid item xs={12} sm={4} key={field}>
+                <Grid item xs={12} sm={6} key={field}>
                   <TextField
                     label={startCase(field)}
                     value={values[field]}
