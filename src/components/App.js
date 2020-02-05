@@ -91,7 +91,6 @@ const useStyles = makeStyles(theme => ({
     Signup: lazy(() => import("./Signup")),
     Login: lazy(() => import("./Login"))
   };
-
 export default () => {
   const location = useLocation(),
     history = useHistory(),
@@ -284,10 +283,9 @@ export default () => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
   useEffect(() => {
+    history.push("/");
     if (getCookie("sessionID") !== "" && getCookie("email") !== "") {
-      fetch(
-        "https://maximise.herokuapp.com/users/get_data/subjects",
-        {
+      fetch("https://maximise.herokuapp.com/users/get_data/subjects", {
         method: "POST",
         body: JSON.stringify({
           sessionID: getCookie("sessionID"),
@@ -297,6 +295,7 @@ export default () => {
         .then(res => res.json())
         .then(data => {
           console.log(data);
+          console.log(data.response);
 
           if (JSON.stringify(data.errors) !== "{}") {
             console.error(data.errors);
@@ -482,7 +481,9 @@ export default () => {
                 >
                   <Switch location={location}>
                     <Route
-                      component={getCookie("sessionID") !== "" ? Home : LandingPage}
+                      component={
+                        getCookie("sessionID") !== "" ? Home : LandingPage
+                      }
                       exact
                       path="/(home||)/"
                     />

@@ -583,46 +583,50 @@ export default () => {
               selected any slots with data already in them, they will be
               overridden.
             </DialogContentText>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              onChange={(e, val) => {
-                let newRecents = recents;
-                let newRequireds = requireds;
-                val.forEach(a => {
-                  if (!newRecents[a]) {
-                    newRecents[a] = 5;
-                  }
-                  if (!newRequireds[a]) {
-                    newRequireds[a] = 5;
-                  }
-                });
-                setRecents(newRecents);
-                setRequireds(newRequireds);
-                setAutoSubjects(val);
-              }}
-              options={subjects}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    key={index}
-                    variant="outlined"
-                    label={option}
-                    {...getTagProps({ index })}
-                    style={{ margin: 4 }}
+            {subjects ? (
+              <Autocomplete
+                multiple
+                filterSelectedOptions
+                onChange={(e, val) => {
+                  let newRecents = recents;
+                  let newRequireds = requireds;
+                  val.forEach(a => {
+                    if (!newRecents[a]) {
+                      newRecents[a] = 5;
+                    }
+                    if (!newRequireds[a]) {
+                      newRequireds[a] = 5;
+                    }
+                  });
+                  setRecents(newRecents);
+                  setRequireds(newRequireds);
+                  setAutoSubjects(val);
+                }}
+                options={subjects}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      key={index}
+                      variant="outlined"
+                      label={option}
+                      {...getTagProps({ index })}
+                      style={{ margin: 4 }}
+                    />
+                  ))
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Enter your subjects"
+                    margin="normal"
+                    variant="filled"
+                    fullWidth
                   />
-                ))
-              }
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="Enter your subjects"
-                  margin="normal"
-                  variant="filled"
-                  fullWidth
-                />
-              )}
-            />
+                )}
+              />
+            ) : (
+              <Typography>You don't have any subjects</Typography>
+            )}
             {autoSubjects.map((a, i) => (
               <div
                 style={{
@@ -710,41 +714,45 @@ export default () => {
               feature more accurate and more likely to help you revise
               efficiently.
             </DialogContentText>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              onChange={(e, val) => {
-                let newGrades = examGrades;
-                val.forEach(a => {
-                  if (!newGrades[a]) {
-                    newGrades[a] = 5;
-                  }
-                });
-                setExamGrades(newGrades);
-                setExamScoreSubjects(val);
-              }}
-              options={subjects}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    key={index}
-                    variant="outlined"
-                    label={option}
-                    {...getTagProps({ index })}
-                    style={{ margin: 4 }}
+            {subjects ? (
+              <Autocomplete
+                multiple
+                filterSelectedOptions
+                onChange={(e, val) => {
+                  let newGrades = examGrades;
+                  val.forEach(a => {
+                    if (!newGrades[a]) {
+                      newGrades[a] = 5;
+                    }
+                  });
+                  setExamGrades(newGrades);
+                  setExamScoreSubjects(val);
+                }}
+                options={subjects}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      key={index}
+                      variant="outlined"
+                      label={option}
+                      {...getTagProps({ index })}
+                      style={{ margin: 4 }}
+                    />
+                  ))
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Enter your subjects"
+                    margin="normal"
+                    variant="filled"
+                    fullWidth
                   />
-                ))
-              }
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="Enter your subjects"
-                  margin="normal"
-                  variant="filled"
-                  fullWidth
-                />
-              )}
-            />
+                )}
+              />
+            ) : (
+              <Typography>You don't have any subjects</Typography>
+            )}
             {examScoreSubjects.map((a, i) => (
               <div
                 style={{
@@ -912,7 +920,9 @@ export default () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {autofill ? (
                     <Typography className={classes.autofillText}>
-                      {(root && root[hour]) ? root[hour].title : "Click to select"}
+                      {root && root[hour]
+                        ? root[hour].title
+                        : "Click to select"}
                     </Typography>
                   ) : (
                     <>
