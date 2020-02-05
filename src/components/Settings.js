@@ -67,7 +67,6 @@ export default () => {
     userSubjects = useSelector(state => state.subjects),
     [lightTheme, setLightTheme] = useState(isLight),
     initialState = {
-      oldPassword: "",
       newPassword: "",
       repeatPassword: ""
     },
@@ -87,7 +86,7 @@ export default () => {
       fetch("https://maximise.herokuapp.com/users/change_password", {
         method: "POST",
         body: JSON.stringify({
-          newData: passwordData,
+          newPassword: values.newPassword,
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
         }),
@@ -97,7 +96,12 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data);
           if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your password"
+            });
             let newErrors = helpers;
             for (let key in data.errors) {
               newErrors[key] = data.errors[key];
@@ -205,13 +209,13 @@ export default () => {
       });
     },
     updateSubjects = val => {
-        console.log(val)
+      console.log(val);
       fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
         method: "POST",
         body: JSON.stringify({
           sessionID: getCookie("sessionID"),
           username: getCookie("email"),
-          newData: userSubjects
+          newData: val
         })
       })
         .then(res => res.json())

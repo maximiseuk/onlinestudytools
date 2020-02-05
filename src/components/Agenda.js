@@ -238,7 +238,6 @@ export default () => {
   }, []);
   useEffect(() => {
       if (clientAgenda && JSON.stringify(clientAgenda) !== JSON.stringify(agenda)) {
-    setAgenda(clientAgenda);
     fetch("https://maximise.herokuapp.com/users/update_data/agenda", {
             method: "POST",
             headers: {
