@@ -1,0 +1,32 @@
+[
+    {
+        "subject": "Maths",
+        "desc": "Beat Pratyaksh",
+        "completed": false
+    },
+    {
+        "subject": "English",
+        "desc": "Write a good story",
+        "completed": true
+    },
+    {
+        "subject": "Physics",
+        "desc": "Prove one-electron-universe",
+        "completed": false
+    },
+    {
+        "subject": "Biology",
+        "desc": "Get 80% or more on a test",
+        "completed": true
+    },
+    {
+        "subject": "Geography",
+        "desc": "Get full marks on a homework",
+        "completed": false
+    },
+    {
+        "subject": "Maths",
+        "desc": "Learn multivariable calculus",
+        "completed": false
+    }
+]

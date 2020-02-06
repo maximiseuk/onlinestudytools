@@ -1,0 +1,1 @@
+export default (state = {msg: "", key: 0}, action) => action.type === "NEW_ERROR" ? {msg: action.payload, key: Math.random()} : state;

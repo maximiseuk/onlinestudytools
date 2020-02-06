@@ -1,0 +1,33 @@
+{
+    "dayrepeats": {
+        "4:00 - 5:00": {
+            "title": "Tennis",
+            "type": "break"
+        }
+    },
+    "weekrepeats": {
+        "5:00 - 6:00": {
+            "title": "Football",
+            "type": "break",
+            "day": 3
+        }
+    },
+    "10/1/2020": {
+        "5:00-6:00": {
+            "title": "Maths Calculus test",
+            "type": "exam"
+        }
+    },
+    "11/1/2020": {
+        "4:00-5:00": {
+            "title": "Physics Space test",
+            "type": "exam"
+        }
+    },
+    "12/1/2020": {
+        "4:00-5:00": {
+            "title": "Physics energy",
+            "type": "revision"
+        }
+    }
+}
