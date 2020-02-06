@@ -178,7 +178,7 @@ const useStyles = makeStyles(theme => ({
     width: "100vw",
     height: "110vh",
     backgroundImage:
-      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/Booksapple.jpg")',
+      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/booksapple.jpg")',
     backgroundSize: "cover",
     backgroundPosition: "0% 40%",
     [theme.breakpoints.down(1024)]: {
