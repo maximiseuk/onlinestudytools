@@ -250,12 +250,19 @@ export default () => {
     )
       .then(res => res.json())
       .then(data => {
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error loading your data"
+              });
+          } else {
         setAgenda(data.response.agenda ? data.response.agenda.filter((x, i) => i < 3) : []);
         setGoals((data.response.goals && data.response.goals.Current) ? data.response.goals.Current.filter((x, i) => i < 3) : []);
-        if (data.reponse.timetable) {
+        if (data.response.timetable) {
         const { timetable } = data.response;
         delete timetable.weekrepeats;
         delete timetable.dayrepeats;
+        console.log(timetable)
         let newExams = [];
         for (let key in timetable) {
           for (let time in timetable[key]) {
@@ -270,6 +277,7 @@ export default () => {
         }
         setExams(newExams);
     }
+}
       })
       .catch(err => {
         console.error(err);

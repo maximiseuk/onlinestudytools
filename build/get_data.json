@@ -1,0 +1,92 @@
+{
+    "agenda": [
+        {
+            "subject": "Maths",
+            "desc": "Do surds hw",
+            "date": "Fri Jan 10 2020 13:27:07 GMT+0000 (Greenwich Mean Time)",
+            "time": false
+        },
+        {
+            "subject": "English",
+            "desc": "Retest",
+            "date": "Thu Jan 04 2020 13:27:07 GMT+0000 (Greenwich Mean Time)",
+            "time": "All Day"
+        },
+        {
+            "subject": "Physics",
+            "desc": "Prove one-electron-universe",
+            "date": "Wed Jan 08 2020 13:27:07 GMT+0000 (Greenwich Mean Time)",
+            "time": "All Day"
+        },
+        {
+            "subject": "Biology",
+            "desc": "Revise for test",
+            "date": "Thu Jan 02 2020 13:27:07 GMT+0000 (Greenwich Mean Time)",
+            "time": false
+        },
+        {
+            "subject": "Geography",
+            "desc": "Coasts hw",
+            "date": "Thu Jan 02 2020 13:27:07 GMT+0000 (Greenwich Mean Time)",
+            "time": false
+        },
+        {
+            "subject": "Maths",
+            "desc": "Read chapter on graph of a^x and log a (x)",
+            "date": "Sat Jan 04 2020 13:27:07 GMT+0000 (Greenwich Mean Time)",
+            "time": "All Day"
+        }
+    ],
+    "goals": [
+        {
+            "subject": "Maths",
+            "desc": "Beat Pratyaksh",
+            "completed": false
+        },
+        {
+            "subject": "English",
+            "desc": "Write a good story",
+            "completed": true
+        },
+        {
+            "subject": "Physics",
+            "desc": "Prove one-electron-universe",
+            "completed": false
+        },
+        {
+            "subject": "Biology",
+            "desc": "Get 80% or more on a test",
+            "completed": true
+        },
+        {
+            "subject": "Geography",
+            "desc": "Get full marks on a homework",
+            "completed": false
+        },
+        {
+            "subject": "Maths",
+            "desc": "Learn multivariable calculus",
+            "completed": false
+        }
+    ],
+    "timetable": {
+        "10/1/2020": {
+            "5:00-6:00": {
+                "title": "Maths Calculus test",
+                "type": "exam"
+            }
+        },
+        "11/1/2020": {
+            "4:00-5:00": {
+                "title": "Physics Space test",
+                "type": "exam"
+            }
+        },
+        "12/1/2020": {
+            "4:00-5:00": {
+                "title": "Physics energy",
+                "type": "revision"
+            }
+        }
+    }
+}
