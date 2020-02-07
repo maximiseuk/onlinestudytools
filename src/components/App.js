@@ -44,7 +44,6 @@ const useStyles = makeStyles(theme => ({
     mainContainer: {
       maxWidth: 2048,
       margin: "0 auto",
-      padding: "0 8px",
       display: "flex",
       flexDirection: "column",
       height: "100vh"
@@ -74,9 +73,7 @@ const useStyles = makeStyles(theme => ({
       overflow: "auto",
       zIndex: 1000,
       paddingBottom: 16,
-      paddingTop: 16,
-      marginBottom: 16,
-      borderRadius: 16
+      marginBottom: 16
     }
   })),
   Home = lazy(() => import("./Home")),

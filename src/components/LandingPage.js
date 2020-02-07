@@ -159,9 +159,10 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     width: "27vw",
     right: "16vw",
-    bottom: "0",
+    top: "-10vw",
     transform: "rotate(-0.03turn)",
     borderRadius: "30px",
+    zIndex: 1000,
     boxShadow: "0 4px 8px 2px rgba(0, 0, 0, 0.4)",
     filter: "hue-rotate(10deg) contrast(110%)",
     [theme.breakpoints.down(1024)]: {
@@ -169,8 +170,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   rest: {
-    position: "absolute",
-    top: "100vh"
+    position: "relative"
   },
   pageOne: {
     display: "flex",
@@ -178,7 +178,7 @@ const useStyles = makeStyles(theme => ({
     width: "100vw",
     height: "110vh",
     backgroundImage:
-      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/Booksapple.jpg")',
+      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/booksapple.jpg")',
     backgroundSize: "cover",
     backgroundPosition: "0% 40%",
     [theme.breakpoints.down(1024)]: {
@@ -355,50 +355,60 @@ export default () => {
   }, [count]);
 
   return (
-    <div id="page" style={{ marginLeft: "-8px" }}>
+    <div id="page">
       <div className={classes.loadingContainer}>
         <CircularProgress />
       </div>
-      <div style={{ opacity: 0, animation: "fadein 2s 1.5s forwards" }}>
-        <img src="/images/Plant.png" alt="" className={classes.flower} />
-        <img src="/images/keyboard.png" alt="" className={classes.keyboard} />
-        <img src="/images/linesnew.png" alt="" className={classes.lines} />
-        <img src="/images/dots2.png" alt="" className={classes.dots} />
-        <img src="/images/Book.png" alt="" className={classes.book} />
-        <img src="/images/box.png" alt="" className={classes.box} />
-        <img src="/images/Pen.png" alt="" className={classes.pen} />
-        <img src="/images/logo.png" alt="" className={classes.logo} />
-        <div className={classes.textContainer}>
-          <div>
-            <Typography
-              className={visible ? classes.text : classes.fade}
-              dangerouslySetInnerHTML={{
-                __html: textList[count % textList.length]
-                  .replace(/{/g, "<span class='highlight'>")
-                  .replace(/}/g, "</span>")
-              }}
-            />
-            <Tooltip title="Contact us to preorder">
+      <div
+        style={{
+          opacity: 0,
+          animation: "fadein 2s 1.5s forwards"
+        }}
+      >
+        <div
+          style={{ position: "relative", height: "100vh", overflow: "hidden" }}
+        >
+          <img src="/images/Plant.png" alt="" className={classes.flower} />
+          <img src="/images/keyboard.png" alt="" className={classes.keyboard} />
+          <img src="/images/linesnew.png" alt="" className={classes.lines} />
+          <img src="/images/dots2.png" alt="" className={classes.dots} />
+          <img src="/images/Book.png" alt="" className={classes.book} />
+          <img src="/images/box.png" alt="" className={classes.box} />
+          <img src="/images/Pen.png" alt="" className={classes.pen} />
+          <img src="/images/logo.png" alt="" className={classes.logo} />
+          <div className={classes.textContainer}>
+            <div>
+              <Typography
+                className={visible ? classes.text : classes.fade}
+                dangerouslySetInnerHTML={{
+                  __html: textList[count % textList.length]
+                    .replace(/{/g, "<span class='highlight'>")
+                    .replace(/}/g, "</span>")
+                }}
+              />
+              <Tooltip title="Contact us to preorder">
+                <Button
+                  component="a"
+                  href="#footer"
+                  variant="contained"
+                  className={classes.btn}
+                >
+                  Buy now
+                </Button>
+              </Tooltip>
               <Button
-                component="a"
-                href="#footer"
-                variant="contained"
+                component={Link}
+                to="/"
+                variant="outlined"
                 className={classes.btn}
               >
-                Buy now
+                Tools (Coming Soon)
               </Button>
-            </Tooltip>
-            <Button
-              component={Link}
-              to="/"
-              variant="outlined"
-              className={classes.btn}
-            >
-              Tools (Coming Soon)
-            </Button>
+            </div>
           </div>
         </div>
         <div className={classes.rest}>
+          <img src="/images/tipcard.png" alt="" className={classes.tipcard} />
           <div className={classes.pageOne}>
             <div className={classes.pageOneText}>
               <Typography className={classes.slogan}>
@@ -634,7 +644,6 @@ export default () => {
             </div>
           </div>
         </div>
-        <img src="/images/tipcard.png" alt="" className={classes.tipcard} />
       </div>
     </div>
   );
