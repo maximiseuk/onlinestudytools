@@ -300,7 +300,7 @@ const useStyles = makeStyles(theme => ({
     width: "100vw",
     height: "110vh",
     backgroundImage:
-      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/server.png")',
+      'linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("images/server.jpg")',
     backgroundSize: "cover",
     boxShadow: "0 -2px 10px #000000"
   },
