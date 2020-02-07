@@ -372,7 +372,7 @@ export default () => {
           <img src="/images/keyboard.png" alt="" className={classes.keyboard} />
           <img src="/images/linesnew.png" alt="" className={classes.lines} />
           <img src="/images/dots2.png" alt="" className={classes.dots} />
-          <img src="/images/Book.png" alt="" className={classes.book} />
+          <img src="/images/book.png" alt="" className={classes.book} />
           <img src="/images/box.png" alt="" className={classes.box} />
           <img src="/images/Pen.png" alt="" className={classes.pen} />
           <img src="/images/logo.png" alt="" className={classes.logo} />
