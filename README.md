@@ -1,5 +1,3 @@
-# *This branch has been merged with master and is no longer being kept up to date*
-
 # onlinestudytools
 
 A repository for the online study tools webapp as part of the Maximise revision service.
