@@ -114,7 +114,7 @@ export default () => {
       </Paper>
     ),
     agendaView = (
-      <Paper className={classes.item} onClick={() => history.push("/agenda")}>
+      <Paper className={classes.item}>
         <Typography variant="h4" gutterBottom>
           Your <span className="highlight">Agenda</span>
         </Typography>
@@ -265,13 +265,19 @@ export default () => {
         console.log(timetable)
         let newExams = [];
         for (let key in timetable) {
+            let date = new Date();
+                date.setFullYear(key.split("|")[2]);
+                date.setMonth(key.split("|")[1]);
+                date.setDate(key.split("|")[0]);
           for (let time in timetable[key]) {
             if (timetable[key][time].type === "exam") {
-              newExams.push({
-                title: timetable[key][time].title,
-                date: key,
-                time: time.split("-")[0]
-              });
+                if (date.getTime() >= new Date().getTime()) {
+                    newExams.push({
+                      title: timetable[key][time].title,
+                      date: date.toLocaleDateString(),
+                      time: time.split("-")[0]
+                    });
+                }
             }
           }
         }

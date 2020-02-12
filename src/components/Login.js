@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import { Link, useHistory } from "react-router-dom";
 import getCookie from "../api/cookies";
-
+fetch("https://maximise.herokuapp.com/users/list")
 export default () => {
   const dispatch = useDispatch(),
     [email, setEmail] = useState(""),
