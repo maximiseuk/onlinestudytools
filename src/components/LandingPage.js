@@ -91,7 +91,7 @@ const useStyles = makeStyles(theme => ({
   },
   keyboard: {
     position: "absolute",
-    top: "-28vw",
+    top: "0vw",
     right: "10vw",
     width: "35vw",
     [theme.breakpoints.down(1024)]: {
@@ -285,6 +285,7 @@ const useStyles = makeStyles(theme => ({
   personPic: {
     width: "150px",
     height: "150px",
+    objectFit: "cover",
     borderRadius: "100%",
     boxShadow: "0 0 0 2px #272727, 0 0 0 7px #3e7b63"
   },
@@ -416,6 +417,11 @@ export default () => {
                 <span className="highlight">ACCELERATE SUCCESS</span>
               </Typography>
               <Typography className={classes.description}>
+                The PASSBox contains stationery, revision tip cards, sticky notes
+                and blank flashcards to equip you with the tools that helped us
+                with our revision.
+                <br />
+                <br />
                 According to the{" "}
                 <a
                   href="https://academic.oup.com/chemse/article/30/suppl_1/i248/270387"
@@ -424,13 +430,8 @@ export default () => {
                   oxford journal
                 </a>
                 , fragrance can have a positive effect on your mood and
-                productivity. The PASSbox contains aromatic pouches of lavender,
+                productivity. The PASSbox includes aromatic pouches of lavender,
                 rosemary and peppermint to create a calming work environment.
-                <br />
-                <br />
-                It also contains stationery, revision tip cards, sticky notes
-                and blank flashcards to equip you with the tools that helped us
-                with our revision.
               </Typography>
             </div>
           </div>
@@ -500,12 +501,12 @@ export default () => {
             </div>
           </div>
           <div className={classes.pageThree}>
-            <Typography className={classes.slogan}>Meet the team</Typography>
+            <Typography className={classes.slogan}>Meet the directors</Typography>
             <div>
               <div className={classes.personRow}>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/oscar.png"
+                    src="images/oscar.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -517,7 +518,19 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/hardik"
+                    src="images/shannon.jpeg"
+                    alt=""
+                    className={classes.personPic}
+                  />
+                  <Typography className={classes.personText}>
+                    Shannon
+                    <br />
+                    Co-Managing Director
+                  </Typography>
+                </div>
+                <div className={classes.person}>
+                  <img
+                    src="images/hardik.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -529,19 +542,19 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/jacob"
+                    src="images/joecob.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
                   <Typography className={classes.personText}>
-                    Jacob and Joseph
+                    Joseph and Jacob
                     <br />
                     Operations Directors
                   </Typography>
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/tom"
+                    src="images/tom.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -555,7 +568,7 @@ export default () => {
               <div className={classes.personRow}>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/pratyaksh"
+                    src="images/prat.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -567,7 +580,7 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/raymond"
+                    src="images/raymond.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -579,7 +592,7 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/toby"
+                    src="images/toby.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -591,7 +604,19 @@ export default () => {
                 </div>
                 <div className={classes.person}>
                   <img
-                    src="https://api.adorable.io/avatars/150/libi"
+                    src="images/ryan.jpeg"
+                    alt=""
+                    className={classes.personPic}
+                  />
+                  <Typography className={classes.personText}>
+                    Ryan
+                    <br />
+                    Social Responsibilities Director
+                  </Typography>
+                </div>
+                <div className={classes.person}>
+                  <img
+                    src="images/libi.jpeg"
                     alt=""
                     className={classes.personPic}
                   />
@@ -604,7 +629,7 @@ export default () => {
               </div>
             </div>
             <div className={classes.footer} id="footer">
-              <Typography className="highlight" style={{ fontWeight: 500 }}>
+              <Typography className="highlight" style={{ fontWeight: 500, fontSize: "25px" }}>
                 Contact us now to preorder the PASSbox!
               </Typography>
               <Typography>
