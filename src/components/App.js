@@ -422,7 +422,7 @@ export default () => {
               ? window.location.pathname
                   .replace(/\b\w/g, l => l.toUpperCase())
                   .split("/")[1]
-              : "Home"}{" "}
+              : "GCSE Revision App"}{" "}
             • Maximise
           </title>
         </Helmet>
