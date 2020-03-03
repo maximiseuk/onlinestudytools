@@ -81,6 +81,10 @@
         {
             "title": "{Work} hard; {play} hard",
             "content": "<p>During exam season, you should be doing plenty of revision, but it is imperative that you {rest} as well. Giving yourself a break at the {end of the day} to do whatever you want gives you something to {look forward} to; {recharge} your batteries; and {improve concentration} for the next day.</p>"
+        },
+        {
+            "title": "Some more helpful {revision} sites!",
+            "content": "<p>Here are some sites that we have found helpful: {--} <a href='www.cgpbooks.co.uk/'>CGP Revision Guides</a> {--} <a href='www.bbc.co.uk/bitesize/'>BBC Bitesize</a> {--} <a href='www.senecalearning.com/'>SenecaLearning</a> {--} <a href='www.tes.com/teaching-resources/gcse-exam-revision/'>Tes</a></p>"
         }
     ]
 }
