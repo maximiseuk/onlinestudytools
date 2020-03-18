@@ -59,6 +59,11 @@ export default () => {
           our minds and our bodies. Maximise have got the balance right.{" "}
         </Typography>
       </div>
+      <img
+        style={{ width: "100%", maxWidth: 512 }}
+        src="/images/logo.png"
+        alt=""
+      />
       <Typography variant="p" component="i">
         <span className="highlight">
           <a href="http://www.drbettinahohnen">Dr Bettina Hohnen</a>
