@@ -175,7 +175,9 @@ export default () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          newData: examGrades,
+          newData: {
+            recents: examGrades
+          },
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
         })
@@ -1067,4 +1069,3 @@ export default () => {
     </div>
   );
 };
-
