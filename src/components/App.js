@@ -88,6 +88,7 @@ const useStyles = makeStyles(theme => ({
     Goals: lazy(() => import("./Goals")),
     Agenda: lazy(() => import("./Agenda")),
     Timetable: lazy(() => import("./Timetable")),
+    About: lazy(() => import("./About")),
     Signup: lazy(() => import("./Signup")),
     Login: lazy(() => import("./Login"))
   };
