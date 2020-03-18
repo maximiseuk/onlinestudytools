@@ -216,6 +216,11 @@ export default () => {
         });
     },*/
     submitAutofill = () => {
+      console.log({
+        recents,
+        requireds,
+        slots: autofillSlots
+      });
       fetch("https://maximise.herokuapp.com/users/update_data/grades", {
         method: "POST",
         headers: {
@@ -224,7 +229,8 @@ export default () => {
         body: JSON.stringify({
           newData: {
             recents,
-            requireds
+            requireds,
+            autofillSlots
           },
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
@@ -315,47 +321,57 @@ export default () => {
         }
       } else {
         if (repeatType !== "") {
-            if (repeatType === "week") {
-                if (
-                    timetable[repeatType + "repeats"][selectedDate.getDay()] &&
-                    timetable[repeatType + "repeats"][selectedDate.getDay()][currentHour] &&
-                    timetable[repeatType + "repeats"][selectedDate.getDay()][currentHour].title === title &&
-                    timetable[repeatType + "repeats"][selectedDate.getDay()][currentHour].type === type
-                  ) {
-                    setClientTimetable({
-                      ...timetable,
-                      [repeatType + "repeats"]: omit(
-                        timetable[repeatType + "repeats"][selectedDate.getDay()],
-                        currentHour
-                      )
-                    });
-                  }
-            } else {
-
-                if (
-                    timetable[repeatType + "repeats"][currentHour] &&
-                    timetable[repeatType + "repeats"][currentHour].title === title &&
-                    timetable[repeatType + "repeats"][currentHour].type === type
-                  ) {
-                    setClientTimetable({
-                      ...timetable,
-                      [repeatType + "repeats"]: omit(
-                        timetable[repeatType + "repeats"],
-                        currentHour
-                      )
-                    });
-                  }
+          if (repeatType === "week") {
+            if (
+              timetable[repeatType + "repeats"][selectedDate.getDay()] &&
+              timetable[repeatType + "repeats"][selectedDate.getDay()][
+                currentHour
+              ] &&
+              timetable[repeatType + "repeats"][selectedDate.getDay()][
+                currentHour
+              ].title === title &&
+              timetable[repeatType + "repeats"][selectedDate.getDay()][
+                currentHour
+              ].type === type
+            ) {
+              setClientTimetable({
+                ...timetable,
+                [repeatType + "repeats"]: omit(
+                  timetable[repeatType + "repeats"][selectedDate.getDay()],
+                  currentHour
+                )
+              });
             }
+          } else {
+            if (
+              timetable[repeatType + "repeats"][currentHour] &&
+              timetable[repeatType + "repeats"][currentHour].title === title &&
+              timetable[repeatType + "repeats"][currentHour].type === type
+            ) {
+              setClientTimetable({
+                ...timetable,
+                [repeatType + "repeats"]: omit(
+                  timetable[repeatType + "repeats"],
+                  currentHour
+                )
+              });
+            }
+          }
         } else if (
           timetable.weekrepeats &&
           timetable.weekrepeats[selectedDate.getDay()] &&
           timetable.weekrepeats[selectedDate.getDay()][currentHour] &&
-          timetable.weekrepeats[selectedDate.getDay()][currentHour].title === title &&
-          timetable.weekrepeats[selectedDate.getDay()][currentHour].type === type
+          timetable.weekrepeats[selectedDate.getDay()][currentHour].title ===
+            title &&
+          timetable.weekrepeats[selectedDate.getDay()][currentHour].type ===
+            type
         ) {
           setClientTimetable({
             ...timetable,
-            weekrepeats: omit(timetable.weekrepeats[selectedDate.getDay()], currentHour)
+            weekrepeats: omit(
+              timetable.weekrepeats[selectedDate.getDay()],
+              currentHour
+            )
           });
         } else if (
           timetable.dayrepeats &&
@@ -968,15 +984,21 @@ export default () => {
                       {root && root[hour].title !== "" && (
                         <>
                           {!isSmall && select}
-                          {!(!isSmall && root[hour] && root[hour].type === "exam") && <IconButton
-                            onClick={e => {
-                              setAnchorEl(e.currentTarget);
-                              setHour(hour);
-                            }}
-                            size="small"
-                          >
-                            <DotsIcon />
-                          </IconButton>}
+                          {!(
+                            !isSmall &&
+                            root[hour] &&
+                            root[hour].type === "exam"
+                          ) && (
+                            <IconButton
+                              onClick={e => {
+                                setAnchorEl(e.currentTarget);
+                                setHour(hour);
+                              }}
+                              size="small"
+                            >
+                              <DotsIcon />
+                            </IconButton>
+                          )}
                           {root[currentHour] && (
                             <Menu
                               anchorEl={anchorEl}
@@ -987,41 +1009,45 @@ export default () => {
                                 className: classes.paper
                               }}
                             >
-                              {root[currentHour].type !== "exam" && [<MenuItem
-                                onClick={setRepeat(
-                                  "none",
-                                  formatDate,
-                                  hour,
-                                  root[currentHour].type,
-                                  root[currentHour].title,
-                                  repeatType
-                                )}
-                              >
-                                Doesn't repeat
-                              </MenuItem>,
-                              <MenuItem
-                                onClick={setRepeat(
-                                  "day",
-                                  formatDate,
-                                  hour,
-                                  root[currentHour].type,
-                                  root[currentHour].title
-                                )}
-                              >
-                                Repeat daily
-                              </MenuItem>,
-                              <MenuItem
-                                onClick={setRepeat(
-                                  "week",
-                                  formatDate,
-                                  hour,
-                                  root[currentHour].type,
-                                  root[currentHour].title
-                                )}
-                              >
-                                Repeat weekly
-                              </MenuItem>]}
-                              <div style={{width: 138.91}}>{isSmall && select}</div>
+                              {root[currentHour].type !== "exam" && [
+                                <MenuItem
+                                  onClick={setRepeat(
+                                    "none",
+                                    formatDate,
+                                    hour,
+                                    root[currentHour].type,
+                                    root[currentHour].title,
+                                    repeatType
+                                  )}
+                                >
+                                  Doesn't repeat
+                                </MenuItem>,
+                                <MenuItem
+                                  onClick={setRepeat(
+                                    "day",
+                                    formatDate,
+                                    hour,
+                                    root[currentHour].type,
+                                    root[currentHour].title
+                                  )}
+                                >
+                                  Repeat daily
+                                </MenuItem>,
+                                <MenuItem
+                                  onClick={setRepeat(
+                                    "week",
+                                    formatDate,
+                                    hour,
+                                    root[currentHour].type,
+                                    root[currentHour].title
+                                  )}
+                                >
+                                  Repeat weekly
+                                </MenuItem>
+                              ]}
+                              <div style={{ width: 138.91 }}>
+                                {isSmall && select}
+                              </div>
                             </Menu>
                           )}
                         </>
@@ -1041,3 +1067,4 @@ export default () => {
     </div>
   );
 };
+
