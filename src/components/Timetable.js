@@ -749,7 +749,7 @@ export default () => {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               If you have never used timetable before click cancel and then AI autofillm
-              <br>             
+              <br/>             
               For the tests that you last revised for using this timetable,
               enter the grades here - this will help us make the AI Autofill
               feature more accurate and more likely to help you revise
