@@ -1,3 +1,11 @@
+TODO:
+
+ - [ ] Add quote
+ - [ ] Rename files for SEO
+ - [ ] Merge into master
+ - [ ] Put the website up
+
+
 # onlinestudytools
 
 A repository for the online study tools webapp as part of the Maximise revision service.
