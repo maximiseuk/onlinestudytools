@@ -178,7 +178,6 @@ export default () => {
           },
           ...goals.Current
         ],
-        Completed: goals.Completed
       });
       close("newGoal")();
       setValues({
@@ -363,7 +362,7 @@ export default () => {
               />
             )
           ) : (
-            <p>You don't have any {type.toLowerCase()} goals yet</p>
+            <Typography>You don't have any {type.toLowerCase()} goals yet</Typography>
           )}
           {type === "Current" && (
             <>

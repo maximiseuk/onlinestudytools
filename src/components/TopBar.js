@@ -188,6 +188,7 @@ export default () => {
     isHome = pathname === "/home" || pathname === "/",
     routes = [
       "/home",
+      "/about",
       "/advice",
       "/settings",
       "/help",

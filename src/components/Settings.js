@@ -308,7 +308,7 @@ export default () => {
           </form>
         </CardContent>
       </Card>
-      {userSubjects && (
+      {(
         <Card className={classes.card}>
           <CardContent>
             <Typography variant="h4" gutterBottom>
@@ -320,7 +320,7 @@ export default () => {
               filterSelectedOptions
               onChange={(e, val) => updateSubjects(val)}
               options={subjects}
-              defaultValue={userSubjects}
+              defaultValue={userSubjects ? userSubjects : []}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => (
                   <Chip
