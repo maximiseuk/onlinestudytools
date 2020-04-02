@@ -287,7 +287,7 @@ export default () => {
               : timetable.weekrepeats
             : {},
           restOfDayRepeats = timetable[mode + "repeats"]
-            ? mode !== "day" &&
+            ? mode !== "day" && timetable.dayrepeats &&
               timetable.dayrepeats[currentHour] &&
               timetable.dayrepeats[currentHour].title === title &&
               timetable.dayrepeats[currentHour].type === type
@@ -349,7 +349,7 @@ export default () => {
         if (repeatType !== "") {
           if (repeatType === "week" || repeatType === "autofill") {
             if (
-              timetable[repeatType + "repeats"][selectedDate.getDay()] &&
+                timetable[repeatType + "repeats"] && timetable[repeatType + "repeats"][selectedDate.getDay()] &&
               timetable[repeatType + "repeats"][selectedDate.getDay()][
                 currentHour
               ] &&
@@ -373,7 +373,7 @@ export default () => {
             }
           } else {
             if (
-              timetable[repeatType + "repeats"][currentHour] &&
+                timetable[repeatType + "repeats"] && timetable[repeatType + "repeats"][currentHour] &&
               timetable[repeatType + "repeats"][currentHour].title === title &&
               timetable[repeatType + "repeats"][currentHour].type === type
             ) {
@@ -387,7 +387,7 @@ export default () => {
             }
           }
         } else if (
-          timetable &&
+          timetable && timetable.autofill &&
           timetable.autofill[selectedDate.getDay()] &&
           timetable.autofill[selectedDate.getDay()][currentHour] &&
           timetable.autofill[selectedDate.getDay()][currentHour].title ===
@@ -405,7 +405,7 @@ export default () => {
             }
           });
         } else if (
-          timetable &&
+          timetable && timetable.weekrepeats &&
           timetable.weekrepeats[selectedDate.getDay()] &&
           timetable.weekrepeats[selectedDate.getDay()][currentHour] &&
           timetable.weekrepeats[selectedDate.getDay()][currentHour].title ===
@@ -424,7 +424,7 @@ export default () => {
             }
           });
         } else if (
-          timetable.dayrepeats &&
+            timetable && timetable.dayrepeats &&
           timetable.dayrepeats[currentHour] &&
           timetable.dayrepeats[currentHour].title === title &&
           timetable.dayrepeats[currentHour].type === type
