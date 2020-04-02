@@ -620,6 +620,7 @@ export default () => {
               <ol>
                 <li>Pick the timeslots you want to revise for and click Go</li>
                 <li>Choose the subjects you want to revise</li>
+                <li>When you've got your grades back, click the + icon next to AI autofill to enter your grades</li>
               </ol>
               <br />
               AI Autofill will also automatically fill in break periods for you
@@ -801,6 +802,8 @@ export default () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
+              If you have never used timetable before click cancel and then AI autofill
+              <br /><br />
               For the tests that you last revised for using this timetable,
               enter the grades here - this will help us make the AI Autofill
               feature more accurate and more likely to help you revise
