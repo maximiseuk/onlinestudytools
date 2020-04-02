@@ -381,7 +381,7 @@ export default () => {
             />
           )
         ) : (
-          <p>You don't have anything on your agenda yet</p>
+          <Typography component="p" style={{marginTop: 8,}}>You don't have anything on your agenda yet</Typography>
         )}
         <Button
           variant="contained"
