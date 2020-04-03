@@ -75,6 +75,8 @@ export default () => {
         Everything You Need to Know To Unlock Your Teen’s Potential by Hohnen,
         Gilmour and Murphy
       </Typography>
+<br /><br />
+          <Typography>Maximise onlinestudytools was made by Isaac Holt, Joseph Rance and Pratyaksh Sharma.</Typography>
     </Paper>
   );
 };
