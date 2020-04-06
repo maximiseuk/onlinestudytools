@@ -36,15 +36,14 @@ const useStyles = makeStyles(theme => ({
       width: "100vw"
     },
     loadingContainer: {
-      height: "100%",
+      height: "10vh",
       width: "100%",
-      paddingTop: "40%",
+      marginTop: "45vh",
       textAlign: "center"
     },
     mainContainer: {
       maxWidth: 2048,
       margin: "0 auto",
-      padding: "0 8px",
       display: "flex",
       flexDirection: "column",
       height: "100vh"
@@ -74,9 +73,7 @@ const useStyles = makeStyles(theme => ({
       overflow: "auto",
       zIndex: 1000,
       paddingBottom: 16,
-      paddingTop: 16,
-      marginBottom: 16,
-      borderRadius: 16
+      marginBottom: 16
     }
   })),
   Home = lazy(() => import("./Home")),
@@ -427,7 +424,7 @@ export default () => {
               ? window.location.pathname
                   .replace(/\b\w/g, l => l.toUpperCase())
                   .split("/")[1]
-              : "Home"}{" "}
+              : "GCSE Revision App"}{" "}
             • Maximise
           </title>
         </Helmet>
