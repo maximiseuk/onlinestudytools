@@ -67,7 +67,6 @@ export default () => {
     userSubjects = useSelector(state => state.subjects),
     [lightTheme, setLightTheme] = useState(isLight),
     initialState = {
-      oldPassword: "",
       newPassword: "",
       repeatPassword: ""
     },
@@ -87,7 +86,7 @@ export default () => {
       fetch("https://maximise.herokuapp.com/users/change_password", {
         method: "POST",
         body: JSON.stringify({
-          newData: passwordData,
+          newPassword: values.newPassword,
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
         }),
@@ -97,7 +96,12 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data);
           if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your password"
+            });
             let newErrors = helpers;
             for (let key in data.errors) {
               newErrors[key] = data.errors[key];
@@ -205,16 +209,18 @@ export default () => {
       });
     },
     updateSubjects = val => {
+      console.log(val);
       fetch("https://maximise.herokuapp.com/users/update_data/subjects", {
         method: "POST",
         body: JSON.stringify({
           sessionID: getCookie("sessionID"),
           username: getCookie("email"),
-          newData: userSubjects
+          newData: val
         })
       })
         .then(res => res.json())
         .then(data => {
+          console.log(data.errors);
           if (JSON.stringify(data.errors) !== "{}") {
             console.log(data);
             dispatch({
@@ -281,7 +287,7 @@ export default () => {
           <form onSubmit={save}>
             <Grid container spacing={2}>
               {Object.keys(initialState).map(field => (
-                <Grid item xs={12} sm={4} key={field}>
+                <Grid item xs={12} sm={6} key={field}>
                   <TextField
                     label={startCase(field)}
                     value={values[field]}
@@ -302,42 +308,44 @@ export default () => {
           </form>
         </CardContent>
       </Card>
-      <Card className={classes.card}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom>
-            Edit your <span className="highlight">subjects</span>
-          </Typography>
-          <Autocomplete
-            multiple
-            freeSolo
-            filterSelectedOptions
-            onChange={(e, val) => updateSubjects(val)}
-            options={subjects}
-            defaultValue={userSubjects}
-            renderTags={(value, getTagProps) =>
-              value.map((option, index) => (
-                <Chip
-                  key={index}
-                  variant="outlined"
-                  label={option}
-                  {...getTagProps({ index })}
-                  style={{ margin: 4 }}
+      {(
+        <Card className={classes.card}>
+          <CardContent>
+            <Typography variant="h4" gutterBottom>
+              Edit your <span className="highlight">subjects</span>
+            </Typography>
+            <Autocomplete
+              multiple
+              freeSolo
+              filterSelectedOptions
+              onChange={(e, val) => updateSubjects(val)}
+              options={subjects}
+              defaultValue={userSubjects ? userSubjects : []}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip
+                    key={index}
+                    variant="outlined"
+                    label={option}
+                    {...getTagProps({ index })}
+                    style={{ margin: 4 }}
+                  />
+                ))
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="Enter your subjects"
+                  margin="normal"
+                  variant="filled"
+                  fullWidth
                 />
-              ))
-            }
-            renderInput={params => (
-              <TextField
-                {...params}
-                label="Enter your subjects"
-                margin="normal"
-                variant="filled"
-                fullWidth
-              />
-            )}
-          />
-          <Button variant="contained">Update</Button>
-        </CardContent>
-      </Card>
+              )}
+            />
+            <Button variant="contained">Update</Button>
+          </CardContent>
+        </Card>
+      )}
       <Divider style={{ margin: "16px 0" }} />
       <Button variant="contained" onClick={logout}>
         Logout

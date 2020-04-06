@@ -1,5 +1,9 @@
 [
   {
+    "q": "Is {Maximise} sustainable?",
+    "a": "<p>{Maximise} is fully committed to having a {positive impact} on the environment. We have carefully selected the components of the {PASSBOX} to be {sustainable} and {environmentally friendly}, whilst still {maximising} your {revision}.<ul><li>Range of {recyclable} and {sustainable} elements are included, such as tip cards, sticky notes and pencils</li><li>{Sustainably grown} rosemary, cinnamon and peppermint</li><li>The majority of the items are {sourced from the UK} to {reduce our carbon footprint} as much as possible</li><li>{High durability} of parts such as organza bags and tip cards ensures {prolonged reusability}</li></ul></p>"
+  },
+  {
     "q": "What is {Maximise}?",
     "a": "<p>{Maximise} is a Company based in the United Kingdom that is committed to helping students around the country achieve the {grades} they are looking for. Maximise is the creator of {The Passbox}, an {innovative} box of revision materials put together by students who know what is really required to do well in your GCSEs.</p>"
   },

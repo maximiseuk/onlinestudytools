@@ -85,10 +85,10 @@ const useStyles = makeStyles(theme => ({
     Goals: lazy(() => import("./Goals")),
     Agenda: lazy(() => import("./Agenda")),
     Timetable: lazy(() => import("./Timetable")),
+    About: lazy(() => import("./About")),
     Signup: lazy(() => import("./Signup")),
     Login: lazy(() => import("./Login"))
   };
-
 export default () => {
   const location = useLocation(),
     history = useHistory(),
@@ -281,7 +281,8 @@ export default () => {
     setEmail(getCookie("email"));
   }, [document.cookie]);
   useEffect(() => {
-    if (getCookie("email") !== "") {
+    history.push("/");
+    if (getCookie("sessionID") !== "" && getCookie("email") !== "") {
       fetch("https://maximise.herokuapp.com/users/get_data/subjects", {
         method: "POST",
         body: JSON.stringify({
@@ -292,6 +293,7 @@ export default () => {
         .then(res => res.json())
         .then(data => {
           console.log(data);
+          console.log(data.response);
 
           if (JSON.stringify(data.errors) !== "{}") {
             console.error(data.errors);
@@ -477,7 +479,9 @@ export default () => {
                 >
                   <Switch location={location}>
                     <Route
-                      component={getCookie("email") !== "" ? Home : LandingPage}
+                      component={
+                        getCookie("sessionID") !== "" ? Home : LandingPage
+                      }
                       exact
                       path="/(home||)/"
                     />
@@ -488,7 +492,7 @@ export default () => {
                             if (
                               component !== "Login" &&
                               component !== "Signup" &&
-                              email === ""
+                              getCookie("sessionID") === ""
                             ) {
                               return <Redirect to="/login" />;
                             }

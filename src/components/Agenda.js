@@ -226,8 +226,8 @@ export default () => {
       .then(data => {
           console.log(data);
           
-        setAgenda(data.response);
-        setClientAgenda(data.response);
+        setAgenda(data.response ? data.response : []);
+        setClientAgenda(data.response ? data.response : []);
       })
       .catch(() => {
         dispatch({
@@ -237,7 +237,7 @@ export default () => {
       });
   }, []);
   useEffect(() => {
-    setAgenda(clientAgenda);
+      if (clientAgenda && JSON.stringify(clientAgenda) !== JSON.stringify(agenda)) {
     fetch("https://maximise.herokuapp.com/users/update_data/agenda", {
             method: "POST",
             headers: {
@@ -266,6 +266,7 @@ export default () => {
                 payload: "There was an error updating your agenda",
             });
         });
+    }
   }, [clientAgenda]);
   return agenda ? (
     <>
@@ -380,7 +381,7 @@ export default () => {
             />
           )
         ) : (
-          <p>You don't have anything on your agenda yet</p>
+          <Typography component="p" style={{marginTop: 8,}}>You don't have anything on your agenda yet</Typography>
         )}
         <Button
           variant="contained"

@@ -114,7 +114,7 @@ export default () => {
       </Paper>
     ),
     agendaView = (
-      <Paper className={classes.item} onClick={() => history.push("/agenda")}>
+      <Paper className={classes.item}>
         <Typography variant="h4" gutterBottom>
           Your <span className="highlight">Agenda</span>
         </Typography>
@@ -237,7 +237,7 @@ export default () => {
     );
   useEffect(() => {
     fetch(
-      "https://maximise.herokuapp.com/users/get_data/", {
+      "https://maximise.herokuapp.com/users/get_data", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -250,24 +250,40 @@ export default () => {
     )
       .then(res => res.json())
       .then(data => {
-        setAgenda(data.response.agenda.filter((x, i) => i < 3));
-        setGoals(data.response.goals.filter((x, i) => i < 3));
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+                type: "NEW_ERROR",
+                payload: "There was an error loading your data"
+              });
+          } else {
+        setAgenda(data.response.agenda ? data.response.agenda.filter((x, i) => i < 3) : []);
+        setGoals((data.response.goals && data.response.goals.Current) ? data.response.goals.Current.filter((x, i) => i < 3) : []);
+        if (data.response.timetable) {
         const { timetable } = data.response;
         delete timetable.weekrepeats;
         delete timetable.dayrepeats;
+        console.log(timetable)
         let newExams = [];
         for (let key in timetable) {
+            let date = new Date();
+                date.setFullYear(key.split("|")[2]);
+                date.setMonth(key.split("|")[1]);
+                date.setDate(key.split("|")[0]);
           for (let time in timetable[key]) {
             if (timetable[key][time].type === "exam") {
-              newExams.push({
-                title: timetable[key][time].title,
-                date: key,
-                time: time.split("-")[0]
-              });
+                if (date.getTime() >= new Date().getTime()) {
+                    newExams.push({
+                      title: timetable[key][time].title,
+                      date: date.toLocaleDateString(),
+                      time: time.split("-")[0]
+                    });
+                }
             }
           }
         }
         setExams(newExams);
+    }
+}
       })
       .catch(err => {
         console.error(err);

@@ -15,7 +15,7 @@ import {
   Chip,
   TextField,
   FormControl,
-  InputLabel
+  InputLabel,
 } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -54,6 +54,9 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
     margin: "4px 0"
   },
+  autofilled: {
+    color: theme.palette.secondary.main,
+  },
   autofillCard: {
     backgroundColor: theme.palette.secondary.main,
     "& *": {
@@ -75,9 +78,9 @@ export default () => {
     [open, setOpen] = useState(false),
     formatDate =
       selectedDate.getDate() +
-      "/" +
+      "|" +
       (selectedDate.getMonth() + 1) +
-      "/" +
+      "|" +
       selectedDate.getFullYear(),
     day = String(selectedDate.getDay()),
     isSmall = useMediaQuery("(max-width: 800px)"),
@@ -95,6 +98,7 @@ export default () => {
     [examGrades, setExamGrades] = useState({}),
     [examScoreSubjects, setExamScoreSubjects] = useState([]),
     [stop, setStop] = useState(false),
+    [loading, setLoading] = useState(false),
     hours = [
       "7:00 - 8:00",
       "8:00 - 9:00",
@@ -160,11 +164,10 @@ export default () => {
       if (autofill) {
         setAutofillOpen(true);
       } else {
+        setAutofill(true);
         setAutofillInfo(true);
         setSelectedDate(new Date());
       }
-      //alert(autofill)
-      setAutofill(!autofill);
     },
     closeAutofill = () => {
       setAutofillOpen(false);
@@ -176,7 +179,10 @@ export default () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          newData: examGrades,
+          newData: {
+            //requireds: requireds,
+            //recents: recents,
+          },
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
         })
@@ -217,6 +223,7 @@ export default () => {
         });
     },*/
     submitAutofill = () => {
+        setLoading(true);
       fetch("https://maximise.herokuapp.com/users/update_data/grades", {
         method: "POST",
         headers: {
@@ -224,8 +231,7 @@ export default () => {
         },
         body: JSON.stringify({
           newData: {
-            recents,
-            requireds
+            recents, requireds, autofillSlots
           },
           sessionID: getCookie("sessionID"),
           username: getCookie("email")
@@ -233,15 +239,19 @@ export default () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
-
+            setLoading(false);
+            console.log(data);
+            
           if (JSON.stringify(data.errors) !== "{}") {
             dispatch({
               type: "NEW_ERROR",
               payload: "There was an error uploading your exam grades"
             });
           } else {
+              setClientTimetable({...timetable, autofill: data.response});
             setAutofillOpen(false);
+            setAutofill(false);
+            setAutofillSlots({});
           }
         })
         .catch(() => {
@@ -277,7 +287,7 @@ export default () => {
               : timetable.weekrepeats
             : {},
           restOfDayRepeats = timetable[mode + "repeats"]
-            ? mode !== "day" &&
+            ? mode !== "day" && timetable.dayrepeats &&
               timetable.dayrepeats[currentHour] &&
               timetable.dayrepeats[currentHour].title === title &&
               timetable.dayrepeats[currentHour].type === type
@@ -287,6 +297,18 @@ export default () => {
           restOfRepeatType = timetable[mode + "repeats"]
             ? timetable[mode + "repeats"]
             : {};
+        const autofillOptions =
+          timetable.autofill && timetable.autofill[selectedDate.getDay()]
+            ? {
+                [selectedDate.getDay()]:
+                  repeatType === "autofill"
+                    ? omit(
+                        timetable.autofill[selectedDate.getDay()],
+                        currentHour
+                      )
+                    : timetable.autofill[selectedDate.getDay()]
+              }
+            : {};
         if (mode === "week") {
           setClientTimetable({
             ...timetable,
@@ -294,20 +316,28 @@ export default () => {
             weekrepeats: {
               ...restOfRepeatType,
               [day]: {
-                ...restOfRepeatType[day],
+                ...timetable.weekrepeats[day],
                 [hour]: {
                   type,
                   title
                 }
               }
+            },
+            autofill: {
+              ...timetable.autofill,
+              ...autofillOptions
             }
           });
         } else {
           setClientTimetable({
             ...timetable,
             weekrepeats: restOfWeekRepeats,
+            autofill: {
+              ...timetable.autofill,
+              ...autofillOptions
+            },
             dayrepeats: {
-              ...restOfRepeatType,
+              ...timetable.dayrepeats,
               [hour]: {
                 type,
                 title
@@ -317,30 +347,84 @@ export default () => {
         }
       } else {
         if (repeatType !== "") {
-          if (
-            timetable[repeatType + "repeats"][currentHour].title === title &&
-            timetable[repeatType + "repeats"][currentHour].type === type
-          ) {
-            setClientTimetable({
-              ...timetable,
-              [repeatType + "repeats"]: omit(
-                timetable[repeatType + "repeats"],
+          if (repeatType === "week" || repeatType === "autofill") {
+            if (
+                timetable[repeatType + "repeats"] && timetable[repeatType + "repeats"][selectedDate.getDay()] &&
+              timetable[repeatType + "repeats"][selectedDate.getDay()][
                 currentHour
-              )
-            });
+              ] &&
+              timetable[repeatType + "repeats"][selectedDate.getDay()][
+                currentHour
+              ].title === title &&
+              timetable[repeatType + "repeats"][selectedDate.getDay()][
+                currentHour
+              ].type === type
+            ) {
+              setClientTimetable({
+                ...timetable,
+                [repeatType + "repeats"]: {
+                  ...timetable[repeatType + "repeats"],
+                  [selectedDate.getDay()]: omit(
+                    timetable[repeatType + "repeats"][selectedDate.getDay()],
+                    currentHour
+                  )
+                }
+              });
+            }
+          } else {
+            if (
+                timetable[repeatType + "repeats"] && timetable[repeatType + "repeats"][currentHour] &&
+              timetable[repeatType + "repeats"][currentHour].title === title &&
+              timetable[repeatType + "repeats"][currentHour].type === type
+            ) {
+              setClientTimetable({
+                ...timetable,
+                [repeatType + "repeats"]: omit(
+                  timetable[repeatType + "repeats"],
+                  currentHour
+                )
+              });
+            }
           }
         } else if (
-          timetable.weekrepeats &&
-          timetable.weekrepeats[currentHour] &&
-          timetable.weekrepeats[currentHour].title === title &&
-          timetable.weekrepeats[currentHour].type === type
+          timetable && timetable.autofill &&
+          timetable.autofill[selectedDate.getDay()] &&
+          timetable.autofill[selectedDate.getDay()][currentHour] &&
+          timetable.autofill[selectedDate.getDay()][currentHour].title ===
+            title &&
+          timetable.autofill[selectedDate.getDay()][currentHour].type === type
         ) {
           setClientTimetable({
             ...timetable,
-            weekrepeats: omit(timetable.weekrepeats, currentHour)
+            autofill: {
+              ...timetable.autofill,
+              [selectedDate.getDay()]: omit(
+                timetable[repeatType + "repeats"][selectedDate.getDay()],
+                currentHour
+              )
+            }
           });
         } else if (
-          timetable.dayrepeats &&
+          timetable && timetable.weekrepeats &&
+          timetable.weekrepeats[selectedDate.getDay()] &&
+          timetable.weekrepeats[selectedDate.getDay()][currentHour] &&
+          timetable.weekrepeats[selectedDate.getDay()][currentHour].title ===
+            title &&
+          timetable.weekrepeats[selectedDate.getDay()][currentHour].type ===
+            type
+        ) {
+          setClientTimetable({
+            ...timetable,
+            weekrepeats: {
+              ...timetable[repeatType + "repeats"],
+              [selectedDate.getDay()]: omit(
+                timetable.weekrepeats[selectedDate.getDay()],
+                currentHour
+              )
+            }
+          });
+        } else if (
+            timetable && timetable.dayrepeats &&
           timetable.dayrepeats[currentHour] &&
           timetable.dayrepeats[currentHour].title === title &&
           timetable.dayrepeats[currentHour].type === type
@@ -358,42 +442,38 @@ export default () => {
   maxDate.setHours(0, 0, 0, 0);
   maxAutofill.setDate(maxDate.getDate() + 6);
   maxAutofill.setHours(0, 0, 0, 0);
-  console.log(recents);
-  console.log(requireds);
   useEffect(() => {
-    setTimetable(clientTimetable);
-    console.log(clientTimetable);
-
-    fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        newData: clientTimetable,
-        sessionID: getCookie("sessionID"),
-        username: getCookie("email")
+    if (clientTimetable) {
+        setTimetable(clientTimetable);
+     fetch("https://maximise.herokuapp.com/users/update_data/timetable", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          newData: clientTimetable,
+          sessionID: getCookie("sessionID"),
+          username: getCookie("email")
+        })
       })
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-
-        if (JSON.stringify(data.errors) !== "{}") {
+        .then(res => res.json())
+        .then(data => {
+          if (JSON.stringify(data.errors) !== "{}") {
+            dispatch({
+              type: "NEW_ERROR",
+              payload: "There was an error updating your timetable"
+            });
+          } else {
+            setTimetable(clientTimetable);
+          }
+        })
+        .catch(() => {
           dispatch({
             type: "NEW_ERROR",
             payload: "There was an error updating your agenda"
           });
-        } else {
-          setTimetable(clientTimetable);
-        }
-      })
-      .catch(() => {
-        dispatch({
-          type: "NEW_ERROR",
-          payload: "There was an error updating your agenda"
         });
-      });
+    }
   }, [clientTimetable]);
   useEffect(() => {
     fetch("https://maximise.herokuapp.com/users/get_data/timetable", {
@@ -409,13 +489,22 @@ export default () => {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        setTimetable(data.response ? data.response : {});
-        setClientTimetable(data.response ? data.response : {});
+        console.log("data");
+        if (JSON.stringify(data.errors) !== "{}") {
+          dispatch({
+            type: "NEW_ERROR",
+            payload: "There was an error loading your timetable"
+          });
+        } else {
+          setTimetable(data.response ? data.response : {});
+          setClientTimetable(data.response ? data.response : {});
+        }
       })
-      .catch(() => {
+      .catch(err => {
+        console.error(err);
         dispatch({
           type: "NEW_ERROR",
-          payload: "There was an error loading your goals"
+          payload: "There was an error loading your timetable"
         });
       });
   }, []);
@@ -440,7 +529,7 @@ export default () => {
           alignItems: "center"
         }}
       >
-        <Typography variant="h4">{formatDate}</Typography>
+        <Typography variant="h4">{formatDate.replace(/\|/g, "/")}</Typography>
         <Button onClick={() => setOpen(true)} style={{ marginLeft: 8 }}>
           Change
         </Button>
@@ -531,6 +620,7 @@ export default () => {
               <ol>
                 <li>Pick the timeslots you want to revise for and click Go</li>
                 <li>Choose the subjects you want to revise</li>
+                <li>When you've got your grades back, click the + icon next to AI autofill to enter your grades</li>
               </ol>
               <br />
               AI Autofill will also automatically fill in break periods for you
@@ -578,49 +668,53 @@ export default () => {
             <DialogContentText id="alert-dialog-description">
               Please enter the subjects you would like to revise, and the your
               recent and required grade for each of them. N.B. if you have
-              selected any slots with data already in them, they will be
-              overridden.
+              selected any slots with items that already repeat daily or weekly, they will be
+              overridden. Otherwise, selecting slots that have one-off items in them will not autofill.
             </DialogContentText>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              onChange={(e, val) => {
-                let newRecents = recents;
-                let newRequireds = requireds;
-                val.forEach(a => {
-                  if (!newRecents[a]) {
-                    newRecents[a] = 5;
-                  }
-                  if (!newRequireds[a]) {
-                    newRequireds[a] = 5;
-                  }
-                });
-                setRecents(newRecents);
-                setRequireds(newRequireds);
-                setAutoSubjects(val);
-              }}
-              options={subjects}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    key={index}
-                    variant="outlined"
-                    label={option}
-                    {...getTagProps({ index })}
-                    style={{ margin: 4 }}
+            {subjects ? (
+              <Autocomplete
+                multiple
+                filterSelectedOptions
+                onChange={(e, val) => {
+                  let newRecents = recents;
+                  let newRequireds = requireds;
+                  val.forEach(a => {
+                    if (!newRecents[a]) {
+                      newRecents[a] = 5;
+                    }
+                    if (!newRequireds[a]) {
+                      newRequireds[a] = 5;
+                    }
+                  });
+                  setRecents(newRecents);
+                  setRequireds(newRequireds);
+                  setAutoSubjects(val);
+                }}
+                options={subjects}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      key={index}
+                      variant="outlined"
+                      label={option}
+                      {...getTagProps({ index })}
+                      style={{ margin: 4 }}
+                    />
+                  ))
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Enter your subjects"
+                    margin="normal"
+                    variant="filled"
+                    fullWidth
                   />
-                ))
-              }
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="Enter your subjects"
-                  margin="normal"
-                  variant="filled"
-                  fullWidth
-                />
-              )}
-            />
+                )}
+              />
+            ) : (
+              <Typography>You don't have any subjects</Typography>
+            )}
             {autoSubjects.map((a, i) => (
               <div
                 style={{
@@ -682,12 +776,17 @@ export default () => {
                 </div>
               </div>
             ))}
+            {loading && (
+                <div style={{padding: 8, textAlign: "center"}}>
+                    <CircularProgress color="secondary" />
+                </div>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={closeAutofill} color="secondary">
               Cancel
             </Button>
-            <Button onClick={submitAutofill} color="secondary" autoFocus>
+            <Button onClick={submitAutofill} color="secondary" autoFocus disabled={loading}>
               Go
             </Button>
           </DialogActions>
@@ -703,46 +802,52 @@ export default () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
+              If you have never used timetable before click cancel and then AI autofill
+              <br /><br />
               For the tests that you last revised for using this timetable,
               enter the grades here - this will help us make the AI Autofill
               feature more accurate and more likely to help you revise
               efficiently.
             </DialogContentText>
-            <Autocomplete
-              multiple
-              filterSelectedOptions
-              onChange={(e, val) => {
-                let newGrades = examGrades;
-                val.forEach(a => {
-                  if (!newGrades[a]) {
-                    newGrades[a] = 5;
-                  }
-                });
-                setExamGrades(newGrades);
-                setExamScoreSubjects(val);
-              }}
-              options={subjects}
-              renderTags={(value, getTagProps) =>
-                value.map((option, index) => (
-                  <Chip
-                    key={index}
-                    variant="outlined"
-                    label={option}
-                    {...getTagProps({ index })}
-                    style={{ margin: 4 }}
+            {subjects ? (
+              <Autocomplete
+                multiple
+                filterSelectedOptions
+                onChange={(e, val) => {
+                  let newGrades = examGrades;
+                  val.forEach(a => {
+                    if (!newGrades[a]) {
+                      newGrades[a] = 5;
+                    }
+                  });
+                  setExamGrades(newGrades);
+                  setExamScoreSubjects(val);
+                }}
+                options={subjects}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip
+                      key={index}
+                      variant="outlined"
+                      label={option}
+                      {...getTagProps({ index })}
+                      style={{ margin: 4 }}
+                    />
+                  ))
+                }
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    label="Enter your subjects"
+                    margin="normal"
+                    variant="filled"
+                    fullWidth
                   />
-                ))
-              }
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="Enter your subjects"
-                  margin="normal"
-                  variant="filled"
-                  fullWidth
-                />
-              )}
-            />
+                )}
+              />
+            ) : (
+              <Typography>You don't have any subjects</Typography>
+            )}
             {examScoreSubjects.map((a, i) => (
               <div
                 style={{
@@ -842,7 +947,14 @@ export default () => {
           timetable[formatDate][hour].title !== ""
         ) {
           root = timetable[formatDate];
-        } else if (timetable.weekrepeats) {
+        } else if (
+            timetable.autofill &&
+            timetable.autofill[day] &&
+            timetable.autofill[day][hour]
+          ) {
+            root = timetable.autofill[day];
+            repeatType = "autofill";
+          } else if (timetable.weekrepeats) {
           if (timetable.weekrepeats[day] && timetable.weekrepeats[day][hour]) {
             root = timetable.weekrepeats[day];
             repeatType = "week";
@@ -909,12 +1021,14 @@ export default () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   {autofill ? (
                     <Typography className={classes.autofillText}>
-                      Click to select
+                      {root && root[hour]
+                        ? repeatType === "autofill" ? root[hour] : root[hour].title
+                        : "Click to select"}
                     </Typography>
                   ) : (
                     <>
                       <InputBase
-                        value={root && root[hour] ? root[hour].title : ""}
+                        value={root && root[hour] ? repeatType === "autofill" ? root[hour] : root[hour].title : ""}
                         placeholder="Topic of the hour"
                         onChange={changeTitle(
                           formatDate,
@@ -924,7 +1038,7 @@ export default () => {
                         style={{ flex: 1, marginRight: 8 }}
                         className={
                           root && root[hour] && root[hour].type === "exam"
-                            ? classes.input
+                            ? classes.input : repeatType === "autofill" ? classes.autofilled
                             : ""
                         }
                         onKeyDown={keyDown}
@@ -932,18 +1046,24 @@ export default () => {
                           maxLength: "64"
                         }}
                       />
-                      {root && root[hour].title !== "" && (
+                      {root && root[hour].title !== "" && repeatType !== "autofill" && (
                         <>
                           {!isSmall && select}
-                          <IconButton
-                            onClick={e => {
-                              setAnchorEl(e.currentTarget);
-                              setHour(hour);
-                            }}
-                            size="small"
-                          >
-                            <DotsIcon />
-                          </IconButton>
+                          {!(
+                            !isSmall &&
+                            root[hour] &&
+                            root[hour].type === "exam"
+                          ) && (
+                            <IconButton
+                              onClick={e => {
+                                setAnchorEl(e.currentTarget);
+                                setHour(hour);
+                              }}
+                              size="small"
+                            >
+                              <DotsIcon />
+                            </IconButton>
+                          )}
                           {root[currentHour] && (
                             <Menu
                               anchorEl={anchorEl}
@@ -954,41 +1074,47 @@ export default () => {
                                 className: classes.paper
                               }}
                             >
-                              <MenuItem
-                                onClick={setRepeat(
-                                  "none",
-                                  formatDate,
-                                  hour,
-                                  root[currentHour].type,
-                                  root[currentHour].title,
-                                  repeatType
-                                )}
-                              >
-                                Doesn't repeat
-                              </MenuItem>
-                              <MenuItem
-                                onClick={setRepeat(
-                                  "day",
-                                  formatDate,
-                                  hour,
-                                  root[currentHour].type,
-                                  root[currentHour].title
-                                )}
-                              >
-                                Repeat daily
-                              </MenuItem>
-                              <MenuItem
-                                onClick={setRepeat(
-                                  "week",
-                                  formatDate,
-                                  hour,
-                                  root[currentHour].type,
-                                  root[currentHour].title
-                                )}
-                              >
-                                Repeat weekly
-                              </MenuItem>
-                              {isSmall && select}
+                              {root[currentHour].type !== "exam" && [
+                                <MenuItem
+                                  onClick={setRepeat(
+                                    "none",
+                                    formatDate,
+                                    currentHour,
+                                    root[currentHour].type,
+                                    root[currentHour].title,
+                                    repeatType
+                                  )}
+                                >
+                                  Doesn't repeat
+                                </MenuItem>,
+                                <MenuItem
+                                  onClick={setRepeat(
+                                    "day",
+                                    formatDate,
+                                    currentHour,
+                                    root[currentHour].type,
+                                    root[currentHour].title,
+                                    repeatType
+                                  )}
+                                >
+                                  Repeat daily
+                                </MenuItem>,
+                                <MenuItem
+                                  onClick={setRepeat(
+                                    "week",
+                                    formatDate,
+                                    currentHour,
+                                    root[currentHour].type,
+                                    root[currentHour].title,
+                                    repeatType
+                                  )}
+                                >
+                                  Repeat weekly
+                                </MenuItem>
+                              ]}
+                              <div style={{ width: 138.91 }}>
+                                {isSmall && select}
+                              </div>
                             </Menu>
                           )}
                         </>
